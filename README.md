@@ -95,6 +95,11 @@ WILDFIRE/
 │   └── clbi_model_metadata.json          # Production model metadata & provenance
 │
 ├── src/
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── main.py                        # FastAPI application entry point & CORS
+│   │   ├── routes.py                      # REST API endpoint route handlers
+│   │   └── schemas.py                     # Pydantic request/response validation schemas
 │   ├── data/
 │   │   └── build_dataset.py               # Standardized dataset builder pipeline
 │   ├── features/
@@ -106,7 +111,8 @@ WILDFIRE/
 │       └── clbi_demo.py                   # CLI demonstration script
 │
 ├── tests/
-│   └── test_clbi_model.py                 # Unit tests for CLBIDecisionEngine (14 tests)
+│   ├── test_clbi_model.py                 # Unit tests for CLBIDecisionEngine (14 tests)
+│   └── test_api.py                        # Unit tests for CLBI REST API (15 tests)
 │
 ├── experiments/                           # Research reports and results
 │   ├── BASELINE_REPORT.md
@@ -134,9 +140,9 @@ WILDFIRE/
 python -m src.model.train_clbi_model
 ```
 
-### 2. Run Unit Tests (14 Tests)
+### 2. Run Unit Tests (29 Tests)
 ```bash
-python -m pytest -q
+python -m unittest discover -s tests -p "test_*.py"
 ```
 
 ### 3. Run CLBI Demo & Generate Product JSON
@@ -144,24 +150,83 @@ python -m pytest -q
 python -m src.model.clbi_demo
 ```
 
-### 4. Python API Usage
-```python
-import pandas as pd
-from src.model.clbi_model import CLBIDecisionEngine
+---
 
-# Load production decision engine (loads saved model artifact)
-engine = CLBIDecisionEngine(model_path="models/clbi_logistic_regression.joblib")
+## Running the CLBI REST API
 
-# Load candidate line segments
-df = pd.read_csv("data/demo/clbi_demo_segments.csv")
-
-# Run inference & risk stratification
-predictions_df = engine.predict_df(df, top_k_recommend_pct=10.0)
-
-# Prioritize top candidate segments
-prioritized = engine.prioritize_candidate_line(predictions_df, resource_pct=10.0)
-print(prioritized["selected_segments"][["segment_id", "breach_probability", "risk_tier", "priority_recommended"]])
+### 1. Install API Dependencies
+```bash
+python -m pip install -r requirements.txt
 ```
+
+### 2. Start API Server
+```bash
+python -m uvicorn src.api.main:app --reload
+```
+
+### 3. Interactive API Documentation
+- **Swagger / OpenAPI UI:** `http://localhost:8000/docs`
+- **ReDoc UI:** `http://localhost:8000/redoc`
+- **OpenAPI Schema:** `http://localhost:8000/openapi.json`
+
+### 4. Example Curl Requests
+
+- **Health Check:**
+```bash
+curl http://localhost:8000/api/v1/health
+```
+
+- **Model Info & Provenance:**
+```bash
+curl http://localhost:8000/api/v1/model/info
+```
+
+- **Single Segment Risk Prediction:**
+```bash
+curl -X POST http://localhost:8000/api/v1/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "segment_id": "demo_001",
+    "slope": 35.0,
+    "elevation": 800.0,
+    "distance_to_fire": 100.0,
+    "barrier_width_m": 2.0,
+    "burn_prob": 0.85,
+    "attack_angle": 20.0,
+    "attack_dot_product": 0.94
+  }'
+```
+
+- **Candidate Line Prioritization (Top 10% Cutoff):**
+```bash
+curl -X POST http://localhost:8000/api/v1/prioritize \
+  -H "Content-Type: application/json" \
+  -d '{
+    "segments": [
+      {
+        "segment_id": "seg_001",
+        "slope": 35.0,
+        "elevation": 800.0,
+        "distance_to_fire": 100.0,
+        "barrier_width_m": 2.0,
+        "burn_prob": 0.85,
+        "attack_angle": 20.0,
+        "attack_dot_product": 0.94
+      }
+    ],
+    "selection": {
+      "type": "percentage",
+      "value": 10
+    }
+  }'
+```
+
+- **100-Segment Benchmark Demo:**
+```bash
+curl http://localhost:8000/api/v1/demo
+```
+
+> **Disclaimer:** The CLBI REST API is a prototype decision-support interface based on retrospective historical wildfire data. It does NOT provide live field validation or guaranteed fire behavior containment.
 
 ---
 
