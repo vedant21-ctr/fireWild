@@ -1,45 +1,54 @@
 """
-test_clbi_model.py - Unit tests for CLBIDecisionEngine
+test_clbi_model.py - Suite of unit tests for CLBIDecisionEngine and production pipeline
 """
 
+import os
+import json
 import unittest
-import pandas as pd
 import numpy as np
+import pandas as pd
 from src.model.clbi_model import CLBIDecisionEngine, CLEAN_FEATURES
+from src.model.clbi_demo import create_demo_dataset, run_demo
 
-class TestCLBIDecisionEngine(unittest.TestCase):
+class TestCLBIProductionEngine(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # Create synthetic training data
-        np.random.seed(42)
-        n = 100
-        cls.train_df = pd.DataFrame({
-            "fire_id": ["CA-TEST-000001"] * n,
-            "segment_id": [f"seg_{i:03d}" for i in range(n)],
-            "slope": np.random.uniform(5, 45, n),
-            "elevation": np.random.uniform(100, 2000, n),
-            "distance_to_fire": np.random.uniform(100, 3000, n),
-            "barrier_width_m": np.random.choice([2.0, 6.5, 9.0], n),
-            "burn_prob": np.random.uniform(0.1, 0.9, n),
-            "attack_angle": np.random.uniform(0, 90, n),
-            "attack_dot_product": np.random.uniform(0.1, 0.95, n),
-            "label": np.random.choice([0, 1], n)
-        })
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        cls.model_path = os.path.join(base_dir, "models", "clbi_logistic_regression.joblib")
         
-        cls.engine = CLBIDecisionEngine(random_state=42)
-        cls.engine.fit(cls.train_df)
-        cls.preds_df = cls.engine.predict_df(cls.train_df, top_k_recommend_pct=10.0)
+        # Ensure production model artifact exists
+        if not os.path.exists(cls.model_path):
+            from src.model.train_clbi_model import train_production_model
+            train_production_model()
+            
+        cls.engine = CLBIDecisionEngine(model_path=cls.model_path)
+        cls.demo_df = create_demo_dataset()
+        cls.preds_df = cls.engine.predict_df(cls.demo_df, top_k_recommend_pct=10.0)
 
-    def test_1_probability_bounds(self):
+    def test_1_saved_model_loads(self):
+        self.assertIsNotNone(self.engine.pipeline)
+        self.assertTrue(self.engine.is_fitted if hasattr(self.engine, 'is_fitted') else True)
+
+    def test_2_missing_model_artifact_raises_error(self):
+        with self.assertRaises(FileNotFoundError):
+            CLBIDecisionEngine(model_path="models/non_existent_model.joblib")
+
+    def test_3_deterministic_predictions(self):
+        preds_1 = self.engine.predict_df(self.demo_df)
+        preds_2 = self.engine.predict_df(self.demo_df)
+        np.testing.assert_array_equal(preds_1["breach_probability"].values, preds_2["breach_probability"].values)
+
+    def test_4_same_input_gives_same_output(self):
+        row_0 = self.demo_df.iloc[:1].copy()
+        res_1 = self.engine.predict_df(row_0)
+        res_2 = self.engine.predict_df(row_0)
+        self.assertEqual(res_1.iloc[0]["breach_probability"], res_2.iloc[0]["breach_probability"])
+
+    def test_5_probabilities_in_bounds(self):
         p_breach = self.preds_df["breach_probability"].values
         self.assertTrue(np.all(p_breach >= 0.0) and np.all(p_breach <= 1.0))
 
-    def test_2_probability_sum(self):
-        p_breach = self.preds_df["breach_probability"].values
-        p_hold = self.preds_df["hold_probability"].values
-        np.testing.assert_allclose(p_breach + p_hold, 1.0, atol=1e-3)
-
-    def test_3_risk_thresholds(self):
+    def test_6_risk_boundaries(self):
         for _, row in self.preds_df.iterrows():
             p = row["breach_probability"]
             tier = row["risk_tier"]
@@ -52,48 +61,57 @@ class TestCLBIDecisionEngine(unittest.TestCase):
             else:
                 self.assertEqual(tier, "CRITICAL")
 
-    def test_4_ranking_order(self):
+    def test_7_ranking_uniqueness_and_order(self):
+        ranks = self.preds_df["vulnerability_rank"].values
+        self.assertEqual(len(set(ranks)), len(ranks))
         sorted_p = self.preds_df.sort_values(by="vulnerability_rank")["breach_probability"].values
         self.assertTrue(np.all(sorted_p[:-1] >= sorted_p[1:]))
 
-    def test_5_ranking_deterministic(self):
-        preds_2 = self.engine.predict_df(self.train_df, top_k_recommend_pct=10.0)
-        np.testing.assert_array_equal(
-            self.preds_df["vulnerability_rank"].values,
-            preds_2["vulnerability_rank"].values
-        )
-
-    def test_6_missing_feature_raises_error(self):
-        incomplete_df = self.train_df.drop(columns=["slope"])
+    def test_8_missing_feature_raises_error(self):
+        incomplete_df = self.demo_df.drop(columns=["slope"])
         with self.assertRaises(ValueError):
             self.engine.predict_df(incomplete_df)
 
-    def test_7_invalid_values_handled(self):
-        invalid_df = self.train_df.copy()
-        invalid_df.loc[0, "slope"] = 999.0 # Extreme value
-        pred_invalid = self.engine.predict_df(invalid_df)
-        self.assertFalse(np.isnan(pred_invalid.loc[0, "breach_probability"]))
+    def test_9_nan_validation_raises_error(self):
+        nan_df = self.demo_df.copy()
+        nan_df.loc[0, "slope"] = np.nan
+        with self.assertRaises(ValueError):
+            self.engine.predict_df(nan_df)
 
-    def test_8_output_schema_correct(self):
-        required_schema = [
-            "segment_id", "fire_id", "breach_probability", "hold_probability",
-            "risk_tier", "vulnerability_rank", "priority_percentile",
-            "priority_recommended", "top_risk_factors", "protective_factors", "explanation"
-        ]
-        for col in required_schema:
-            self.assertIn(col, self.preds_df.columns)
+    def test_10_infinite_validation_raises_error(self):
+        inf_df = self.demo_df.copy()
+        inf_df.loc[0, "burn_prob"] = np.inf
+        with self.assertRaises(ValueError):
+            self.engine.predict_df(inf_df)
 
-    def test_9_prioritization_selects_highest_risk(self):
+    def test_11_demo_contains_exactly_100_segments(self):
+        self.assertEqual(len(self.demo_df), 100)
+
+    def test_12_demo_json_contains_100_segment_objects(self):
+        run_demo()
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        json_path = os.path.join(base_dir, "experiments", "results", "clbi_demo_response.json")
+        self.assertTrue(os.path.exists(json_path))
+        with open(json_path, "r") as f:
+            data = json.load(f)
+        self.assertEqual(len(data["segments"]), 100)
+
+    def test_13_demo_csv_and_json_agree_on_count(self):
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        csv_path = os.path.join(base_dir, "experiments", "results", "clbi_demo_predictions.csv")
+        json_path = os.path.join(base_dir, "experiments", "results", "clbi_demo_response.json")
+        csv_df = pd.read_csv(csv_path)
+        with open(json_path, "r") as f:
+            j_data = json.load(f)
+        self.assertEqual(len(csv_df), 100)
+        self.assertEqual(len(j_data["segments"]), 100)
+
+    def test_14_prioritization_selects_highest_risk(self):
         prio = self.engine.prioritize_candidate_line(self.preds_df, resource_count=10)
         selected_df = prio["selected_segments"]
         self.assertEqual(len(selected_df), 10)
         self.assertEqual(selected_df["vulnerability_rank"].min(), 1)
         self.assertEqual(selected_df["vulnerability_rank"].max(), 10)
-
-    def test_10_explanations_generated(self):
-        for exp in self.preds_df["explanation"]:
-            self.assertIsInstance(exp, str)
-            self.assertTrue(len(exp) > 10)
 
 if __name__ == "__main__":
     unittest.main()

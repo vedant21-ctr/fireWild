@@ -1,0 +1,2159 @@
+{
+  "metadata": {
+    "product": "Candidate Line Breach Intelligence",
+    "version": "v1.0.0",
+    "model": "Standardized 7-Feature Logistic Regression Pipeline",
+    "data_source": "NDWS-derived historical benchmark (CZU Lightning Complex)",
+    "retrospective": true
+  },
+  "summary": {
+    "total_segments": 100,
+    "low": 53,
+    "medium": 17,
+    "high": 14,
+    "critical": 16,
+    "high_or_critical": 30
+  },
+  "prioritization": {
+    "top_10_percent_count": 10,
+    "top_20_percent_count": 20
+  },
+  "segments": [
+    {
+      "segment_id": "CA-CZU-005205_seg_00001",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.6599,
+      "hold_probability": 0.3401,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 26,
+      "priority_percentile": 75.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Terrain Slope Angle (slope=40.6)",
+        "Proximity to Active Flame Front (distance_to_fire=385.0)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.037)"
+      ],
+      "explanation": "HIGH breach risk (66.0% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Terrain Slope Angle (slope=40.6). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.037)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00002",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.3038,
+      "hold_probability": 0.6962,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 46,
+      "priority_percentile": 55.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.817)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.712)",
+        "Surface Elevation (elevation=322.3)"
+      ],
+      "protective_factors": [
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "MEDIUM breach risk (30.4% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.817), Predicted Next-Day Spread Probability Intensity (burn_prob=0.712). Holding probability is supported by: Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00003",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0131,
+      "hold_probability": 0.9869,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 87,
+      "priority_percentile": 14.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Terrain Slope Angle (slope=27.7)",
+        "Surface Elevation (elevation=284.0)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.014)",
+        "Proximity to Active Flame Front (distance_to_fire=5000.0)"
+      ],
+      "explanation": "LOW breach risk (1.3% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Terrain Slope Angle (slope=27.7). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.014), Proximity to Active Flame Front (distance_to_fire=5000.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00004",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.6317,
+      "hold_probability": 0.3683,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 28,
+      "priority_percentile": 73.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Proximity to Active Flame Front (distance_to_fire=338.1)",
+        "Surface Elevation (elevation=327.0)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.484)"
+      ],
+      "explanation": "HIGH breach risk (63.2% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Proximity to Active Flame Front (distance_to_fire=338.1). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.484)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00005",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.8144,
+      "hold_probability": 0.1856,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 15,
+      "priority_percentile": 86.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.848)",
+        "Proximity to Active Flame Front (distance_to_fire=830.3)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=18.1)"
+      ],
+      "explanation": "CRITICAL breach vulnerability (81.4% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.848). Holding probability is supported by: Terrain Slope Angle (slope=18.1)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00006",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.4363,
+      "hold_probability": 0.5637,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 36,
+      "priority_percentile": 65.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.898)",
+        "Terrain Slope Angle (slope=35.1)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.613)"
+      ],
+      "protective_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=1502.2)",
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "MEDIUM breach risk (43.6% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.898), Terrain Slope Angle (slope=35.1). Holding probability is supported by: Proximity to Active Flame Front (distance_to_fire=1502.2), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00007",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1018,
+      "hold_probability": 0.8982,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 66,
+      "priority_percentile": 35.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.818)",
+        "Surface Elevation (elevation=261.2)",
+        "Terrain Slope Angle (slope=25.1)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.435)",
+        "Proximity to Active Flame Front (distance_to_fire=1956.0)",
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "LOW breach risk (10.2% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.818), Surface Elevation (elevation=261.2). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.435), Proximity to Active Flame Front (distance_to_fire=1956.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00008",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.8186,
+      "hold_probability": 0.1814,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 14,
+      "priority_percentile": 87.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Terrain Slope Angle (slope=37.4)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.613)"
+      ],
+      "protective_factors": [],
+      "explanation": "CRITICAL breach vulnerability (81.9% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Terrain Slope Angle (slope=37.4)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00009",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0024,
+      "hold_probability": 0.9976,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 95,
+      "priority_percentile": 6.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=30.3)",
+        "Surface Elevation (elevation=207.4)",
+        "Acute Fire Attack Angle (attack_angle=84.1)"
+      ],
+      "protective_factors": [
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Proximity to Active Flame Front (distance_to_fire=2525.9)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.122)"
+      ],
+      "explanation": "LOW breach risk (0.2% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=30.3), Surface Elevation (elevation=207.4). Holding probability is supported by: Cleared Barrier Width (barrier_width_m=9.0), Proximity to Active Flame Front (distance_to_fire=2525.9)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00010",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.3351,
+      "hold_probability": 0.6649,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 41,
+      "priority_percentile": 60.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.992)",
+        "Proximity to Active Flame Front (distance_to_fire=951.9)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.598)"
+      ],
+      "protective_factors": [
+        "Acute Fire Attack Angle (attack_angle=7.2)",
+        "Terrain Slope Angle (slope=19.5)",
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "MEDIUM breach risk (33.5% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.992), Proximity to Active Flame Front (distance_to_fire=951.9). Holding probability is supported by: Acute Fire Attack Angle (attack_angle=7.2), Terrain Slope Angle (slope=19.5)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00011",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.9132,
+      "hold_probability": 0.0868,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 7,
+      "priority_percentile": 94.0,
+      "priority_recommended": true,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.807)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.8)"
+      ],
+      "protective_factors": [],
+      "explanation": "CRITICAL breach vulnerability (91.3% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Predicted Next-Day Spread Probability Intensity (burn_prob=0.807)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00012",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0731,
+      "hold_probability": 0.9269,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 68,
+      "priority_percentile": 33.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Surface Elevation (elevation=405.3)",
+        "Terrain Slope Angle (slope=24.6)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.538)",
+        "Proximity to Active Flame Front (distance_to_fire=2616.7)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.115)"
+      ],
+      "explanation": "LOW breach risk (7.3% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Surface Elevation (elevation=405.3). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.538), Proximity to Active Flame Front (distance_to_fire=2616.7)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00013",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.2891,
+      "hold_probability": 0.7109,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 49,
+      "priority_percentile": 52.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=448.8)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.675)",
+        "Surface Elevation (elevation=379.7)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=19.4)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.504)"
+      ],
+      "explanation": "LOW breach risk (28.9% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=448.8), Predicted Next-Day Spread Probability Intensity (burn_prob=0.675). Holding probability is supported by: Terrain Slope Angle (slope=19.4), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.504)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00014",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0373,
+      "hold_probability": 0.9627,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 76,
+      "priority_percentile": 25.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=317.0)",
+        "Terrain Slope Angle (slope=25.1)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.426)",
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.385)"
+      ],
+      "explanation": "LOW breach risk (3.7% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=317.0), Terrain Slope Angle (slope=25.1). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.426), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00015",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0692,
+      "hold_probability": 0.9308,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 69,
+      "priority_percentile": 32.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=33.2)",
+        "Surface Elevation (elevation=266.8)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.609)"
+      ],
+      "protective_factors": [
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.265)"
+      ],
+      "explanation": "LOW breach risk (6.9% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=33.2), Surface Elevation (elevation=266.8). Holding probability is supported by: Cleared Barrier Width (barrier_width_m=9.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.265)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00016",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.2341,
+      "hold_probability": 0.7659,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 53,
+      "priority_percentile": 48.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Proximity to Active Flame Front (distance_to_fire=618.6)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.64)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.053)"
+      ],
+      "explanation": "LOW breach risk (23.4% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Proximity to Active Flame Front (distance_to_fire=618.6). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.053)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00017",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.8624,
+      "hold_probability": 0.1376,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 12,
+      "priority_percentile": 89.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.957)",
+        "Proximity to Active Flame Front (distance_to_fire=231.4)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.816)"
+      ],
+      "protective_factors": [],
+      "explanation": "CRITICAL breach vulnerability (86.2% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.957), Proximity to Active Flame Front (distance_to_fire=231.4)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00018",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.9237,
+      "hold_probability": 0.0763,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 5,
+      "priority_percentile": 96.0,
+      "priority_recommended": true,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Proximity to Active Flame Front (distance_to_fire=158.2)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.862)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=18.6)"
+      ],
+      "explanation": "CRITICAL breach vulnerability (92.4% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Proximity to Active Flame Front (distance_to_fire=158.2). Holding probability is supported by: Terrain Slope Angle (slope=18.6)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00019",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.3256,
+      "hold_probability": 0.6744,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 43,
+      "priority_percentile": 58.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=42.4)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.665)",
+        "Surface Elevation (elevation=441.0)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.337)"
+      ],
+      "explanation": "MEDIUM breach risk (32.6% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=42.4), Predicted Next-Day Spread Probability Intensity (burn_prob=0.665). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.337)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00020",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0304,
+      "hold_probability": 0.9696,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 78,
+      "priority_percentile": 23.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.792)",
+        "Terrain Slope Angle (slope=29.1)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.022)",
+        "Proximity to Active Flame Front (distance_to_fire=4814.4)"
+      ],
+      "explanation": "LOW breach risk (3.0% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.792). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.022), Proximity to Active Flame Front (distance_to_fire=4814.4)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00021",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1181,
+      "hold_probability": 0.8819,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 63,
+      "priority_percentile": 38.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.709)",
+        "Proximity to Active Flame Front (distance_to_fire=726.1)",
+        "Surface Elevation (elevation=524.3)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.198)"
+      ],
+      "explanation": "LOW breach risk (11.8% predicted risk). Elevated predicted risk is associated with: Predicted Next-Day Spread Probability Intensity (burn_prob=0.709), Proximity to Active Flame Front (distance_to_fire=726.1). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.198)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00022",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0199,
+      "hold_probability": 0.9801,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 82,
+      "priority_percentile": 19.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=651.2)",
+        "Surface Elevation (elevation=614.5)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.286)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.429)",
+        "Terrain Slope Angle (slope=2.5)"
+      ],
+      "explanation": "LOW breach risk (2.0% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=651.2), Surface Elevation (elevation=614.5). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.286), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.429)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00023",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.7247,
+      "hold_probability": 0.2753,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 21,
+      "priority_percentile": 80.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.81)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.797)",
+        "Proximity to Active Flame Front (distance_to_fire=646.7)"
+      ],
+      "protective_factors": [],
+      "explanation": "HIGH breach risk (72.5% predicted risk). Elevated predicted risk is associated with: Predicted Next-Day Spread Probability Intensity (burn_prob=0.81), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.797)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00024",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.002,
+      "hold_probability": 0.998,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 97,
+      "priority_percentile": 4.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=144.1)",
+        "Acute Fire Attack Angle (attack_angle=84.5)"
+      ],
+      "protective_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=2160.1)",
+        "Terrain Slope Angle (slope=9.8)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.159)"
+      ],
+      "explanation": "LOW breach risk (0.2% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=144.1), Acute Fire Attack Angle (attack_angle=84.5). Holding probability is supported by: Proximity to Active Flame Front (distance_to_fire=2160.1), Terrain Slope Angle (slope=9.8)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00025",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.488,
+      "hold_probability": 0.512,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 34,
+      "priority_percentile": 67.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.943)",
+        "Surface Elevation (elevation=347.2)"
+      ],
+      "protective_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=1845.6)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.391)",
+        "Terrain Slope Angle (slope=16.3)"
+      ],
+      "explanation": "MEDIUM breach risk (48.8% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.943). Holding probability is supported by: Proximity to Active Flame Front (distance_to_fire=1845.6), Predicted Next-Day Spread Probability Intensity (burn_prob=0.391)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00026",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.323,
+      "hold_probability": 0.677,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 44,
+      "priority_percentile": 57.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Proximity to Active Flame Front (distance_to_fire=666.8)",
+        "Surface Elevation (elevation=485.3)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=17.9)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.353)"
+      ],
+      "explanation": "MEDIUM breach risk (32.3% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Proximity to Active Flame Front (distance_to_fire=666.8). Holding probability is supported by: Terrain Slope Angle (slope=17.9), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.353)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00027",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.8535,
+      "hold_probability": 0.1465,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 13,
+      "priority_percentile": 88.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.938)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.756)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=13.7)"
+      ],
+      "explanation": "CRITICAL breach vulnerability (85.3% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.938). Holding probability is supported by: Terrain Slope Angle (slope=13.7)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00028",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.6509,
+      "hold_probability": 0.3491,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 27,
+      "priority_percentile": 74.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=38.6)",
+        "Proximity to Active Flame Front (distance_to_fire=297.7)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.802)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.413)"
+      ],
+      "explanation": "HIGH breach risk (65.1% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=38.6), Proximity to Active Flame Front (distance_to_fire=297.7). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.413)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00029",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.716,
+      "hold_probability": 0.284,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 23,
+      "priority_percentile": 78.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.959)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.818)",
+        "Proximity to Active Flame Front (distance_to_fire=631.1)"
+      ],
+      "protective_factors": [
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "HIGH breach risk (71.6% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.959), Predicted Next-Day Spread Probability Intensity (burn_prob=0.818). Holding probability is supported by: Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00030",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1599,
+      "hold_probability": 0.8401,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 59,
+      "priority_percentile": 42.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=560.5)",
+        "Terrain Slope Angle (slope=26.7)",
+        "Surface Elevation (elevation=360.1)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.289)"
+      ],
+      "explanation": "LOW breach risk (16.0% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=560.5), Terrain Slope Angle (slope=26.7). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.289)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00031",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.7587,
+      "hold_probability": 0.2413,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 20,
+      "priority_percentile": 81.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=172.8)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.84)",
+        "Terrain Slope Angle (slope=32.0)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.609)"
+      ],
+      "explanation": "HIGH breach risk (75.9% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=172.8), Predicted Next-Day Spread Probability Intensity (burn_prob=0.84). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.609)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00032",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0133,
+      "hold_probability": 0.9867,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 86,
+      "priority_percentile": 15.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Surface Elevation (elevation=280.2)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=11.2)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.355)",
+        "Proximity to Active Flame Front (distance_to_fire=2714.3)"
+      ],
+      "explanation": "LOW breach risk (1.3% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Surface Elevation (elevation=280.2). Holding probability is supported by: Terrain Slope Angle (slope=11.2), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.355)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00033",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.9778,
+      "hold_probability": 0.0222,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 2,
+      "priority_percentile": 99.0,
+      "priority_recommended": true,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.933)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.9)"
+      ],
+      "protective_factors": [],
+      "explanation": "CRITICAL breach vulnerability (97.8% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Predicted Next-Day Spread Probability Intensity (burn_prob=0.933)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00034",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0238,
+      "hold_probability": 0.9762,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 80,
+      "priority_percentile": 21.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.889)",
+        "Surface Elevation (elevation=356.0)"
+      ],
+      "protective_factors": [
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.228)",
+        "Proximity to Active Flame Front (distance_to_fire=2933.4)"
+      ],
+      "explanation": "LOW breach risk (2.4% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.889), Surface Elevation (elevation=356.0). Holding probability is supported by: Cleared Barrier Width (barrier_width_m=9.0), Predicted Next-Day Spread Probability Intensity (burn_prob=0.228)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00035",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.2671,
+      "hold_probability": 0.7329,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 52,
+      "priority_percentile": 49.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.958)",
+        "Surface Elevation (elevation=412.0)"
+      ],
+      "protective_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=1529.3)",
+        "Terrain Slope Angle (slope=14.3)"
+      ],
+      "explanation": "LOW breach risk (26.7% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.958), Surface Elevation (elevation=412.0). Holding probability is supported by: Proximity to Active Flame Front (distance_to_fire=1529.3), Terrain Slope Angle (slope=14.3)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00036",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.8987,
+      "hold_probability": 0.1013,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 9,
+      "priority_percentile": 92.0,
+      "priority_recommended": true,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.873)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.694)"
+      ],
+      "protective_factors": [],
+      "explanation": "CRITICAL breach vulnerability (89.9% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.873)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00037",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0142,
+      "hold_probability": 0.9858,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 85,
+      "priority_percentile": 16.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.967)",
+        "Surface Elevation (elevation=275.2)",
+        "Terrain Slope Angle (slope=25.3)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.05)",
+        "Proximity to Active Flame Front (distance_to_fire=4525.8)"
+      ],
+      "explanation": "LOW breach risk (1.4% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.967), Surface Elevation (elevation=275.2). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.05), Proximity to Active Flame Front (distance_to_fire=4525.8)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00038",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.7745,
+      "hold_probability": 0.2255,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 19,
+      "priority_percentile": 82.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.959)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.805)",
+        "Terrain Slope Angle (slope=28.7)"
+      ],
+      "protective_factors": [],
+      "explanation": "HIGH breach risk (77.4% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.959), Predicted Next-Day Spread Probability Intensity (burn_prob=0.805)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00039",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.9801,
+      "hold_probability": 0.0199,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 1,
+      "priority_percentile": 100.0,
+      "priority_recommended": true,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=47.6)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=1.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.954)"
+      ],
+      "protective_factors": [
+        "Acute Fire Attack Angle (attack_angle=0.8)"
+      ],
+      "explanation": "CRITICAL breach vulnerability (98.0% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=47.6), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=1.0). Holding probability is supported by: Acute Fire Attack Angle (attack_angle=0.8)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00040",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.4608,
+      "hold_probability": 0.5392,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 35,
+      "priority_percentile": 66.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=32.8)",
+        "Proximity to Active Flame Front (distance_to_fire=544.9)",
+        "Surface Elevation (elevation=147.3)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.497)"
+      ],
+      "explanation": "MEDIUM breach risk (46.1% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=32.8), Proximity to Active Flame Front (distance_to_fire=544.9). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.497)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00041",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.201,
+      "hold_probability": 0.799,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 55,
+      "priority_percentile": 46.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Surface Elevation (elevation=167.7)"
+      ],
+      "protective_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=1548.0)",
+        "Terrain Slope Angle (slope=14.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.266)"
+      ],
+      "explanation": "LOW breach risk (20.1% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Surface Elevation (elevation=167.7). Holding probability is supported by: Proximity to Active Flame Front (distance_to_fire=1548.0), Terrain Slope Angle (slope=14.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00042",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0128,
+      "hold_probability": 0.9872,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 88,
+      "priority_percentile": 13.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=32.0)",
+        "Surface Elevation (elevation=555.9)",
+        "Acute Fire Attack Angle (attack_angle=87.6)"
+      ],
+      "protective_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=1839.5)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.267)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.041)"
+      ],
+      "explanation": "LOW breach risk (1.3% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=32.0), Surface Elevation (elevation=555.9). Holding probability is supported by: Proximity to Active Flame Front (distance_to_fire=1839.5), Predicted Next-Day Spread Probability Intensity (burn_prob=0.267)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00043",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.8044,
+      "hold_probability": 0.1956,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 16,
+      "priority_percentile": 85.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.985)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.897)",
+        "Proximity to Active Flame Front (distance_to_fire=197.1)"
+      ],
+      "protective_factors": [
+        "Acute Fire Attack Angle (attack_angle=9.9)",
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "CRITICAL breach vulnerability (80.4% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.985), Predicted Next-Day Spread Probability Intensity (burn_prob=0.897). Holding probability is supported by: Acute Fire Attack Angle (attack_angle=9.9), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00044",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0037,
+      "hold_probability": 0.9963,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 91,
+      "priority_percentile": 10.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=27.6)",
+        "Surface Elevation (elevation=382.9)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.296)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.045)",
+        "Proximity to Active Flame Front (distance_to_fire=3292.0)"
+      ],
+      "explanation": "LOW breach risk (0.4% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=27.6), Surface Elevation (elevation=382.9). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.296), Predicted Next-Day Spread Probability Intensity (burn_prob=0.045)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00045",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0158,
+      "hold_probability": 0.9842,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 84,
+      "priority_percentile": 17.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.963)",
+        "Surface Elevation (elevation=383.1)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=13.3)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.02)",
+        "Proximity to Active Flame Front (distance_to_fire=5000.0)"
+      ],
+      "explanation": "LOW breach risk (1.6% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.963). Holding probability is supported by: Terrain Slope Angle (slope=13.3), Predicted Next-Day Spread Probability Intensity (burn_prob=0.02)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00046",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.914,
+      "hold_probability": 0.086,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 6,
+      "priority_percentile": 95.0,
+      "priority_recommended": true,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Terrain Slope Angle (slope=43.4)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.799)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.429)"
+      ],
+      "explanation": "CRITICAL breach vulnerability (91.4% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Terrain Slope Angle (slope=43.4). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.429)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00047",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0421,
+      "hold_probability": 0.9579,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 72,
+      "priority_percentile": 29.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=42.3)",
+        "Surface Elevation (elevation=504.7)",
+        "Acute Fire Attack Angle (attack_angle=80.5)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.337)",
+        "Proximity to Active Flame Front (distance_to_fire=2112.2)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.165)"
+      ],
+      "explanation": "LOW breach risk (4.2% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=42.3), Surface Elevation (elevation=504.7). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.337), Proximity to Active Flame Front (distance_to_fire=2112.2)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00048",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1271,
+      "hold_probability": 0.8729,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 61,
+      "priority_percentile": 40.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.975)",
+        "Surface Elevation (elevation=615.4)"
+      ],
+      "protective_factors": [
+        "Acute Fire Attack Angle (attack_angle=12.8)",
+        "Terrain Slope Angle (slope=16.3)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.107)"
+      ],
+      "explanation": "LOW breach risk (12.7% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.975). Holding probability is supported by: Acute Fire Attack Angle (attack_angle=12.8), Terrain Slope Angle (slope=16.3)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00049",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.5501,
+      "hold_probability": 0.4499,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 31,
+      "priority_percentile": 70.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=212.7)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.843)",
+        "Terrain Slope Angle (slope=28.9)"
+      ],
+      "protective_factors": [
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "MEDIUM breach risk (55.0% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=212.7), Predicted Next-Day Spread Probability Intensity (burn_prob=0.843). Holding probability is supported by: Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00050",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.8884,
+      "hold_probability": 0.1116,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 11,
+      "priority_percentile": 90.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.993)",
+        "Terrain Slope Angle (slope=39.7)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.772)"
+      ],
+      "protective_factors": [
+        "Acute Fire Attack Angle (attack_angle=6.6)"
+      ],
+      "explanation": "CRITICAL breach vulnerability (88.8% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.993), Terrain Slope Angle (slope=39.7). Holding probability is supported by: Acute Fire Attack Angle (attack_angle=6.6)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00051",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.3187,
+      "hold_probability": 0.6813,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 45,
+      "priority_percentile": 56.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.987)",
+        "Surface Elevation (elevation=295.0)"
+      ],
+      "protective_factors": [
+        "Acute Fire Attack Angle (attack_angle=9.3)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.457)",
+        "Terrain Slope Angle (slope=15.6)"
+      ],
+      "explanation": "MEDIUM breach risk (31.9% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.987), Surface Elevation (elevation=295.0). Holding probability is supported by: Acute Fire Attack Angle (attack_angle=9.3), Predicted Next-Day Spread Probability Intensity (burn_prob=0.457)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00052",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.9286,
+      "hold_probability": 0.0714,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 4,
+      "priority_percentile": 97.0,
+      "priority_recommended": true,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.827)",
+        "Terrain Slope Angle (slope=33.7)"
+      ],
+      "protective_factors": [],
+      "explanation": "CRITICAL breach vulnerability (92.9% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Predicted Next-Day Spread Probability Intensity (burn_prob=0.827)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00053",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.2713,
+      "hold_probability": 0.7287,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 51,
+      "priority_percentile": 50.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=31.8)",
+        "Proximity to Active Flame Front (distance_to_fire=954.7)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.641)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.392)"
+      ],
+      "explanation": "LOW breach risk (27.1% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=31.8), Proximity to Active Flame Front (distance_to_fire=954.7). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.392)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00054",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0033,
+      "hold_probability": 0.9967,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 92,
+      "priority_percentile": 9.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=716.1)",
+        "Terrain Slope Angle (slope=24.7)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.549)",
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.047)"
+      ],
+      "explanation": "LOW breach risk (0.3% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=716.1), Terrain Slope Angle (slope=24.7). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.549), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00055",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0208,
+      "hold_probability": 0.9792,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 81,
+      "priority_percentile": 20.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=262.2)",
+        "Proximity to Active Flame Front (distance_to_fire=1087.4)",
+        "Acute Fire Attack Angle (attack_angle=86.1)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.323)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.068)"
+      ],
+      "explanation": "LOW breach risk (2.1% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=262.2), Proximity to Active Flame Front (distance_to_fire=1087.4). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.323), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.068)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00056",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.8899,
+      "hold_probability": 0.1101,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 10,
+      "priority_percentile": 91.0,
+      "priority_recommended": true,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.758)",
+        "Proximity to Active Flame Front (distance_to_fire=656.8)"
+      ],
+      "protective_factors": [],
+      "explanation": "CRITICAL breach vulnerability (89.0% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Predicted Next-Day Spread Probability Intensity (burn_prob=0.758)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00057",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1073,
+      "hold_probability": 0.8927,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 64,
+      "priority_percentile": 37.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=354.9)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.717)",
+        "Surface Elevation (elevation=347.5)"
+      ],
+      "protective_factors": [
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.217)"
+      ],
+      "explanation": "LOW breach risk (10.7% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=354.9), Predicted Next-Day Spread Probability Intensity (burn_prob=0.717). Holding probability is supported by: Cleared Barrier Width (barrier_width_m=9.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.217)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00058",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0005,
+      "hold_probability": 0.9995,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 99,
+      "priority_percentile": 2.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=37.2)",
+        "Surface Elevation (elevation=253.9)"
+      ],
+      "protective_factors": [
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.242)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.009)"
+      ],
+      "explanation": "LOW breach risk (0.1% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=37.2), Surface Elevation (elevation=253.9). Holding probability is supported by: Cleared Barrier Width (barrier_width_m=9.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.242)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00059",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0049,
+      "hold_probability": 0.9951,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 90,
+      "priority_percentile": 11.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=176.8)",
+        "Surface Elevation (elevation=377.8)",
+        "Acute Fire Attack Angle (attack_angle=86.9)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.342)",
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Terrain Slope Angle (slope=5.4)"
+      ],
+      "explanation": "LOW breach risk (0.5% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=176.8), Surface Elevation (elevation=377.8). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.342), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00060",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0952,
+      "hold_probability": 0.9048,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 67,
+      "priority_percentile": 34.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=431.9)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.489)",
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "LOW breach risk (9.5% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=431.9). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.489), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00061",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0406,
+      "hold_probability": 0.9594,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 74,
+      "priority_percentile": 27.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=407.4)",
+        "Proximity to Active Flame Front (distance_to_fire=1202.2)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.425)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.447)",
+        "Terrain Slope Angle (slope=11.3)"
+      ],
+      "explanation": "LOW breach risk (4.1% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=407.4), Proximity to Active Flame Front (distance_to_fire=1202.2). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.425), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.447)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00062",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.9017,
+      "hold_probability": 0.0983,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 8,
+      "priority_percentile": 93.0,
+      "priority_recommended": true,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=38.2)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.862)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.856)"
+      ],
+      "protective_factors": [],
+      "explanation": "CRITICAL breach vulnerability (90.2% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=38.2), Predicted Next-Day Spread Probability Intensity (burn_prob=0.862)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00063",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1984,
+      "hold_probability": 0.8016,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 56,
+      "priority_percentile": 45.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.851)",
+        "Surface Elevation (elevation=407.7)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.604)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=19.3)",
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "LOW breach risk (19.8% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.851), Surface Elevation (elevation=407.7). Holding probability is supported by: Terrain Slope Angle (slope=19.3), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00064",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.3011,
+      "hold_probability": 0.6989,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 47,
+      "priority_percentile": 54.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.876)",
+        "Proximity to Active Flame Front (distance_to_fire=402.4)",
+        "Surface Elevation (elevation=489.1)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.603)",
+        "Terrain Slope Angle (slope=17.8)",
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "MEDIUM breach risk (30.1% predicted risk). Elevated predicted risk is associated with: Predicted Next-Day Spread Probability Intensity (burn_prob=0.876), Proximity to Active Flame Front (distance_to_fire=402.4). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.603), Terrain Slope Angle (slope=17.8)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00065",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0009,
+      "hold_probability": 0.9991,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 98,
+      "priority_percentile": 3.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=371.8)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=15.3)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.444)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.033)"
+      ],
+      "explanation": "LOW breach risk (0.1% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=371.8). Holding probability is supported by: Terrain Slope Angle (slope=15.3), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.444)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00066",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0186,
+      "hold_probability": 0.9814,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 83,
+      "priority_percentile": 18.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=28.3)",
+        "Surface Elevation (elevation=351.5)",
+        "Acute Fire Attack Angle (attack_angle=78.5)"
+      ],
+      "protective_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=1599.7)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.192)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.199)"
+      ],
+      "explanation": "LOW breach risk (1.9% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=28.3), Surface Elevation (elevation=351.5). Holding probability is supported by: Proximity to Active Flame Front (distance_to_fire=1599.7), Predicted Next-Day Spread Probability Intensity (burn_prob=0.192)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00067",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.3797,
+      "hold_probability": 0.6203,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 40,
+      "priority_percentile": 61.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Terrain Slope Angle (slope=27.8)",
+        "Surface Elevation (elevation=294.6)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.589)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.407)",
+        "Proximity to Active Flame Front (distance_to_fire=1860.8)"
+      ],
+      "explanation": "MEDIUM breach risk (38.0% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Terrain Slope Angle (slope=27.8). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.589), Predicted Next-Day Spread Probability Intensity (burn_prob=0.407)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00068",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1061,
+      "hold_probability": 0.8939,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 65,
+      "priority_percentile": 36.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=183.5)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.589)"
+      ],
+      "protective_factors": [
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "LOW breach risk (10.6% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=183.5), Predicted Next-Day Spread Probability Intensity (burn_prob=0.589). Holding probability is supported by: Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00069",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.7824,
+      "hold_probability": 0.2176,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 18,
+      "priority_percentile": 83.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.999)",
+        "Proximity to Active Flame Front (distance_to_fire=487.5)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.692)"
+      ],
+      "protective_factors": [
+        "Acute Fire Attack Angle (attack_angle=2.6)"
+      ],
+      "explanation": "HIGH breach risk (78.2% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.999), Proximity to Active Flame Front (distance_to_fire=487.5). Holding probability is supported by: Acute Fire Attack Angle (attack_angle=2.6)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00070",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.5308,
+      "hold_probability": 0.4692,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 32,
+      "priority_percentile": 69.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Proximity to Active Flame Front (distance_to_fire=359.5)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.79)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.165)"
+      ],
+      "explanation": "MEDIUM breach risk (53.1% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Proximity to Active Flame Front (distance_to_fire=359.5). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.165)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00071",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.7107,
+      "hold_probability": 0.2893,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 24,
+      "priority_percentile": 77.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=44.8)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.667)",
+        "Surface Elevation (elevation=148.2)"
+      ],
+      "protective_factors": [],
+      "explanation": "HIGH breach risk (71.1% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=44.8), Predicted Next-Day Spread Probability Intensity (burn_prob=0.667)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00072",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0033,
+      "hold_probability": 0.9967,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 93,
+      "priority_percentile": 8.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.995)",
+        "Surface Elevation (elevation=348.5)"
+      ],
+      "protective_factors": [
+        "Acute Fire Attack Angle (attack_angle=5.7)",
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.018)"
+      ],
+      "explanation": "LOW breach risk (0.3% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.995), Surface Elevation (elevation=348.5). Holding probability is supported by: Acute Fire Attack Angle (attack_angle=5.7), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00073",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0484,
+      "hold_probability": 0.9516,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 71,
+      "priority_percentile": 30.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Surface Elevation (elevation=330.2)",
+        "Proximity to Active Flame Front (distance_to_fire=1144.6)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=14.6)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.221)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.185)"
+      ],
+      "explanation": "LOW breach risk (4.8% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Surface Elevation (elevation=330.2). Holding probability is supported by: Terrain Slope Angle (slope=14.6), Predicted Next-Day Spread Probability Intensity (burn_prob=0.221)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00074",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0366,
+      "hold_probability": 0.9634,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 77,
+      "priority_percentile": 24.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=50.0)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=19.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.405)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.306)"
+      ],
+      "explanation": "LOW breach risk (3.7% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=50.0). Holding probability is supported by: Terrain Slope Angle (slope=19.0), Predicted Next-Day Spread Probability Intensity (burn_prob=0.405)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00075",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0021,
+      "hold_probability": 0.9979,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 96,
+      "priority_percentile": 5.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=600.7)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=12.4)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.351)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.086)"
+      ],
+      "explanation": "LOW breach risk (0.2% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=600.7). Holding probability is supported by: Terrain Slope Angle (slope=12.4), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.351)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00076",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.2211,
+      "hold_probability": 0.7789,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 54,
+      "priority_percentile": 47.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=37.2)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.655)",
+        "Proximity to Active Flame Front (distance_to_fire=990.4)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.226)"
+      ],
+      "explanation": "LOW breach risk (22.1% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=37.2), Predicted Next-Day Spread Probability Intensity (burn_prob=0.655). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.226)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00077",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0078,
+      "hold_probability": 0.9922,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 89,
+      "priority_percentile": 12.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.823)",
+        "Terrain Slope Angle (slope=32.1)",
+        "Surface Elevation (elevation=535.1)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.026)",
+        "Proximity to Active Flame Front (distance_to_fire=5000.0)"
+      ],
+      "explanation": "LOW breach risk (0.8% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.823), Terrain Slope Angle (slope=32.1). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.026), Proximity to Active Flame Front (distance_to_fire=5000.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00078",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0394,
+      "hold_probability": 0.9606,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 75,
+      "priority_percentile": 26.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.815)",
+        "Surface Elevation (elevation=555.9)",
+        "Terrain Slope Angle (slope=24.3)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.385)",
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Proximity to Active Flame Front (distance_to_fire=2745.7)"
+      ],
+      "explanation": "LOW breach risk (3.9% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.815), Surface Elevation (elevation=555.9). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.385), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00079",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.9403,
+      "hold_probability": 0.0597,
+      "risk_tier": "CRITICAL",
+      "vulnerability_rank": 3,
+      "priority_percentile": 98.0,
+      "priority_recommended": true,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.993)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.85)"
+      ],
+      "protective_factors": [
+        "Acute Fire Attack Angle (attack_angle=7.0)",
+        "Terrain Slope Angle (slope=16.8)"
+      ],
+      "explanation": "CRITICAL breach vulnerability (94.0% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.993). Holding probability is supported by: Acute Fire Attack Angle (attack_angle=7.0), Terrain Slope Angle (slope=16.8)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00080",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.7191,
+      "hold_probability": 0.2809,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 22,
+      "priority_percentile": 79.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=237.4)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.829)",
+        "Terrain Slope Angle (slope=26.6)"
+      ],
+      "protective_factors": [],
+      "explanation": "HIGH breach risk (71.9% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=237.4), Predicted Next-Day Spread Probability Intensity (burn_prob=0.829)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00081",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.5143,
+      "hold_probability": 0.4857,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 33,
+      "priority_percentile": 68.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=36.9)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.722)",
+        "Proximity to Active Flame Front (distance_to_fire=926.7)"
+      ],
+      "protective_factors": [
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "MEDIUM breach risk (51.4% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=36.9), Predicted Next-Day Spread Probability Intensity (burn_prob=0.722). Holding probability is supported by: Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00082",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.2824,
+      "hold_probability": 0.7176,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 50,
+      "priority_percentile": 51.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=35.8)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.728)",
+        "Surface Elevation (elevation=420.7)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.36)"
+      ],
+      "explanation": "LOW breach risk (28.2% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=35.8), Predicted Next-Day Spread Probability Intensity (burn_prob=0.728). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.36)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00083",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1773,
+      "hold_probability": 0.8227,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 57,
+      "priority_percentile": 44.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.727)",
+        "Surface Elevation (elevation=218.2)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.307)",
+        "Proximity to Active Flame Front (distance_to_fire=2858.4)"
+      ],
+      "explanation": "LOW breach risk (17.7% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.727). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.307), Proximity to Active Flame Front (distance_to_fire=2858.4)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00084",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.3328,
+      "hold_probability": 0.6672,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 42,
+      "priority_percentile": 59.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=369.4)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.722)",
+        "Terrain Slope Angle (slope=29.9)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.286)"
+      ],
+      "explanation": "MEDIUM breach risk (33.3% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=369.4), Predicted Next-Day Spread Probability Intensity (burn_prob=0.722). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.286)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00085",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1744,
+      "hold_probability": 0.8256,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 58,
+      "priority_percentile": 43.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=412.4)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.747)",
+        "Surface Elevation (elevation=89.2)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.446)",
+        "Terrain Slope Angle (slope=8.4)"
+      ],
+      "explanation": "LOW breach risk (17.4% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=412.4), Predicted Next-Day Spread Probability Intensity (burn_prob=0.747). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.446), Terrain Slope Angle (slope=8.4)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00086",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.381,
+      "hold_probability": 0.619,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 39,
+      "priority_percentile": 62.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=189.1)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.796)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.76)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=15.4)",
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "MEDIUM breach risk (38.1% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=189.1), Predicted Next-Day Spread Probability Intensity (burn_prob=0.796). Holding probability is supported by: Terrain Slope Angle (slope=15.4), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00087",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1361,
+      "hold_probability": 0.8639,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 60,
+      "priority_percentile": 41.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=865.3)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.645)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.722)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=13.7)",
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "LOW breach risk (13.6% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=865.3), Predicted Next-Day Spread Probability Intensity (burn_prob=0.645). Holding probability is supported by: Terrain Slope Angle (slope=13.7), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00088",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0003,
+      "hold_probability": 0.9997,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 100,
+      "priority_percentile": 1.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=450.4)",
+        "Acute Fire Attack Angle (attack_angle=88.8)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=16.3)",
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Proximity to Active Flame Front (distance_to_fire=2949.1)"
+      ],
+      "explanation": "LOW breach risk (0.0% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=450.4), Acute Fire Attack Angle (attack_angle=88.8). Holding probability is supported by: Terrain Slope Angle (slope=16.3), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00089",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.2979,
+      "hold_probability": 0.7021,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 48,
+      "priority_percentile": 53.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.694)",
+        "Proximity to Active Flame Front (distance_to_fire=896.6)",
+        "Surface Elevation (elevation=239.5)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=15.7)"
+      ],
+      "explanation": "LOW breach risk (29.8% predicted risk). Elevated predicted risk is associated with: Predicted Next-Day Spread Probability Intensity (burn_prob=0.694), Proximity to Active Flame Front (distance_to_fire=896.6). Holding probability is supported by: Terrain Slope Angle (slope=15.7)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00090",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.6221,
+      "hold_probability": 0.3779,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 29,
+      "priority_percentile": 72.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=39.8)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.79)",
+        "Surface Elevation (elevation=285.0)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.512)"
+      ],
+      "explanation": "HIGH breach risk (62.2% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=39.8), Predicted Next-Day Spread Probability Intensity (burn_prob=0.79). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.512)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00091",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0408,
+      "hold_probability": 0.9592,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 73,
+      "priority_percentile": 28.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=29.4)",
+        "Surface Elevation (elevation=386.3)",
+        "Proximity to Active Flame Front (distance_to_fire=1072.5)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.386)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.112)"
+      ],
+      "explanation": "LOW breach risk (4.1% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=29.4), Surface Elevation (elevation=386.3). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.386), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.112)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00092",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0686,
+      "hold_probability": 0.9314,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 70,
+      "priority_percentile": 31.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.901)",
+        "Surface Elevation (elevation=233.6)"
+      ],
+      "protective_factors": [
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.201)",
+        "Proximity to Active Flame Front (distance_to_fire=2836.9)"
+      ],
+      "explanation": "LOW breach risk (6.9% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.901), Surface Elevation (elevation=233.6). Holding probability is supported by: Predicted Next-Day Spread Probability Intensity (burn_prob=0.201), Proximity to Active Flame Front (distance_to_fire=2836.9)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00093",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0278,
+      "hold_probability": 0.9722,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 79,
+      "priority_percentile": 22.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.931)",
+        "Surface Elevation (elevation=267.3)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=20.8)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.063)",
+        "Proximity to Active Flame Front (distance_to_fire=3275.3)"
+      ],
+      "explanation": "LOW breach risk (2.8% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.931), Surface Elevation (elevation=267.3). Holding probability is supported by: Terrain Slope Angle (slope=20.8), Predicted Next-Day Spread Probability Intensity (burn_prob=0.063)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00094",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.4144,
+      "hold_probability": 0.5856,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 37,
+      "priority_percentile": 64.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=246.3)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.71)",
+        "Surface Elevation (elevation=521.2)"
+      ],
+      "protective_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.494)"
+      ],
+      "explanation": "MEDIUM breach risk (41.4% predicted risk). Elevated predicted risk is associated with: Proximity to Active Flame Front (distance_to_fire=246.3), Predicted Next-Day Spread Probability Intensity (burn_prob=0.71). Holding probability is supported by: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.494)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00095",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.6882,
+      "hold_probability": 0.3118,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 25,
+      "priority_percentile": 76.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.942)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.691)",
+        "Terrain Slope Angle (slope=27.3)"
+      ],
+      "protective_factors": [],
+      "explanation": "HIGH breach risk (68.8% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.942), Predicted Next-Day Spread Probability Intensity (burn_prob=0.691)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00096",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.0029,
+      "hold_probability": 0.9971,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 94,
+      "priority_percentile": 7.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Surface Elevation (elevation=464.0)"
+      ],
+      "protective_factors": [
+        "Terrain Slope Angle (slope=17.8)",
+        "Cleared Barrier Width (barrier_width_m=9.0)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.076)"
+      ],
+      "explanation": "LOW breach risk (0.3% predicted risk). Elevated predicted risk is associated with: Surface Elevation (elevation=464.0). Holding probability is supported by: Terrain Slope Angle (slope=17.8), Cleared Barrier Width (barrier_width_m=9.0)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00097",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.1203,
+      "hold_probability": 0.8797,
+      "risk_tier": "LOW",
+      "vulnerability_rank": 62,
+      "priority_percentile": 39.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Cleared Barrier Width (barrier_width_m=2.0)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.953)",
+        "Surface Elevation (elevation=220.6)"
+      ],
+      "protective_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=2528.3)",
+        "Terrain Slope Angle (slope=7.4)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.144)"
+      ],
+      "explanation": "LOW breach risk (12.0% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.953). Holding probability is supported by: Proximity to Active Flame Front (distance_to_fire=2528.3), Terrain Slope Angle (slope=7.4)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00098",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.6042,
+      "hold_probability": 0.3958,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 30,
+      "priority_percentile": 71.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=34.8)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.661)",
+        "Proximity to Active Flame Front (distance_to_fire=997.3)"
+      ],
+      "protective_factors": [],
+      "explanation": "HIGH breach risk (60.4% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=34.8), Predicted Next-Day Spread Probability Intensity (burn_prob=0.661)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00099",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.786,
+      "hold_probability": 0.214,
+      "risk_tier": "HIGH",
+      "vulnerability_rank": 17,
+      "priority_percentile": 84.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Terrain Slope Angle (slope=43.6)",
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.945)",
+        "Predicted Next-Day Spread Probability Intensity (burn_prob=0.74)"
+      ],
+      "protective_factors": [
+        "Proximity to Active Flame Front (distance_to_fire=1935.3)"
+      ],
+      "explanation": "HIGH breach risk (78.6% predicted risk). Elevated predicted risk is associated with: Terrain Slope Angle (slope=43.6), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.945). Holding probability is supported by: Proximity to Active Flame Front (distance_to_fire=1935.3)."
+    },
+    {
+      "segment_id": "CA-CZU-005205_seg_00100",
+      "fire_id": "CA-CZU-005205",
+      "fire_name": "CZU Lightning Complex",
+      "date": "2020-08-20",
+      "breach_probability": 0.3961,
+      "hold_probability": 0.6039,
+      "risk_tier": "MEDIUM",
+      "vulnerability_rank": 38,
+      "priority_percentile": 63.0,
+      "priority_recommended": false,
+      "top_risk_factors": [
+        "Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.982)",
+        "Terrain Slope Angle (slope=36.4)",
+        "Surface Elevation (elevation=128.3)"
+      ],
+      "protective_factors": [
+        "Acute Fire Attack Angle (attack_angle=10.8)",
+        "Proximity to Active Flame Front (distance_to_fire=2166.9)",
+        "Cleared Barrier Width (barrier_width_m=9.0)"
+      ],
+      "explanation": "MEDIUM breach risk (39.6% predicted risk). Elevated predicted risk is associated with: Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.982), Terrain Slope Angle (slope=36.4). Holding probability is supported by: Acute Fire Attack Angle (attack_angle=10.8), Proximity to Active Flame Front (distance_to_fire=2166.9)."
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+fire_id,fire_name,segment_id,date,split,slope,elevation,distance_to_fire,burn_prob,prob_gradient,spread_direction,line_angle,attack_angle,attack_dot_product,dist_pred_boundary,line_type,barrier_width_m,fuel_model_group,label,outcome_str
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00001,2020-08-20,test,40.6,442.0,385.0,0.762,0.275,236.1,53.9,87.9,0.037,-986.6,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00002,2020-08-20,test,22.6,322.3,1183.1,0.712,0.188,193.5,68.3,35.2,0.817,-98.1,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00003,2020-08-20,test,27.7,284.0,5000.0,0.014,0.024,185.5,44.5,51.0,0.629,4975.2,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00004,2020-08-20,test,21.6,327.0,338.1,0.585,0.331,223.7,14.8,61.1,0.484,-714.3,Completed Hand Line,2.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00005,2020-08-20,test,18.1,269.8,830.3,0.653,0.311,199.8,77.8,32.0,0.848,-345.2,Completed Hand Line,2.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00006,2020-08-20,test,35.1,422.1,1502.2,0.613,0.228,222.3,158.5,26.1,0.898,398.8,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00007,2020-08-20,test,25.1,261.2,1956.0,0.435,0.397,224.1,99.0,35.1,0.818,1173.4,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00008,2020-08-20,test,37.4,542.4,1178.1,0.613,0.275,217.9,179.2,51.3,0.626,73.8,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00009,2020-08-20,test,30.3,207.4,2525.9,0.122,0.168,200.4,26.2,84.1,0.102,2307.0,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00010,2020-08-20,test,19.5,593.8,951.9,0.598,0.404,234.4,137.2,7.2,0.992,-124.4,Road as Line,9.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00011,2020-08-20,test,26.9,455.4,837.7,0.807,0.165,221.7,94.8,36.9,0.8,-615.0,Completed Hand Line,2.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00012,2020-08-20,test,24.6,405.3,2616.7,0.115,0.17,215.8,68.3,57.5,0.538,2409.1,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00013,2020-08-20,test,19.4,379.7,448.8,0.675,0.179,206.8,57.0,59.7,0.504,-766.4,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00014,2020-08-20,test,25.1,317.0,1235.1,0.426,0.364,215.1,12.4,67.3,0.385,468.7,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00015,2020-08-20,test,33.2,266.8,1312.1,0.609,0.198,213.3,17.9,74.7,0.265,216.0,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00016,2020-08-20,test,21.9,361.7,618.6,0.64,0.378,203.5,20.5,86.9,0.053,-534.2,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00017,2020-08-20,test,25.1,420.3,231.4,0.816,0.205,198.6,125.5,17.0,0.957,-1238.1,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00018,2020-08-20,test,18.6,620.4,158.2,0.798,0.242,239.3,179.8,30.5,0.862,-1277.7,Completed Hand Line,2.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00019,2020-08-20,test,42.4,441.0,1354.9,0.665,0.373,246.9,86.6,70.3,0.337,157.5,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00020,2020-08-20,test,29.1,418.5,4814.4,0.022,0.035,201.3,148.9,37.6,0.792,4775.7,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00021,2020-08-20,test,22.9,524.3,726.1,0.709,0.253,206.2,37.6,78.6,0.198,-550.2,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00022,2020-08-20,test,2.5,614.5,651.2,0.286,0.333,203.3,48.8,64.6,0.429,136.4,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00023,2020-08-20,test,27.4,621.3,646.7,0.81,0.16,225.1,172.2,37.1,0.797,-811.2,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00024,2020-08-20,test,9.8,144.1,2160.1,0.159,0.127,178.6,173.2,84.5,0.095,1874.0,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00025,2020-08-20,test,16.3,347.2,1845.6,0.391,0.29,237.3,166.8,19.5,0.943,1141.0,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00026,2020-08-20,test,17.9,485.3,666.8,0.532,0.276,216.4,57.0,69.3,0.353,-291.6,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00027,2020-08-20,test,13.7,527.6,793.4,0.756,0.238,234.9,124.6,20.3,0.938,-567.5,Completed Hand Line,2.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00028,2020-08-20,test,38.6,510.8,297.7,0.802,0.143,175.3,19.7,65.6,0.413,-1145.7,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00029,2020-08-20,test,29.4,526.4,631.1,0.818,0.144,215.0,141.4,16.5,0.959,-842.1,Road as Line,9.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00030,2020-08-20,test,26.7,360.1,560.5,0.56,0.266,245.6,48.7,73.2,0.289,-448.4,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00031,2020-08-20,test,32.0,467.4,172.8,0.84,0.222,179.9,142.4,52.5,0.609,-1338.5,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00032,2020-08-20,test,11.2,280.2,2714.3,0.098,0.125,197.1,176.3,69.2,0.355,2538.1,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00033,2020-08-20,test,30.2,587.9,298.5,0.933,0.05,235.6,119.8,25.9,0.9,-1380.8,Completed Hand Line,2.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00034,2020-08-20,test,21.5,356.0,2933.4,0.228,0.224,213.5,96.3,27.3,0.889,2523.3,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00035,2020-08-20,test,14.3,412.0,1529.3,0.519,0.314,206.1,132.7,16.6,0.958,595.7,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00036,2020-08-20,test,25.7,327.8,883.1,0.694,0.327,210.5,149.7,29.2,0.873,-366.9,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00037,2020-08-20,test,25.3,275.2,4525.8,0.05,0.064,196.1,91.2,14.8,0.967,4435.0,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00038,2020-08-20,test,28.7,231.9,1261.9,0.805,0.213,230.2,123.9,16.4,0.959,-186.7,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00039,2020-08-20,test,47.6,475.2,346.5,0.954,0.043,195.8,106.5,0.8,1.0,-1369.8,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00040,2020-08-20,test,32.8,147.3,544.9,0.615,0.35,193.9,164.1,60.2,0.497,-561.4,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00041,2020-08-20,test,14.0,167.7,1548.0,0.266,0.272,186.1,145.5,49.4,0.651,1068.7,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00042,2020-08-20,test,32.0,555.9,1839.5,0.267,0.199,212.1,29.7,87.6,0.041,1359.6,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00043,2020-08-20,test,26.2,507.9,197.1,0.897,0.133,228.4,148.3,9.9,0.985,-1418.1,Road as Line,9.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00044,2020-08-20,test,27.6,382.9,3292.0,0.045,0.061,179.5,162.3,72.8,0.296,3211.2,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00045,2020-08-20,test,13.3,383.1,5000.0,0.02,0.022,180.0,74.4,15.6,0.963,4964.6,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00046,2020-08-20,test,43.4,69.5,685.1,0.799,0.207,229.3,23.9,64.6,0.429,-753.1,Completed Hand Line,2.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00047,2020-08-20,test,42.3,504.7,2112.2,0.337,0.265,254.2,64.7,80.5,0.165,1506.1,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00048,2020-08-20,test,16.3,615.4,2987.5,0.107,0.086,225.2,148.0,12.8,0.975,2794.9,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00049,2020-08-20,test,28.9,363.7,212.7,0.843,0.178,229.9,10.1,50.2,0.64,-1304.1,Road as Line,9.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00050,2020-08-20,test,39.7,392.7,1144.9,0.772,0.19,242.3,145.6,6.6,0.993,-244.4,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00051,2020-08-20,test,15.6,295.0,1277.5,0.457,0.419,226.9,127.6,9.3,0.987,455.5,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00052,2020-08-20,test,33.7,384.3,551.9,0.827,0.122,183.1,143.4,50.3,0.638,-935.9,Completed Hand Line,2.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00053,2020-08-20,test,31.8,385.1,954.7,0.641,0.379,205.7,2.7,67.0,0.392,-199.3,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00054,2020-08-20,test,24.7,716.1,3198.0,0.047,0.041,221.9,8.6,56.7,0.549,3113.5,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00055,2020-08-20,test,24.5,262.2,1087.4,0.323,0.214,213.9,37.8,86.1,0.068,505.3,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00056,2020-08-20,test,23.8,134.9,656.8,0.758,0.274,210.5,80.0,40.5,0.76,-707.7,Completed Hand Line,2.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00057,2020-08-20,test,26.5,347.5,354.9,0.717,0.251,201.4,33.9,77.5,0.217,-935.3,Road as Line,9.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00058,2020-08-20,test,37.2,253.9,5000.0,0.009,0.016,188.0,22.0,76.0,0.242,4982.9,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00059,2020-08-20,test,5.4,377.8,176.8,0.342,0.291,201.4,18.3,86.9,0.054,-438.0,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00060,2020-08-20,test,23.5,431.9,1260.7,0.489,0.393,217.3,77.0,50.3,0.639,381.2,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00061,2020-08-20,test,11.3,407.4,1202.2,0.425,0.4,187.3,160.8,63.5,0.447,436.6,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00062,2020-08-20,test,38.2,193.5,714.9,0.862,0.144,229.6,108.5,31.1,0.856,-836.3,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00063,2020-08-20,test,19.3,407.7,1279.1,0.604,0.346,207.5,85.9,31.6,0.851,192.7,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00064,2020-08-20,test,17.8,489.1,402.4,0.876,0.125,194.6,51.7,52.9,0.603,-1174.9,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00065,2020-08-20,test,15.3,371.8,4574.3,0.033,0.043,200.8,174.4,63.7,0.444,4514.7,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00066,2020-08-20,test,28.3,351.5,1599.7,0.192,0.141,221.4,52.8,78.5,0.199,1254.7,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00067,2020-08-20,test,27.8,294.6,1860.8,0.407,0.231,211.7,175.6,53.9,0.589,1128.3,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00068,2020-08-20,test,22.4,183.5,1449.6,0.589,0.272,184.1,43.1,51.0,0.629,390.1,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00069,2020-08-20,test,24.1,395.0,487.5,0.692,0.368,232.7,140.1,2.6,0.999,-758.4,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00070,2020-08-20,test,24.0,299.4,359.5,0.79,0.233,197.2,7.7,80.5,0.165,-1062.4,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00071,2020-08-20,test,44.8,148.2,1055.8,0.667,0.395,229.1,87.4,51.7,0.62,-144.7,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00072,2020-08-20,test,23.0,348.5,5000.0,0.018,0.024,193.9,109.6,5.7,0.995,4966.7,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00073,2020-08-20,test,14.6,330.2,1144.6,0.221,0.251,188.1,18.8,79.4,0.185,746.5,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00074,2020-08-20,test,19.0,50.0,1406.1,0.405,0.421,229.1,31.3,72.2,0.306,677.3,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00075,2020-08-20,test,12.4,600.7,3014.1,0.086,0.101,250.2,90.8,69.4,0.351,2859.3,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00076,2020-08-20,test,37.2,478.6,990.4,0.655,0.198,234.9,67.9,76.9,0.226,-189.3,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00077,2020-08-20,test,32.1,535.1,5000.0,0.026,0.021,196.9,141.5,34.6,0.823,4953.4,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00078,2020-08-20,test,24.3,555.9,2745.7,0.385,0.423,207.7,153.0,35.4,0.815,2053.1,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00079,2020-08-20,test,16.8,661.4,406.4,0.85,0.171,179.1,96.1,7.0,0.993,-1123.5,Completed Hand Line,2.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00080,2020-08-20,test,26.6,412.4,237.4,0.829,0.174,240.5,18.0,47.5,0.676,-1254.1,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00081,2020-08-20,test,36.9,294.6,926.7,0.722,0.165,204.3,159.1,44.9,0.709,-373.3,Road as Line,9.0,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00082,2020-08-20,test,35.8,420.7,1384.1,0.728,0.206,187.1,166.0,68.9,0.36,73.8,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00083,2020-08-20,test,22.1,218.2,2858.4,0.307,0.274,185.0,51.7,43.3,0.727,2305.0,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00084,2020-08-20,test,29.9,174.1,369.4,0.722,0.295,247.7,51.1,73.4,0.286,-929.7,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00085,2020-08-20,test,8.4,89.2,412.4,0.747,0.181,251.8,45.4,63.5,0.446,-931.6,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00086,2020-08-20,test,15.4,484.8,189.1,0.796,0.277,208.8,78.2,40.5,0.76,-1244.5,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00087,2020-08-20,test,13.7,569.7,865.3,0.645,0.21,193.6,59.8,43.8,0.722,-295.7,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00088,2020-08-20,test,16.3,450.4,2949.1,0.041,0.042,201.3,22.5,88.8,0.022,2875.1,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00089,2020-08-20,test,15.7,239.5,896.6,0.694,0.27,231.0,9.9,48.8,0.658,-352.8,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00090,2020-08-20,test,39.8,285.0,1022.7,0.79,0.171,167.9,18.8,59.2,0.512,-399.2,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00091,2020-08-20,test,29.4,386.3,1072.5,0.386,0.222,210.1,36.5,83.6,0.112,378.4,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00092,2020-08-20,test,23.9,233.6,2836.9,0.201,0.186,217.0,101.3,25.7,0.901,2475.2,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00093,2020-08-20,test,20.8,267.3,3275.3,0.063,0.081,199.7,88.3,21.4,0.931,3162.7,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00094,2020-08-20,test,24.3,521.2,246.3,0.71,0.223,219.0,9.4,60.4,0.494,-1032.0,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00095,2020-08-20,test,27.3,275.1,1153.2,0.691,0.298,211.4,141.0,19.6,0.942,-90.1,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00096,2020-08-20,test,17.8,464.0,3439.2,0.076,0.089,210.1,169.7,49.6,0.648,3302.9,Road as Line,9.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00097,2020-08-20,test,7.4,220.6,2528.3,0.144,0.199,203.2,130.9,17.7,0.953,2269.9,Completed Hand Line,2.0,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00098,2020-08-20,test,34.8,521.3,997.3,0.661,0.364,233.8,99.0,44.8,0.709,-192.2,Dozer Line,6.5,Timber,1,Held
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00099,2020-08-20,test,43.6,716.3,1935.3,0.74,0.163,176.3,67.2,19.0,0.945,602.6,Dozer Line,6.5,Timber,0,Burned Over
+CA-CZU-005205,CZU Lightning Complex,CA-CZU-005205_seg_00100,2020-08-20,test,36.4,128.3,2166.9,0.59,0.255,234.8,155.6,10.8,0.982,1105.6,Road as Line,9.0,Timber,0,Burned Over

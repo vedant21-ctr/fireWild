@@ -48,15 +48,51 @@ Evaluated via 5-fold Leave-One-Fire-Out (LOFO) cross-validation across 4,600 hel
 
 ---
 
+## CLBI Production Architecture
+
+```
+Research Evaluation (LOFO 5-Fold)
+            ↓
+    LOFO Validation (Mean PR-AUC = 0.9508)
+            ↓
+Production Model Training (`train_clbi_model.py`)
+            ↓
+Saved Model Artifact (`models/clbi_logistic_regression.joblib`)
+            ↓
+CLBI Inference Engine (`CLBIDecisionEngine`)
+            ↓
+   Risk Stratification (`LOW` / `MEDIUM` / `HIGH` / `CRITICAL`)
+            ↓
+Candidate-Line Prioritization (Top-K / Resource Selection)
+            ↓
+Future REST API (`docs/CLBI_API_CONTRACT.md`) & Frontend
+```
+
+### **Methodological Separation: Research vs Production**
+- **LOFO Research Evaluation:** Evaluates model generalization across 5 held-out wildfire incidents where each fire is excluded from training before evaluation. Used solely for unbiased metric reporting.
+- **Production Model:** Fitted on all historical training data (`split == 'train'`) and serialized to `models/clbi_logistic_regression.joblib`. The production `CLBIDecisionEngine` strictly loads this artifact for deterministic, fast inference without retraining.
+
+---
+
 ## Project Structure
 
 ```
 WILDFIRE/
 ├── data/
+│   ├── demo/
+│   │   └── clbi_demo_segments.csv         # 100 deterministic demo segments (CZU fire)
 │   └── final/
 │       ├── fireline_segments_v1.parquet   # Production tabular dataset (187 KB)
 │       ├── fireline_segments_v1.csv       # Inspection CSV dataset (749 KB)
 │       └── fireline_segments_v1.json      # JSON schema representation
+│
+├── docs/
+│   ├── CLBI_API_CONTRACT.md               # REST API specification & contract
+│   └── CLBI_METRICS.md                    # Benchmark metric definitions & terms
+│
+├── models/
+│   ├── clbi_logistic_regression.joblib    # Serialized production Logistic Regression model
+│   └── clbi_model_metadata.json          # Production model metadata & provenance
 │
 ├── src/
 │   ├── data/
@@ -65,11 +101,12 @@ WILDFIRE/
 │   │   └── generate_data_quality_report.py# Audit & visualization generator
 │   ├── evaluation/                        # Reproducible benchmark experiments
 │   └── model/
+│       ├── train_clbi_model.py            # Reproducible model training script
 │       ├── clbi_model.py                  # Core CLBIDecisionEngine inference class
 │       └── clbi_demo.py                   # CLI demonstration script
 │
 ├── tests/
-│   └── test_clbi_model.py                 # Unit tests for CLBIDecisionEngine
+│   └── test_clbi_model.py                 # Unit tests for CLBIDecisionEngine (14 tests)
 │
 ├── experiments/                           # Research reports and results
 │   ├── BASELINE_REPORT.md
@@ -79,7 +116,10 @@ WILDFIRE/
 │   ├── RISK_STRATIFICATION_REPORT.md
 │   └── results/
 │       ├── clbi_segment_predictions.csv   # Model inference output for 4,600 segments
-│       └── clbi_model_metadata.json       # Model metadata and benchmark metrics
+│       ├── clbi_demo_predictions.csv      # 100-segment demo predictions
+│       ├── clbi_demo_response.json        # Product-ready JSON demo payload
+│       ├── calibration_audit_results.json # Calibration audit & risk tier statistics
+│       └── clbi_model_metadata.json       # Research metadata and benchmark metrics
 │
 ├── requirements.txt                       # Minimal workspace dependencies
 └── README.md                              # Project overview
@@ -89,34 +129,38 @@ WILDFIRE/
 
 ## Quickstart & Usage
 
-### 1. Run Unit Tests
+### 1. Train Production Model Artifact
 ```bash
-python -m unittest discover -s tests
+python -m src.model.train_clbi_model
 ```
 
-### 2. Run CLBI CLI Demonstration
+### 2. Run Unit Tests (14 Tests)
+```bash
+python -m pytest -q
+```
+
+### 3. Run CLBI Demo & Generate Product JSON
 ```bash
 python -m src.model.clbi_demo
 ```
 
-### 3. Python API Example
+### 4. Python API Usage
 ```python
 import pandas as pd
 from src.model.clbi_model import CLBIDecisionEngine
 
+# Load production decision engine (loads saved model artifact)
+engine = CLBIDecisionEngine(model_path="models/clbi_logistic_regression.joblib")
+
 # Load candidate line segments
-df = pd.read_parquet("data/final/fireline_segments_v1.parquet")
+df = pd.read_csv("data/demo/clbi_demo_segments.csv")
 
-# Initialize and fit decision engine
-engine = CLBIDecisionEngine()
-engine.fit(df[df['split'] == 'train'])
-
-# Run inference
+# Run inference & risk stratification
 predictions_df = engine.predict_df(df, top_k_recommend_pct=10.0)
 
-# Prioritize top 10% candidate segments
+# Prioritize top candidate segments
 prioritized = engine.prioritize_candidate_line(predictions_df, resource_pct=10.0)
-print(prioritized["selected_segments"][["segment_id", "breach_probability", "risk_tier"]])
+print(prioritized["selected_segments"][["segment_id", "breach_probability", "risk_tier", "priority_recommended"]])
 ```
 
 ---

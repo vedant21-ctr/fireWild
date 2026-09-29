@@ -1,0 +1,72 @@
+{
+  "model_name": "Candidate Line Breach Intelligence (CLBI) Production Model",
+  "version": "v1.0.0",
+  "model_type": "Standardized 7-Feature Logistic Regression Pipeline (StandardScaler + LogisticRegression)",
+  "features": [
+    "slope",
+    "elevation",
+    "distance_to_fire",
+    "barrier_width_m",
+    "burn_prob",
+    "attack_angle",
+    "attack_dot_product"
+  ],
+  "preprocessing": {
+    "scaler": "StandardScaler",
+    "means": [
+      22.84,
+      1126.344,
+      1337.7333,
+      6.57,
+      0.5372,
+      44.7304,
+      0.6396
+    ],
+    "scales": [
+      9.9486,
+      551.1669,
+      1095.0659,
+      2.223,
+      0.2604,
+      26.0165,
+      0.3082
+    ]
+  },
+  "target_definition": {
+    "binary_target": "label (1 = Held, 0 = Burned Over)",
+    "primary_output": "breach_probability = P(Burned Over) = 1.0 - P(Held)"
+  },
+  "training_dataset": "data/final/fireline_segments_v1.parquet",
+  "training_rows": 3050,
+  "training_fires": [
+    "CA-MNF-013028",
+    "CA-SHU-007808",
+    "CA-SNF-000958"
+  ],
+  "excluded_validation_fires": [
+    "CA-MEU-008674"
+  ],
+  "excluded_test_fires": [
+    "CA-CZU-005205"
+  ],
+  "breach_coefficients": {
+    "slope": 0.7161,
+    "elevation": -0.1873,
+    "distance_to_fire": -0.9525,
+    "barrier_width_m": -0.7555,
+    "burn_prob": 0.8281,
+    "attack_angle": 0.0825,
+    "attack_dot_product": 1.2494
+  },
+  "breach_intercept": -1.6386,
+  "sklearn_version": "1.9.1",
+  "random_state": 42,
+  "creation_timestamp": "2026-09-30T02:08:25.747209",
+  "source_experiment": "src/evaluation/baseline_experiment.py",
+  "risk_thresholds": {
+    "LOW": "< 0.30",
+    "MEDIUM": "0.30 to < 0.60",
+    "HIGH": "0.60 to < 0.80",
+    "CRITICAL": ">= 0.80"
+  }
+}
