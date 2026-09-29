@@ -1,0 +1,16 @@
+Test_Fire_ID,Test_Fire_Name,Model_Key,Model_Name,PR_AUC,ROC_AUC,Precision,Recall,F1_Score,Brier_Score
+CA-MNF-013028,August Complex,Model_A_Current_Baseline,Model A (7-Feature Base LR),0.9526,0.8917,0.8923,0.8827,0.8875,0.1166
+CA-MNF-013028,August Complex,Model_B_Spatial_Enriched,Model B (Base LR + All Nbr Feats),0.9522,0.8909,0.8941,0.8827,0.8883,0.1171
+CA-MNF-013028,August Complex,Model_C_Spatial_Threat_Context,Model C (Base LR + Nbr Threat Context),0.9526,0.8916,0.8922,0.8817,0.8869,0.1167
+CA-SHU-007808,Carr Fire,Model_A_Current_Baseline,Model A (7-Feature Base LR),0.9455,0.896,0.7978,0.9546,0.8692,0.1292
+CA-SHU-007808,Carr Fire,Model_B_Spatial_Enriched,Model B (Base LR + All Nbr Feats),0.9453,0.8955,0.804,0.9568,0.8738,0.1291
+CA-SHU-007808,Carr Fire,Model_C_Spatial_Threat_Context,Model C (Base LR + Nbr Threat Context),0.9453,0.8959,0.8011,0.9568,0.872,0.1293
+CA-SNF-000958,Creek Fire,Model_A_Current_Baseline,Model A (7-Feature Base LR),0.9413,0.8961,0.8473,0.8981,0.872,0.1234
+CA-SNF-000958,Creek Fire,Model_B_Spatial_Enriched,Model B (Base LR + All Nbr Feats),0.9411,0.8955,0.8427,0.9013,0.871,0.1238
+CA-SNF-000958,Creek Fire,Model_C_Spatial_Threat_Context,Model C (Base LR + Nbr Threat Context),0.9413,0.8959,0.845,0.8997,0.8715,0.1235
+CA-MEU-008674,Mendocino Complex,Model_A_Current_Baseline,Model A (7-Feature Base LR),0.9619,0.8975,0.8585,0.93,0.8928,0.1125
+CA-MEU-008674,Mendocino Complex,Model_B_Spatial_Enriched,Model B (Base LR + All Nbr Feats),0.9613,0.8957,0.8576,0.9233,0.8892,0.1132
+CA-MEU-008674,Mendocino Complex,Model_C_Spatial_Threat_Context,Model C (Base LR + Nbr Threat Context),0.9617,0.8968,0.86,0.9317,0.8944,0.1131
+CA-CZU-005205,CZU Lightning Complex,Model_A_Current_Baseline,Model A (7-Feature Base LR),0.9527,0.9004,0.9099,0.8362,0.8715,0.1209
+CA-CZU-005205,CZU Lightning Complex,Model_B_Spatial_Enriched,Model B (Base LR + All Nbr Feats),0.9524,0.8988,0.9046,0.8401,0.8711,0.1208
+CA-CZU-005205,CZU Lightning Complex,Model_C_Spatial_Threat_Context,Model C (Base LR + Nbr Threat Context),0.9527,0.9001,0.9099,0.8362,0.8715,0.1212

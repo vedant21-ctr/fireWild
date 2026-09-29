@@ -1,0 +1,348 @@
+{
+  "per_fire_results": {
+    "CA-MNF-013028": {
+      "fire_name": "August Complex",
+      "metrics": {
+        "LogisticRegression": {
+          "pr_auc": 0.9526,
+          "roc_auc": 0.8917,
+          "precision": 0.8923,
+          "recall": 0.8827,
+          "f1": 0.8875,
+          "brier_score": 0.1166
+        },
+        "HistGradientBoosting": {
+          "pr_auc": 0.9476,
+          "roc_auc": 0.8806,
+          "precision": 0.8911,
+          "recall": 0.8563,
+          "f1": 0.8734,
+          "brier_score": 0.1256
+        },
+        "RandomForest": {
+          "pr_auc": 0.9442,
+          "roc_auc": 0.8739,
+          "precision": 0.8842,
+          "recall": 0.8583,
+          "f1": 0.871,
+          "brier_score": 0.1274
+        }
+      },
+      "delta_HGB_vs_LR": -0.005,
+      "delta_RF_vs_LR": -0.0084
+    },
+    "CA-SHU-007808": {
+      "fire_name": "Carr Fire",
+      "metrics": {
+        "LogisticRegression": {
+          "pr_auc": 0.9455,
+          "roc_auc": 0.896,
+          "precision": 0.7978,
+          "recall": 0.9546,
+          "f1": 0.8692,
+          "brier_score": 0.1292
+        },
+        "HistGradientBoosting": {
+          "pr_auc": 0.9344,
+          "roc_auc": 0.8752,
+          "precision": 0.7901,
+          "recall": 0.9352,
+          "f1": 0.8566,
+          "brier_score": 0.1428
+        },
+        "RandomForest": {
+          "pr_auc": 0.9263,
+          "roc_auc": 0.8661,
+          "precision": 0.804,
+          "recall": 0.9482,
+          "f1": 0.8702,
+          "brier_score": 0.1416
+        }
+      },
+      "delta_HGB_vs_LR": -0.0111,
+      "delta_RF_vs_LR": -0.0192
+    },
+    "CA-SNF-000958": {
+      "fire_name": "Creek Fire",
+      "metrics": {
+        "LogisticRegression": {
+          "pr_auc": 0.9413,
+          "roc_auc": 0.8961,
+          "precision": 0.8473,
+          "recall": 0.8981,
+          "f1": 0.872,
+          "brier_score": 0.1234
+        },
+        "HistGradientBoosting": {
+          "pr_auc": 0.9305,
+          "roc_auc": 0.878,
+          "precision": 0.8366,
+          "recall": 0.8867,
+          "f1": 0.861,
+          "brier_score": 0.1372
+        },
+        "RandomForest": {
+          "pr_auc": 0.9157,
+          "roc_auc": 0.87,
+          "precision": 0.839,
+          "recall": 0.8851,
+          "f1": 0.8614,
+          "brier_score": 0.1359
+        }
+      },
+      "delta_HGB_vs_LR": -0.0108,
+      "delta_RF_vs_LR": -0.0256
+    },
+    "CA-MEU-008674": {
+      "fire_name": "Mendocino Complex",
+      "metrics": {
+        "LogisticRegression": {
+          "pr_auc": 0.9619,
+          "roc_auc": 0.8975,
+          "precision": 0.8585,
+          "recall": 0.93,
+          "f1": 0.8928,
+          "brier_score": 0.1125
+        },
+        "HistGradientBoosting": {
+          "pr_auc": 0.9437,
+          "roc_auc": 0.8633,
+          "precision": 0.8454,
+          "recall": 0.9117,
+          "f1": 0.8773,
+          "brier_score": 0.1281
+        },
+        "RandomForest": {
+          "pr_auc": 0.9502,
+          "roc_auc": 0.8701,
+          "precision": 0.8518,
+          "recall": 0.91,
+          "f1": 0.8799,
+          "brier_score": 0.1255
+        }
+      },
+      "delta_HGB_vs_LR": -0.0182,
+      "delta_RF_vs_LR": -0.0117
+    },
+    "CA-CZU-005205": {
+      "fire_name": "CZU Lightning Complex",
+      "metrics": {
+        "LogisticRegression": {
+          "pr_auc": 0.9527,
+          "roc_auc": 0.9004,
+          "precision": 0.9099,
+          "recall": 0.8362,
+          "f1": 0.8715,
+          "brier_score": 0.1209
+        },
+        "HistGradientBoosting": {
+          "pr_auc": 0.9433,
+          "roc_auc": 0.8799,
+          "precision": 0.8957,
+          "recall": 0.8112,
+          "f1": 0.8514,
+          "brier_score": 0.1377
+        },
+        "RandomForest": {
+          "pr_auc": 0.935,
+          "roc_auc": 0.8731,
+          "precision": 0.8934,
+          "recall": 0.8401,
+          "f1": 0.8659,
+          "brier_score": 0.1314
+        }
+      },
+      "delta_HGB_vs_LR": -0.0094,
+      "delta_RF_vs_LR": -0.0177
+    }
+  },
+  "aggregate_statistics": {
+    "LogisticRegression": {
+      "name": "Logistic Regression (Linear)",
+      "pr_auc": {
+        "mean": 0.9508,
+        "std": 0.0079,
+        "median": 0.9526,
+        "min": 0.9413,
+        "max": 0.9619
+      },
+      "roc_auc": {
+        "mean": 0.8963,
+        "std": 0.0031
+      },
+      "f1": {
+        "mean": 0.8786,
+        "std": 0.0108
+      },
+      "brier": {
+        "mean": 0.1205,
+        "std": 0.0064
+      }
+    },
+    "HistGradientBoosting": {
+      "name": "HistGradientBoosting (Tree Ensemble)",
+      "pr_auc": {
+        "mean": 0.9399,
+        "std": 0.0071,
+        "median": 0.9433,
+        "min": 0.9305,
+        "max": 0.9476
+      },
+      "roc_auc": {
+        "mean": 0.8754,
+        "std": 0.0071
+      },
+      "f1": {
+        "mean": 0.8639,
+        "std": 0.011
+      },
+      "brier": {
+        "mean": 0.1343,
+        "std": 0.0072
+      }
+    },
+    "RandomForest": {
+      "name": "Random Forest (Bagged Trees)",
+      "pr_auc": {
+        "mean": 0.9343,
+        "std": 0.0138,
+        "median": 0.935,
+        "min": 0.9157,
+        "max": 0.9502
+      },
+      "roc_auc": {
+        "mean": 0.8706,
+        "std": 0.0031
+      },
+      "f1": {
+        "mean": 0.8697,
+        "std": 0.0069
+      },
+      "brier": {
+        "mean": 0.1324,
+        "std": 0.0065
+      }
+    }
+  },
+  "delta_summary": {
+    "HGB_vs_LR": {
+      "mean_delta_pr_auc": -0.0109,
+      "std_delta_pr_auc": 0.0048,
+      "min_delta_pr_auc": -0.0182,
+      "max_delta_pr_auc": -0.005,
+      "improved_fires_count": 0,
+      "total_fires": 5
+    },
+    "RF_vs_LR": {
+      "mean_delta_pr_auc": -0.0165,
+      "std_delta_pr_auc": 0.0067,
+      "min_delta_pr_auc": -0.0256,
+      "max_delta_pr_auc": -0.0084,
+      "improved_fires_count": 0,
+      "total_fires": 5
+    }
+  },
+  "calibration_data": {
+    "LogisticRegression": {
+      "overall_brier": 0.1199,
+      "fraction_of_positives": [
+        0.0473,
+        0.1713,
+        0.2243,
+        0.3441,
+        0.4756,
+        0.5828,
+        0.6667,
+        0.7479,
+        0.8555,
+        0.966
+      ],
+      "mean_predicted_value": [
+        0.0579,
+        0.1514,
+        0.2513,
+        0.3509,
+        0.4502,
+        0.5512,
+        0.6488,
+        0.753,
+        0.8539,
+        0.9713
+      ]
+    },
+    "HistGradientBoosting": {
+      "overall_brier": 0.1329,
+      "fraction_of_positives": [
+        0.1445,
+        0.2384,
+        0.3125,
+        0.4733,
+        0.4847,
+        0.5258,
+        0.644,
+        0.6982,
+        0.8106,
+        0.9436
+      ],
+      "mean_predicted_value": [
+        0.0435,
+        0.1508,
+        0.2501,
+        0.3482,
+        0.45,
+        0.5516,
+        0.6519,
+        0.7507,
+        0.8558,
+        0.9752
+      ]
+    },
+    "RandomForest": {
+      "overall_brier": 0.1316,
+      "fraction_of_positives": [
+        0.1218,
+        0.1789,
+        0.2431,
+        0.3612,
+        0.4674,
+        0.5993,
+        0.7036,
+        0.7488,
+        0.861,
+        0.9609
+      ],
+      "mean_predicted_value": [
+        0.0627,
+        0.158,
+        0.2539,
+        0.3539,
+        0.4552,
+        0.5573,
+        0.6565,
+        0.755,
+        0.8582,
+        0.969
+      ]
+    }
+  },
+  "permutation_importance": {
+    "HistGradientBoosting": {
+      "slope": 0.025289341043952928,
+      "elevation": 0.013578967743535087,
+      "distance_to_fire": 0.02397065876846599,
+      "barrier_width_m": 0.028206771976533374,
+      "burn_prob": 0.10309768696788853,
+      "attack_angle": 0.03324939633278712,
+      "attack_dot_product": 0.009174937849269704
+    },
+    "RandomForest": {
+      "slope": 0.013694943536254767,
+      "elevation": 0.0027927333125969734,
+      "distance_to_fire": 0.013783266735832245,
+      "barrier_width_m": 0.010963188566467353,
+      "burn_prob": 0.053979986772568364,
+      "attack_angle": 0.0066185779438403865,
+      "attack_dot_product": 0.012637445184008589
+    }
+  }
+}

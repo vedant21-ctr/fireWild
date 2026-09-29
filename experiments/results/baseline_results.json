@@ -1,0 +1,186 @@
+{
+  "Exp_A_Static": {
+    "name": "Experiment A (Static Baseline)",
+    "features": [
+      "slope",
+      "elevation",
+      "distance_to_fire",
+      "barrier_width_m"
+    ],
+    "coefficients": {
+      "slope": -0.7158214738673587,
+      "elevation": 0.14453437923203943,
+      "distance_to_fire": 1.4578492245693537,
+      "barrier_width_m": 0.5740183358786355
+    },
+    "intercept": 1.2518237959057958,
+    "val_metrics": {
+      "pr_auc": 0.9172,
+      "roc_auc": 0.7903,
+      "precision": 0.7894,
+      "recall": 0.9183,
+      "f1": 0.849,
+      "brier_score": 0.1542
+    },
+    "test_metrics": {
+      "pr_auc": 0.9174,
+      "roc_auc": 0.8247,
+      "precision": 0.8477,
+      "recall": 0.815,
+      "f1": 0.831,
+      "brier_score": 0.158,
+      "confusion_matrix": [
+        [
+          145,
+          76
+        ],
+        [
+          96,
+          423
+        ]
+      ]
+    }
+  },
+  "Exp_B_Static_BurnProb": {
+    "name": "Experiment B (Static + Burn Prob)",
+    "features": [
+      "slope",
+      "elevation",
+      "distance_to_fire",
+      "barrier_width_m",
+      "burn_prob"
+    ],
+    "coefficients": {
+      "slope": -0.19437296611269478,
+      "elevation": 0.16713737333413062,
+      "distance_to_fire": -0.6849384886922717,
+      "barrier_width_m": 0.686905657487741,
+      "burn_prob": -2.326107784333869
+    },
+    "intercept": 1.3932089561332834,
+    "val_metrics": {
+      "pr_auc": 0.9508,
+      "roc_auc": 0.8731,
+      "precision": 0.8479,
+      "recall": 0.92,
+      "f1": 0.8825,
+      "brier_score": 0.1235
+    },
+    "test_metrics": {
+      "pr_auc": 0.9381,
+      "roc_auc": 0.8706,
+      "precision": 0.8924,
+      "recall": 0.815,
+      "f1": 0.852,
+      "brier_score": 0.138,
+      "confusion_matrix": [
+        [
+          170,
+          51
+        ],
+        [
+          96,
+          423
+        ]
+      ]
+    }
+  },
+  "Exp_C_Full_Directional": {
+    "name": "Experiment C (Static + Burn Prob + Directional)",
+    "features": [
+      "slope",
+      "elevation",
+      "distance_to_fire",
+      "barrier_width_m",
+      "burn_prob",
+      "prob_gradient",
+      "attack_angle",
+      "attack_dot_product",
+      "dist_pred_boundary"
+    ],
+    "coefficients": {
+      "slope": -0.7188418559080126,
+      "elevation": 0.18853618602107508,
+      "distance_to_fire": 0.5545962006636327,
+      "barrier_width_m": 0.7573259893535432,
+      "burn_prob": -0.6060909167056306,
+      "prob_gradient": 0.041509057762605134,
+      "attack_angle": -0.07858604346630922,
+      "attack_dot_product": -1.2467473843046553,
+      "dist_pred_boundary": 0.5881033394853542
+    },
+    "intercept": 1.6235706203624671,
+    "val_metrics": {
+      "pr_auc": 0.9617,
+      "roc_auc": 0.8969,
+      "precision": 0.8681,
+      "recall": 0.9217,
+      "f1": 0.8941,
+      "brier_score": 0.1122
+    },
+    "test_metrics": {
+      "pr_auc": 0.9526,
+      "roc_auc": 0.9002,
+      "precision": 0.9099,
+      "recall": 0.8362,
+      "f1": 0.8715,
+      "brier_score": 0.1214,
+      "confusion_matrix": [
+        [
+          178,
+          43
+        ],
+        [
+          85,
+          434
+        ]
+      ]
+    }
+  },
+  "Exp_D_Static_Geometry": {
+    "name": "Experiment D (Static + Attack Geometry)",
+    "features": [
+      "slope",
+      "elevation",
+      "distance_to_fire",
+      "barrier_width_m",
+      "attack_angle",
+      "attack_dot_product"
+    ],
+    "coefficients": {
+      "slope": -0.9402016719057906,
+      "elevation": 0.18640101807819526,
+      "distance_to_fire": 1.7859459137817426,
+      "barrier_width_m": 0.7416366284142287,
+      "attack_angle": -0.06206059793291385,
+      "attack_dot_product": -1.440270232650731
+    },
+    "intercept": 1.6504463592370084,
+    "val_metrics": {
+      "pr_auc": 0.959,
+      "roc_auc": 0.8902,
+      "precision": 0.8655,
+      "recall": 0.9117,
+      "f1": 0.888,
+      "brier_score": 0.1156
+    },
+    "test_metrics": {
+      "pr_auc": 0.9513,
+      "roc_auc": 0.8982,
+      "precision": 0.9177,
+      "recall": 0.8382,
+      "f1": 0.8761,
+      "brier_score": 0.1219,
+      "confusion_matrix": [
+        [
+          182,
+          39
+        ],
+        [
+          84,
+          435
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,26 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Python Cache & Bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment Variables & Secrets
+.env
+.env.local
+
+# Notebook & IDE Checkpoints
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# System Files
+Thumbs.db
+Desktop.ini

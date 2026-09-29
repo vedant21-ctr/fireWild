@@ -1,0 +1,5 @@
+Risk_Band,Prob_Range,Segment_Count,Pct_Total_Segments,Mean_Predicted_Risk,Actual_Breach_Count,Actual_Breach_Rate_Pct,Actual_Held_Rate_Pct,Calibration_Error
+LOW,"[0.00, 0.30)",2746,59.7,0.0802,231,8.41,91.59,0.0039
+MEDIUM,"[0.30, 0.60)",848,18.43,0.4422,354,41.75,58.25,0.0247
+HIGH,"[0.60, 0.80)",551,11.98,0.6983,394,71.51,28.49,0.0168
+CRITICAL,"[0.80, 1.00)",455,9.89,0.8833,398,87.47,12.53,0.0086

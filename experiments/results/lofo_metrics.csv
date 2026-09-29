@@ -1,0 +1,21 @@
+Test_Fire_ID,Test_Fire_Name,Experiment_Key,Experiment_Name,PR_AUC,ROC_AUC,Precision,Recall,F1_Score,Brier_Score
+CA-MNF-013028,August Complex,Exp_A_Static,Exp A (Static Baseline),0.9119,0.8029,0.8083,0.8778,0.8416,0.1552
+CA-MNF-013028,August Complex,Exp_B_Static_BurnProb,Exp B (Static + BurnProb),0.9395,0.8669,0.8672,0.868,0.8676,0.1286
+CA-MNF-013028,August Complex,Exp_D_Static_Geometry,Exp D (Static + Attack Geometry),0.9509,0.8873,0.8875,0.8866,0.887,0.1191
+CA-MNF-013028,August Complex,Exp_C_Full_Directional,Exp C (Full Directional),0.9526,0.8916,0.8925,0.8847,0.8886,0.1167
+CA-SHU-007808,Carr Fire,Exp_A_Static,Exp A (Static Baseline),0.9036,0.8054,0.7315,0.959,0.8299,0.1737
+CA-SHU-007808,Carr Fire,Exp_B_Static_BurnProb,Exp B (Static + BurnProb),0.9246,0.8583,0.7818,0.9438,0.8552,0.1474
+CA-SHU-007808,Carr Fire,Exp_D_Static_Geometry,Exp D (Static + Attack Geometry),0.9463,0.8968,0.7993,0.9633,0.8737,0.1304
+CA-SHU-007808,Carr Fire,Exp_C_Full_Directional,Exp C (Full Directional),0.945,0.895,0.7993,0.9546,0.8701,0.13
+CA-SNF-000958,Creek Fire,Exp_A_Static,Exp A (Static Baseline),0.902,0.8274,0.7899,0.8819,0.8333,0.1593
+CA-SNF-000958,Creek Fire,Exp_B_Static_BurnProb,Exp B (Static + BurnProb),0.9258,0.8679,0.8315,0.8625,0.8467,0.14
+CA-SNF-000958,Creek Fire,Exp_D_Static_Geometry,Exp D (Static + Attack Geometry),0.941,0.8954,0.8336,0.8916,0.8616,0.1241
+CA-SNF-000958,Creek Fire,Exp_C_Full_Directional,Exp C (Full Directional),0.9413,0.8961,0.8476,0.8997,0.8728,0.1234
+CA-MEU-008674,Mendocino Complex,Exp_A_Static,Exp A (Static Baseline),0.9175,0.7918,0.7779,0.94,0.8513,0.1541
+CA-MEU-008674,Mendocino Complex,Exp_B_Static_BurnProb,Exp B (Static + BurnProb),0.9512,0.8739,0.8419,0.9317,0.8845,0.1238
+CA-MEU-008674,Mendocino Complex,Exp_D_Static_Geometry,Exp D (Static + Attack Geometry),0.9592,0.891,0.8536,0.9233,0.8871,0.1159
+CA-MEU-008674,Mendocino Complex,Exp_C_Full_Directional,Exp C (Full Directional),0.9619,0.8976,0.8585,0.93,0.8928,0.1125
+CA-CZU-005205,CZU Lightning Complex,Exp_A_Static,Exp A (Static Baseline),0.9173,0.8246,0.8419,0.8208,0.8312,0.1572
+CA-CZU-005205,CZU Lightning Complex,Exp_B_Static_BurnProb,Exp B (Static + BurnProb),0.9382,0.8708,0.891,0.8189,0.8534,0.1378
+CA-CZU-005205,CZU Lightning Complex,Exp_D_Static_Geometry,Exp D (Static + Attack Geometry),0.9514,0.8985,0.9182,0.8439,0.8795,0.1211
+CA-CZU-005205,CZU Lightning Complex,Exp_C_Full_Directional,Exp C (Full Directional),0.9525,0.9,0.9099,0.8362,0.8715,0.121

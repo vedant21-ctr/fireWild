@@ -1,0 +1,16 @@
+Test_Fire_ID,Test_Fire_Name,Model_Key,Model_Name,PR_AUC,ROC_AUC,Precision,Recall,F1_Score,Brier_Score
+CA-MNF-013028,August Complex,LogisticRegression,Logistic Regression (Linear),0.9526,0.8917,0.8923,0.8827,0.8875,0.1166
+CA-MNF-013028,August Complex,HistGradientBoosting,HistGradientBoosting (Tree Ensemble),0.9476,0.8806,0.8911,0.8563,0.8734,0.1256
+CA-MNF-013028,August Complex,RandomForest,Random Forest (Bagged Trees),0.9442,0.8739,0.8842,0.8583,0.871,0.1274
+CA-SHU-007808,Carr Fire,LogisticRegression,Logistic Regression (Linear),0.9455,0.896,0.7978,0.9546,0.8692,0.1292
+CA-SHU-007808,Carr Fire,HistGradientBoosting,HistGradientBoosting (Tree Ensemble),0.9344,0.8752,0.7901,0.9352,0.8566,0.1428
+CA-SHU-007808,Carr Fire,RandomForest,Random Forest (Bagged Trees),0.9263,0.8661,0.804,0.9482,0.8702,0.1416
+CA-SNF-000958,Creek Fire,LogisticRegression,Logistic Regression (Linear),0.9413,0.8961,0.8473,0.8981,0.872,0.1234
+CA-SNF-000958,Creek Fire,HistGradientBoosting,HistGradientBoosting (Tree Ensemble),0.9305,0.878,0.8366,0.8867,0.861,0.1372
+CA-SNF-000958,Creek Fire,RandomForest,Random Forest (Bagged Trees),0.9157,0.87,0.839,0.8851,0.8614,0.1359
+CA-MEU-008674,Mendocino Complex,LogisticRegression,Logistic Regression (Linear),0.9619,0.8975,0.8585,0.93,0.8928,0.1125
+CA-MEU-008674,Mendocino Complex,HistGradientBoosting,HistGradientBoosting (Tree Ensemble),0.9437,0.8633,0.8454,0.9117,0.8773,0.1281
+CA-MEU-008674,Mendocino Complex,RandomForest,Random Forest (Bagged Trees),0.9502,0.8701,0.8518,0.91,0.8799,0.1255
+CA-CZU-005205,CZU Lightning Complex,LogisticRegression,Logistic Regression (Linear),0.9527,0.9004,0.9099,0.8362,0.8715,0.1209
+CA-CZU-005205,CZU Lightning Complex,HistGradientBoosting,HistGradientBoosting (Tree Ensemble),0.9433,0.8799,0.8957,0.8112,0.8514,0.1377
+CA-CZU-005205,CZU Lightning Complex,RandomForest,Random Forest (Bagged Trees),0.935,0.8731,0.8934,0.8401,0.8659,0.1314

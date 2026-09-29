@@ -1,0 +1,244 @@
+{
+  "global_metrics": {
+    "total_test_segments": 4600,
+    "total_test_breaches": 1377,
+    "global_brier_score": 0.1199,
+    "global_ece": 0.0109
+  },
+  "per_fire_results": {
+    "CA-MNF-013028": {
+      "fire_name": "August Complex",
+      "total_segments": 1420,
+      "total_breaches": 397,
+      "breach_rate_pct": 27.96,
+      "brier_score": 0.1166,
+      "ece": 0.0325,
+      "pr_auc_breach": 0.7703,
+      "roc_auc_breach": 0.8917,
+      "top_k_capture": {
+        "top_5_pct": {
+          "inspected_segments": 71,
+          "breaches_captured": 66,
+          "capture_rate_pct": 16.62,
+          "precision_at_k": 0.9296
+        },
+        "top_10_pct": {
+          "inspected_segments": 142,
+          "breaches_captured": 123,
+          "capture_rate_pct": 30.98,
+          "precision_at_k": 0.8662
+        },
+        "top_20_pct": {
+          "inspected_segments": 284,
+          "breaches_captured": 227,
+          "capture_rate_pct": 57.18,
+          "precision_at_k": 0.7993
+        },
+        "top_30_pct": {
+          "inspected_segments": 426,
+          "breaches_captured": 292,
+          "capture_rate_pct": 73.55,
+          "precision_at_k": 0.6854
+        }
+      }
+    },
+    "CA-SHU-007808": {
+      "fire_name": "Carr Fire",
+      "total_segments": 680,
+      "total_breaches": 217,
+      "breach_rate_pct": 31.91,
+      "brier_score": 0.1292,
+      "ece": 0.0842,
+      "pr_auc_breach": 0.8053,
+      "roc_auc_breach": 0.896,
+      "top_k_capture": {
+        "top_5_pct": {
+          "inspected_segments": 34,
+          "breaches_captured": 32,
+          "capture_rate_pct": 14.75,
+          "precision_at_k": 0.9412
+        },
+        "top_10_pct": {
+          "inspected_segments": 68,
+          "breaches_captured": 60,
+          "capture_rate_pct": 27.65,
+          "precision_at_k": 0.8824
+        },
+        "top_20_pct": {
+          "inspected_segments": 136,
+          "breaches_captured": 113,
+          "capture_rate_pct": 52.07,
+          "precision_at_k": 0.8309
+        },
+        "top_30_pct": {
+          "inspected_segments": 204,
+          "breaches_captured": 156,
+          "capture_rate_pct": 71.89,
+          "precision_at_k": 0.7647
+        }
+      }
+    },
+    "CA-SNF-000958": {
+      "fire_name": "Creek Fire",
+      "total_segments": 950,
+      "total_breaches": 332,
+      "breach_rate_pct": 34.95,
+      "brier_score": 0.1234,
+      "ece": 0.0251,
+      "pr_auc_breach": 0.8331,
+      "roc_auc_breach": 0.8961,
+      "top_k_capture": {
+        "top_5_pct": {
+          "inspected_segments": 47,
+          "breaches_captured": 47,
+          "capture_rate_pct": 14.16,
+          "precision_at_k": 1.0
+        },
+        "top_10_pct": {
+          "inspected_segments": 95,
+          "breaches_captured": 91,
+          "capture_rate_pct": 27.41,
+          "precision_at_k": 0.9579
+        },
+        "top_20_pct": {
+          "inspected_segments": 190,
+          "breaches_captured": 162,
+          "capture_rate_pct": 48.8,
+          "precision_at_k": 0.8526
+        },
+        "top_30_pct": {
+          "inspected_segments": 285,
+          "breaches_captured": 226,
+          "capture_rate_pct": 68.07,
+          "precision_at_k": 0.793
+        }
+      }
+    },
+    "CA-MEU-008674": {
+      "fire_name": "Mendocino Complex",
+      "total_segments": 810,
+      "total_breaches": 210,
+      "breach_rate_pct": 25.93,
+      "brier_score": 0.1125,
+      "ece": 0.03,
+      "pr_auc_breach": 0.7426,
+      "roc_auc_breach": 0.8975,
+      "top_k_capture": {
+        "top_5_pct": {
+          "inspected_segments": 40,
+          "breaches_captured": 36,
+          "capture_rate_pct": 17.14,
+          "precision_at_k": 0.9
+        },
+        "top_10_pct": {
+          "inspected_segments": 81,
+          "breaches_captured": 68,
+          "capture_rate_pct": 32.38,
+          "precision_at_k": 0.8395
+        },
+        "top_20_pct": {
+          "inspected_segments": 162,
+          "breaches_captured": 120,
+          "capture_rate_pct": 57.14,
+          "precision_at_k": 0.7407
+        },
+        "top_30_pct": {
+          "inspected_segments": 243,
+          "breaches_captured": 153,
+          "capture_rate_pct": 72.86,
+          "precision_at_k": 0.6296
+        }
+      }
+    },
+    "CA-CZU-005205": {
+      "fire_name": "CZU Lightning Complex",
+      "total_segments": 740,
+      "total_breaches": 221,
+      "breach_rate_pct": 29.86,
+      "brier_score": 0.1209,
+      "ece": 0.0813,
+      "pr_auc_breach": 0.7993,
+      "roc_auc_breach": 0.9004,
+      "top_k_capture": {
+        "top_5_pct": {
+          "inspected_segments": 37,
+          "breaches_captured": 36,
+          "capture_rate_pct": 16.29,
+          "precision_at_k": 0.973
+        },
+        "top_10_pct": {
+          "inspected_segments": 74,
+          "breaches_captured": 69,
+          "capture_rate_pct": 31.22,
+          "precision_at_k": 0.9324
+        },
+        "top_20_pct": {
+          "inspected_segments": 148,
+          "breaches_captured": 119,
+          "capture_rate_pct": 53.85,
+          "precision_at_k": 0.8041
+        },
+        "top_30_pct": {
+          "inspected_segments": 222,
+          "breaches_captured": 163,
+          "capture_rate_pct": 73.76,
+          "precision_at_k": 0.7342
+        }
+      }
+    }
+  },
+  "risk_band_stratification": [
+    {
+      "Risk_Band": "LOW",
+      "Prob_Range": "[0.00, 0.30)",
+      "Segment_Count": 2746,
+      "Pct_Total_Segments": 59.7,
+      "Mean_Predicted_Risk": 0.0802,
+      "Actual_Breach_Count": 231,
+      "Actual_Breach_Rate_Pct": 8.41,
+      "Actual_Held_Rate_Pct": 91.59,
+      "Calibration_Error": 0.0039
+    },
+    {
+      "Risk_Band": "MEDIUM",
+      "Prob_Range": "[0.30, 0.60)",
+      "Segment_Count": 848,
+      "Pct_Total_Segments": 18.43,
+      "Mean_Predicted_Risk": 0.4422,
+      "Actual_Breach_Count": 354,
+      "Actual_Breach_Rate_Pct": 41.75,
+      "Actual_Held_Rate_Pct": 58.25,
+      "Calibration_Error": 0.0247
+    },
+    {
+      "Risk_Band": "HIGH",
+      "Prob_Range": "[0.60, 0.80)",
+      "Segment_Count": 551,
+      "Pct_Total_Segments": 11.98,
+      "Mean_Predicted_Risk": 0.6983,
+      "Actual_Breach_Count": 394,
+      "Actual_Breach_Rate_Pct": 71.51,
+      "Actual_Held_Rate_Pct": 28.49,
+      "Calibration_Error": 0.0168
+    },
+    {
+      "Risk_Band": "CRITICAL",
+      "Prob_Range": "[0.80, 1.00)",
+      "Segment_Count": 455,
+      "Pct_Total_Segments": 9.89,
+      "Mean_Predicted_Risk": 0.8833,
+      "Actual_Breach_Count": 398,
+      "Actual_Breach_Rate_Pct": 87.47,
+      "Actual_Held_Rate_Pct": 12.53,
+      "Calibration_Error": 0.0086
+    }
+  ],
+  "offline_prioritization_simulation": {
+    "simulation_basis": "100 Candidate Fireline Segments, Resource Limit = Top 10 Segments (10%)",
+    "average_breach_density_per_100": 29.9,
+    "random_selection_breaches_captured": 3.0,
+    "model_prioritization_breaches_captured": 8.7,
+    "overall_top_10_pct_capture_rate": 29.19,
+    "efficiency_multiplier": 2.92
+  }
+}

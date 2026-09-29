@@ -1,0 +1,5 @@
+Experiment_Key,Experiment_Name,Num_Features,Val_PR_AUC,Val_ROC_AUC,Val_F1,Test_PR_AUC,Test_ROC_AUC,Test_Precision,Test_Recall,Test_F1,Test_Brier_Score
+Exp_A_Static,Experiment A (Static Baseline),4,0.9172,0.7903,0.849,0.9174,0.8247,0.8477,0.815,0.831,0.158
+Exp_B_Static_BurnProb,Experiment B (Static + Burn Prob),5,0.9508,0.8731,0.8825,0.9381,0.8706,0.8924,0.815,0.852,0.138
+Exp_C_Full_Directional,Experiment C (Static + Burn Prob + Directional),9,0.9617,0.8969,0.8941,0.9526,0.9002,0.9099,0.8362,0.8715,0.1214
+Exp_D_Static_Geometry,Experiment D (Static + Attack Geometry),6,0.959,0.8902,0.888,0.9513,0.8982,0.9177,0.8382,0.8761,0.1219

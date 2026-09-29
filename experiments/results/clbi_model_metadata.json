@@ -1,0 +1,37 @@
+{
+  "model_name": "Candidate Line Breach Intelligence (CLBI) Decision Engine",
+  "version": "v1.0",
+  "model_type": "Standardized 7-Feature Logistic Regression Pipeline (StandardScaler + LogisticRegression)",
+  "features": [
+    "slope",
+    "elevation",
+    "distance_to_fire",
+    "barrier_width_m",
+    "burn_prob",
+    "attack_angle",
+    "attack_dot_product"
+  ],
+  "risk_thresholds": {
+    "LOW": "< 0.30",
+    "MEDIUM": "0.30 to < 0.60",
+    "HIGH": "0.60 to < 0.80",
+    "CRITICAL": ">= 0.80"
+  },
+  "training_evaluation_methodology": "5-fold Leave-One-Fire-Out (LOFO) Cross-Validation across 5 historical California wildfires",
+  "retrospective_benchmark_metrics": {
+    "lofo_mean_pr_auc": "0.9508 ± 0.0076",
+    "global_brier_score": 0.1199,
+    "ece_10_equal_width_bins": 0.0109,
+    "ece_20_equal_width_bins": 0.0151,
+    "top_10_pct_inspection_precision_mean": "89.6%",
+    "top_20_pct_breach_recall_mean": "53.8%",
+    "offline_breach_yield_enrichment_ratio": "2.92x"
+  },
+  "dataset_info": {
+    "dataset_name": "fireline_segments_v1",
+    "dataset_path": "data/final/fireline_segments_v1.parquet",
+    "total_segments": 4600,
+    "total_fires": 5
+  },
+  "disclaimer": "Retrospective historical benchmark evaluation results. Demonstrates offline predictive performance, not live operational field validation."
+}

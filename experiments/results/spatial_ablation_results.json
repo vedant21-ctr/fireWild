@@ -1,0 +1,245 @@
+{
+  "per_fire_results": {
+    "CA-MNF-013028": {
+      "fire_name": "August Complex",
+      "metrics": {
+        "Model_A_Current_Baseline": {
+          "pr_auc": 0.9526,
+          "roc_auc": 0.8917,
+          "precision": 0.8923,
+          "recall": 0.8827,
+          "f1": 0.8875,
+          "brier_score": 0.1166
+        },
+        "Model_B_Spatial_Enriched": {
+          "pr_auc": 0.9522,
+          "roc_auc": 0.8909,
+          "precision": 0.8941,
+          "recall": 0.8827,
+          "f1": 0.8883,
+          "brier_score": 0.1171
+        },
+        "Model_C_Spatial_Threat_Context": {
+          "pr_auc": 0.9526,
+          "roc_auc": 0.8916,
+          "precision": 0.8922,
+          "recall": 0.8817,
+          "f1": 0.8869,
+          "brier_score": 0.1167
+        }
+      },
+      "delta_SpatialEnriched_vs_Base": -0.0004,
+      "delta_ThreatContext_vs_Base": 0.0
+    },
+    "CA-SHU-007808": {
+      "fire_name": "Carr Fire",
+      "metrics": {
+        "Model_A_Current_Baseline": {
+          "pr_auc": 0.9455,
+          "roc_auc": 0.896,
+          "precision": 0.7978,
+          "recall": 0.9546,
+          "f1": 0.8692,
+          "brier_score": 0.1292
+        },
+        "Model_B_Spatial_Enriched": {
+          "pr_auc": 0.9453,
+          "roc_auc": 0.8955,
+          "precision": 0.804,
+          "recall": 0.9568,
+          "f1": 0.8738,
+          "brier_score": 0.1291
+        },
+        "Model_C_Spatial_Threat_Context": {
+          "pr_auc": 0.9453,
+          "roc_auc": 0.8959,
+          "precision": 0.8011,
+          "recall": 0.9568,
+          "f1": 0.872,
+          "brier_score": 0.1293
+        }
+      },
+      "delta_SpatialEnriched_vs_Base": -0.0002,
+      "delta_ThreatContext_vs_Base": -0.0002
+    },
+    "CA-SNF-000958": {
+      "fire_name": "Creek Fire",
+      "metrics": {
+        "Model_A_Current_Baseline": {
+          "pr_auc": 0.9413,
+          "roc_auc": 0.8961,
+          "precision": 0.8473,
+          "recall": 0.8981,
+          "f1": 0.872,
+          "brier_score": 0.1234
+        },
+        "Model_B_Spatial_Enriched": {
+          "pr_auc": 0.9411,
+          "roc_auc": 0.8955,
+          "precision": 0.8427,
+          "recall": 0.9013,
+          "f1": 0.871,
+          "brier_score": 0.1238
+        },
+        "Model_C_Spatial_Threat_Context": {
+          "pr_auc": 0.9413,
+          "roc_auc": 0.8959,
+          "precision": 0.845,
+          "recall": 0.8997,
+          "f1": 0.8715,
+          "brier_score": 0.1235
+        }
+      },
+      "delta_SpatialEnriched_vs_Base": -0.0002,
+      "delta_ThreatContext_vs_Base": 0.0
+    },
+    "CA-MEU-008674": {
+      "fire_name": "Mendocino Complex",
+      "metrics": {
+        "Model_A_Current_Baseline": {
+          "pr_auc": 0.9619,
+          "roc_auc": 0.8975,
+          "precision": 0.8585,
+          "recall": 0.93,
+          "f1": 0.8928,
+          "brier_score": 0.1125
+        },
+        "Model_B_Spatial_Enriched": {
+          "pr_auc": 0.9613,
+          "roc_auc": 0.8957,
+          "precision": 0.8576,
+          "recall": 0.9233,
+          "f1": 0.8892,
+          "brier_score": 0.1132
+        },
+        "Model_C_Spatial_Threat_Context": {
+          "pr_auc": 0.9617,
+          "roc_auc": 0.8968,
+          "precision": 0.86,
+          "recall": 0.9317,
+          "f1": 0.8944,
+          "brier_score": 0.1131
+        }
+      },
+      "delta_SpatialEnriched_vs_Base": -0.0006,
+      "delta_ThreatContext_vs_Base": -0.0002
+    },
+    "CA-CZU-005205": {
+      "fire_name": "CZU Lightning Complex",
+      "metrics": {
+        "Model_A_Current_Baseline": {
+          "pr_auc": 0.9527,
+          "roc_auc": 0.9004,
+          "precision": 0.9099,
+          "recall": 0.8362,
+          "f1": 0.8715,
+          "brier_score": 0.1209
+        },
+        "Model_B_Spatial_Enriched": {
+          "pr_auc": 0.9524,
+          "roc_auc": 0.8988,
+          "precision": 0.9046,
+          "recall": 0.8401,
+          "f1": 0.8711,
+          "brier_score": 0.1208
+        },
+        "Model_C_Spatial_Threat_Context": {
+          "pr_auc": 0.9527,
+          "roc_auc": 0.9001,
+          "precision": 0.9099,
+          "recall": 0.8362,
+          "f1": 0.8715,
+          "brier_score": 0.1212
+        }
+      },
+      "delta_SpatialEnriched_vs_Base": -0.0003,
+      "delta_ThreatContext_vs_Base": 0.0
+    }
+  },
+  "aggregate_statistics": {
+    "Model_A_Current_Baseline": {
+      "name": "Model A (7-Feature Base LR)",
+      "pr_auc": {
+        "mean": 0.9508,
+        "std": 0.0079,
+        "median": 0.9526,
+        "min": 0.9413,
+        "max": 0.9619
+      },
+      "roc_auc": {
+        "mean": 0.8963,
+        "std": 0.0031
+      },
+      "f1": {
+        "mean": 0.8786,
+        "std": 0.0108
+      },
+      "brier": {
+        "mean": 0.1205,
+        "std": 0.0064
+      }
+    },
+    "Model_B_Spatial_Enriched": {
+      "name": "Model B (Base LR + All Nbr Feats)",
+      "pr_auc": {
+        "mean": 0.9505,
+        "std": 0.0077,
+        "median": 0.9522,
+        "min": 0.9411,
+        "max": 0.9613
+      },
+      "roc_auc": {
+        "mean": 0.8953,
+        "std": 0.0028
+      },
+      "f1": {
+        "mean": 0.8787,
+        "std": 0.0093
+      },
+      "brier": {
+        "mean": 0.1208,
+        "std": 0.0061
+      }
+    },
+    "Model_C_Spatial_Threat_Context": {
+      "name": "Model C (Base LR + Nbr Threat Context)",
+      "pr_auc": {
+        "mean": 0.9507,
+        "std": 0.0078,
+        "median": 0.9526,
+        "min": 0.9413,
+        "max": 0.9617
+      },
+      "roc_auc": {
+        "mean": 0.8961,
+        "std": 0.003
+      },
+      "f1": {
+        "mean": 0.8793,
+        "std": 0.0107
+      },
+      "brier": {
+        "mean": 0.1208,
+        "std": 0.0062
+      }
+    }
+  },
+  "delta_summary": {
+    "Model_B_minus_Model_A": {
+      "mean_delta_pr_auc": -0.0003,
+      "std_delta_pr_auc": 0.0002,
+      "min_delta_pr_auc": -0.0006,
+      "max_delta_pr_auc": -0.0002,
+      "improved_fires_count": 0,
+      "total_fires": 5
+    },
+    "Model_C_minus_Model_A": {
+      "mean_delta_pr_auc": -0.0001,
+      "std_delta_pr_auc": 0.0001,
+      "min_delta_pr_auc": -0.0002,
+      "max_delta_pr_auc": 0.0,
+      "improved_fires_count": 0,
+      "total_fires": 5
+    }
+  }
+}

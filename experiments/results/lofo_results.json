@@ -1,0 +1,332 @@
+{
+  "per_fire_results": {
+    "CA-MNF-013028": {
+      "fire_name": "August Complex",
+      "metrics": {
+        "Exp_A_Static": {
+          "pr_auc": 0.9119,
+          "roc_auc": 0.8029,
+          "precision": 0.8083,
+          "recall": 0.8778,
+          "f1": 0.8416,
+          "brier_score": 0.1552
+        },
+        "Exp_B_Static_BurnProb": {
+          "pr_auc": 0.9395,
+          "roc_auc": 0.8669,
+          "precision": 0.8672,
+          "recall": 0.868,
+          "f1": 0.8676,
+          "brier_score": 0.1286
+        },
+        "Exp_D_Static_Geometry": {
+          "pr_auc": 0.9509,
+          "roc_auc": 0.8873,
+          "precision": 0.8875,
+          "recall": 0.8866,
+          "f1": 0.887,
+          "brier_score": 0.1191
+        },
+        "Exp_C_Full_Directional": {
+          "pr_auc": 0.9526,
+          "roc_auc": 0.8916,
+          "precision": 0.8925,
+          "recall": 0.8847,
+          "f1": 0.8886,
+          "brier_score": 0.1167
+        }
+      },
+      "delta_B_minus_A": 0.0276,
+      "delta_D_minus_A": 0.039,
+      "delta_C_minus_A": 0.0407
+    },
+    "CA-SHU-007808": {
+      "fire_name": "Carr Fire",
+      "metrics": {
+        "Exp_A_Static": {
+          "pr_auc": 0.9036,
+          "roc_auc": 0.8054,
+          "precision": 0.7315,
+          "recall": 0.959,
+          "f1": 0.8299,
+          "brier_score": 0.1737
+        },
+        "Exp_B_Static_BurnProb": {
+          "pr_auc": 0.9246,
+          "roc_auc": 0.8583,
+          "precision": 0.7818,
+          "recall": 0.9438,
+          "f1": 0.8552,
+          "brier_score": 0.1474
+        },
+        "Exp_D_Static_Geometry": {
+          "pr_auc": 0.9463,
+          "roc_auc": 0.8968,
+          "precision": 0.7993,
+          "recall": 0.9633,
+          "f1": 0.8737,
+          "brier_score": 0.1304
+        },
+        "Exp_C_Full_Directional": {
+          "pr_auc": 0.945,
+          "roc_auc": 0.895,
+          "precision": 0.7993,
+          "recall": 0.9546,
+          "f1": 0.8701,
+          "brier_score": 0.13
+        }
+      },
+      "delta_B_minus_A": 0.021,
+      "delta_D_minus_A": 0.0427,
+      "delta_C_minus_A": 0.0414
+    },
+    "CA-SNF-000958": {
+      "fire_name": "Creek Fire",
+      "metrics": {
+        "Exp_A_Static": {
+          "pr_auc": 0.902,
+          "roc_auc": 0.8274,
+          "precision": 0.7899,
+          "recall": 0.8819,
+          "f1": 0.8333,
+          "brier_score": 0.1593
+        },
+        "Exp_B_Static_BurnProb": {
+          "pr_auc": 0.9258,
+          "roc_auc": 0.8679,
+          "precision": 0.8315,
+          "recall": 0.8625,
+          "f1": 0.8467,
+          "brier_score": 0.14
+        },
+        "Exp_D_Static_Geometry": {
+          "pr_auc": 0.941,
+          "roc_auc": 0.8954,
+          "precision": 0.8336,
+          "recall": 0.8916,
+          "f1": 0.8616,
+          "brier_score": 0.1241
+        },
+        "Exp_C_Full_Directional": {
+          "pr_auc": 0.9413,
+          "roc_auc": 0.8961,
+          "precision": 0.8476,
+          "recall": 0.8997,
+          "f1": 0.8728,
+          "brier_score": 0.1234
+        }
+      },
+      "delta_B_minus_A": 0.0238,
+      "delta_D_minus_A": 0.039,
+      "delta_C_minus_A": 0.0393
+    },
+    "CA-MEU-008674": {
+      "fire_name": "Mendocino Complex",
+      "metrics": {
+        "Exp_A_Static": {
+          "pr_auc": 0.9175,
+          "roc_auc": 0.7918,
+          "precision": 0.7779,
+          "recall": 0.94,
+          "f1": 0.8513,
+          "brier_score": 0.1541
+        },
+        "Exp_B_Static_BurnProb": {
+          "pr_auc": 0.9512,
+          "roc_auc": 0.8739,
+          "precision": 0.8419,
+          "recall": 0.9317,
+          "f1": 0.8845,
+          "brier_score": 0.1238
+        },
+        "Exp_D_Static_Geometry": {
+          "pr_auc": 0.9592,
+          "roc_auc": 0.891,
+          "precision": 0.8536,
+          "recall": 0.9233,
+          "f1": 0.8871,
+          "brier_score": 0.1159
+        },
+        "Exp_C_Full_Directional": {
+          "pr_auc": 0.9619,
+          "roc_auc": 0.8976,
+          "precision": 0.8585,
+          "recall": 0.93,
+          "f1": 0.8928,
+          "brier_score": 0.1125
+        }
+      },
+      "delta_B_minus_A": 0.0337,
+      "delta_D_minus_A": 0.0417,
+      "delta_C_minus_A": 0.0444
+    },
+    "CA-CZU-005205": {
+      "fire_name": "CZU Lightning Complex",
+      "metrics": {
+        "Exp_A_Static": {
+          "pr_auc": 0.9173,
+          "roc_auc": 0.8246,
+          "precision": 0.8419,
+          "recall": 0.8208,
+          "f1": 0.8312,
+          "brier_score": 0.1572
+        },
+        "Exp_B_Static_BurnProb": {
+          "pr_auc": 0.9382,
+          "roc_auc": 0.8708,
+          "precision": 0.891,
+          "recall": 0.8189,
+          "f1": 0.8534,
+          "brier_score": 0.1378
+        },
+        "Exp_D_Static_Geometry": {
+          "pr_auc": 0.9514,
+          "roc_auc": 0.8985,
+          "precision": 0.9182,
+          "recall": 0.8439,
+          "f1": 0.8795,
+          "brier_score": 0.1211
+        },
+        "Exp_C_Full_Directional": {
+          "pr_auc": 0.9525,
+          "roc_auc": 0.9,
+          "precision": 0.9099,
+          "recall": 0.8362,
+          "f1": 0.8715,
+          "brier_score": 0.121
+        }
+      },
+      "delta_B_minus_A": 0.0209,
+      "delta_D_minus_A": 0.0341,
+      "delta_C_minus_A": 0.0352
+    }
+  },
+  "aggregate_statistics": {
+    "Exp_A_Static": {
+      "name": "Exp A (Static Baseline)",
+      "pr_auc": {
+        "mean": 0.9105,
+        "std": 0.0074,
+        "median": 0.9119,
+        "min": 0.902,
+        "max": 0.9175
+      },
+      "roc_auc": {
+        "mean": 0.8104,
+        "std": 0.0151,
+        "median": 0.8054,
+        "min": 0.7918,
+        "max": 0.8274
+      },
+      "f1": {
+        "mean": 0.8375,
+        "std": 0.009
+      },
+      "brier": {
+        "mean": 0.1599,
+        "std": 0.008
+      }
+    },
+    "Exp_B_Static_BurnProb": {
+      "name": "Exp B (Static + BurnProb)",
+      "pr_auc": {
+        "mean": 0.9359,
+        "std": 0.011,
+        "median": 0.9382,
+        "min": 0.9246,
+        "max": 0.9512
+      },
+      "roc_auc": {
+        "mean": 0.8676,
+        "std": 0.0059,
+        "median": 0.8679,
+        "min": 0.8583,
+        "max": 0.8739
+      },
+      "f1": {
+        "mean": 0.8615,
+        "std": 0.0149
+      },
+      "brier": {
+        "mean": 0.1355,
+        "std": 0.0094
+      }
+    },
+    "Exp_D_Static_Geometry": {
+      "name": "Exp D (Static + Attack Geometry)",
+      "pr_auc": {
+        "mean": 0.9498,
+        "std": 0.0067,
+        "median": 0.9509,
+        "min": 0.941,
+        "max": 0.9592
+      },
+      "roc_auc": {
+        "mean": 0.8938,
+        "std": 0.0046,
+        "median": 0.8954,
+        "min": 0.8873,
+        "max": 0.8985
+      },
+      "f1": {
+        "mean": 0.8778,
+        "std": 0.0106
+      },
+      "brier": {
+        "mean": 0.1221,
+        "std": 0.0055
+      }
+    },
+    "Exp_C_Full_Directional": {
+      "name": "Exp C (Full Directional)",
+      "pr_auc": {
+        "mean": 0.9507,
+        "std": 0.008,
+        "median": 0.9525,
+        "min": 0.9413,
+        "max": 0.9619
+      },
+      "roc_auc": {
+        "mean": 0.8961,
+        "std": 0.0031,
+        "median": 0.8961,
+        "min": 0.8916,
+        "max": 0.9
+      },
+      "f1": {
+        "mean": 0.8792,
+        "std": 0.0107
+      },
+      "brier": {
+        "mean": 0.1207,
+        "std": 0.0067
+      }
+    }
+  },
+  "delta_analysis": {
+    "Exp_B_minus_Exp_A": {
+      "mean": 0.0254,
+      "std": 0.0054,
+      "min": 0.0209,
+      "max": 0.0337,
+      "positive_fires_count": 5,
+      "total_fires": 5
+    },
+    "Exp_D_minus_Exp_A": {
+      "mean": 0.0393,
+      "std": 0.0033,
+      "min": 0.0341,
+      "max": 0.0427,
+      "positive_fires_count": 5,
+      "total_fires": 5
+    },
+    "Exp_C_minus_Exp_A": {
+      "mean": 0.0402,
+      "std": 0.0034,
+      "min": 0.0352,
+      "max": 0.0444,
+      "positive_fires_count": 5,
+      "total_fires": 5
+    }
+  }
+}

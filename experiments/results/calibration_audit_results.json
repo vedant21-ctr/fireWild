@@ -1,0 +1,30 @@
+{
+  "global_calibration": {
+    "global_brier": 0.1199,
+    "ece_10_equal_width": 0.0109,
+    "ece_20_equal_width": 0.0151,
+    "mean_unweighted_gap_10_bins": 0.0151,
+    "max_gap_10_bins": 0.0315,
+    "worst_bin_10_range": "[0.40, 0.50)",
+    "worst_bin_10_count": 290
+  },
+  "enrichment_audit": {
+    "overall_breach_prevalence_pct": 29.93,
+    "top_10_precision_pct": 87.39,
+    "random_expected_breaches_per_10_segs": 2.99,
+    "model_top_10_expected_breaches_per_10_segs": 8.74,
+    "offline_breach_yield_enrichment_ratio": 2.92
+  },
+  "per_fire_summaries": {
+    "top_10_precision_mean_pct": 89.57,
+    "top_10_precision_range_pct": [
+      83.95,
+      95.79
+    ],
+    "top_20_recall_mean_pct": 53.81,
+    "top_20_recall_range_pct": [
+      48.8,
+      57.18
+    ]
+  }
+}
