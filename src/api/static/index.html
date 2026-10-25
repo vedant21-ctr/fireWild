@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FireWild Intelligence Command Center | Phase 1 Benchmark Dashboard</title>
+  <meta name="description" content="Next Day Wildfire Spread (NDWS) Tabular AML Baselines & Candidate Line Breach Intelligence (CLBI) Decision Support Dashboard">
+
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-nav">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">FireWild Command Center</h1>
+        <div class="brand-subtitle">Phase 1: Tabular AML Baselines & Containment Intelligence</div>
+      </div>
+    </div>
+
+    <div class="status-badge" id="system-status-badge">
+      <span class="status-dot"></span>
+      <span>REST API v1.0.0 Online (Verified)</span>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs" role="tablist">
+    <button class="nav-tab-btn active" data-target="tab-ndws" id="tab-btn-ndws" role="tab" aria-selected="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Spread Intelligence (NDWS)
+    </button>
+    <button class="nav-tab-btn" data-target="tab-clbi" id="tab-btn-clbi" role="tab" aria-selected="false">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Line Breach Intelligence (CLBI)
+    </button>
+    <button class="nav-tab-btn" data-target="tab-simulator" id="tab-btn-sim" role="tab" aria-selected="false">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+      Line Risk Simulator
+    </button>
+    <button class="nav-tab-btn" data-target="tab-audit" id="tab-btn-audit" role="tab" aria-selected="false">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Research & Academic Audit
+    </button>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-content">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: NDWS SPREAD INTELLIGENCE            -->
+    <!-- ========================================== -->
+    <section id="tab-ndws" class="tab-pane active" role="tabpanel">
+
+      <!-- Top Stat Highlights -->
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-label">Recommended Model</div>
+          <div class="metric-value" id="stat-best-model" style="font-size:1.35rem; color:var(--accent-orange)">LightGBM Unweighted</div>
+          <div class="metric-sub" id="stat-optimal-thresh">Optimal τ* = 0.0281</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Validation Average Precision</div>
+          <div class="metric-value" id="stat-val-ap">0.1145</div>
+          <div class="metric-sub">+77.8% over Logistic Regression</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Held-Out Eval AP (eval_00)</div>
+          <div class="metric-value" id="stat-eval-ap">0.0837</div>
+          <div class="metric-sub">+35.8% over Logistic Regression</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">False Alarm Suppression</div>
+          <div class="metric-value" id="stat-fp-reduction">-73.3%</div>
+          <div class="metric-sub">3,323 vs 12,443 on 500k eval pixels</div>
+        </div>
+      </div>
+
+      <!-- Model Comparison Leaderboard -->
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Verified Tabular AML Benchmark Leaderboard
+            </h2>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Strict data isolation protocol: Decision thresholds (<code style="color:var(--accent-orange)">τ*</code>) tuned exclusively on validation partition (<code style="color:var(--accent-orange)">train_14</code>). Zero evaluation leakage.
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="ndws-models-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Model Architecture</th>
+                <th>Val PR-AUC (AP)</th>
+                <th>ROC-AUC</th>
+                <th>Brier Score</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1 Score</th>
+                <th>Threshold τ*</th>
+              </tr>
+            </thead>
+            <tbody id="ndws-models-tbody">
+              <tr><td colspan="9" style="text-align:center; padding: 1.5rem; color: var(--text-muted)">Loading benchmark metrics...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Dual Column Layout: Feature Attribution & Spatial Heatmap -->
+      <div class="dual-grid">
+
+        <!-- Left: Feature Importance -->
+        <div class="section-card">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Feature Attribution (Split Gain)
+              </h3>
+              <div style="font-size: 0.78rem; color: var(--text-muted)">
+                Model predictive contribution across all tree splits. Not causal evidence.
+              </div>
+            </div>
+          </div>
+
+          <div id="ndws-feature-bars">
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Loading feature attribution data...</div>
+          </div>
+        </div>
+
+        <!-- Right: 64x64 Spatial Heatmap Preview -->
+        <div class="section-card">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                Spatial Spread Heatmap Preview (64×64)
+              </h3>
+              <div style="font-size: 0.78rem; color: var(--text-muted)">
+                Nominal 1 km resolution interactive demonstration grid.
+              </div>
+            </div>
+          </div>
+
+          <!-- Prototype Disclaimer Badge -->
+          <div class="alert-banner" style="margin-bottom: 0.85rem; padding: 0.5rem 0.85rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span><strong>Prototype Visualization:</strong> Illustrative 64×64 spatial patch generated for UI layout demonstration. Ungeoreferenced prototype field.</span>
+          </div>
+
+          <!-- Heatmap Canvas & Controls -->
+          <div class="heatmap-wrapper">
+            <div class="canvas-container" id="canvas-container">
+              <canvas id="spatial-canvas" width="384" height="384"></canvas>
+              <div class="canvas-tooltip" id="canvas-tooltip"></div>
+            </div>
+
+            <!-- Heatmap Threshold Slider -->
+            <div class="heatmap-controls">
+              <div class="slider-container">
+                <div class="slider-header">
+                  <span>Visualization Threshold (τ)</span>
+                  <span style="font-family:var(--font-mono); font-weight:700; color:var(--accent-orange)" id="heatmap-thresh-value">0.0281</span>
+                </div>
+                <input type="range" id="heatmap-threshold-slider" min="0.010" max="0.100" step="0.001" value="0.0281">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;">
+                  <span style="font-size:0.72rem; color:var(--text-dim)">0.010 (Permissive)</span>
+                  <button type="button" class="btn-outline" style="padding:0.15rem 0.5rem; font-size:0.7rem;" onclick="resetHeatmapThreshold()">Reset to τ* (0.0281)</button>
+                  <span style="font-size:0.72rem; color:var(--text-dim)">0.100 (Conservative)</span>
+                </div>
+              </div>
+              <div id="heatmap-active-cells" style="font-size:0.75rem; color:var(--text-muted); text-align:center;">
+                Calculating active cells...
+              </div>
+            </div>
+
+            <!-- Legend Colorbar -->
+            <div class="colorbar-legend">
+              <div class="colorbar-labels">
+                <span>0.00 (Unburned)</span>
+                <span>0.028 (τ* Boundary)</span>
+                <span>0.10+ (Active Spread)</span>
+              </div>
+              <div class="colorbar-gradient"></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 2: CLBI CONTAINMENT BREACH INTELLIGENCE -->
+    <!-- ========================================== -->
+    <section id="tab-clbi" class="tab-pane" role="tabpanel">
+
+      <!-- Synthetic Benchmark Disclaimer -->
+      <div class="alert-banner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div>
+          <strong>Synthetic Benchmark Dataset:</strong> Candidate line segments are simulated based on historical CZU Lightning Complex scenario labels (<code style="color:#fbbf24">fireline_segments_v1</code>). Intended for testing the decision-support prioritization pipeline.
+        </div>
+      </div>
+
+      <!-- CLBI Summary Stat Grid (Calculated dynamically) -->
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-label">Evaluated Segments</div>
+          <div class="metric-value" id="clbi-stat-total">100</div>
+          <div class="metric-sub">100-meter candidate line units</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Critical Breach Risk (≥0.80)</div>
+          <div class="metric-value" id="clbi-stat-critical" style="color:var(--risk-critical)">16</div>
+          <div class="metric-sub">Immediate reinforcement needed</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">High Breach Risk (0.60 - 0.80)</div>
+          <div class="metric-value" id="clbi-stat-high" style="color:var(--risk-high)">14</div>
+          <div class="metric-sub">Vulnerable terrain & fuel alignment</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Actionable High / Critical</div>
+          <div class="metric-value" id="clbi-stat-actionable">30 (30%)</div>
+          <div class="metric-sub">Top 10% Resource Cutoff: 10 lines</div>
+        </div>
+      </div>
+
+      <!-- Segment Prioritization Table -->
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              Candidate Fireline Segments & Risk Stratification
+            </h2>
+            <div id="clbi-count-display" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Showing 100 candidate segments
+            </div>
+          </div>
+
+          <!-- Filter & Search Controls -->
+          <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+            <input type="text" class="form-input" id="clbi-search-input" placeholder="Search segment ID..." style="width: 175px;">
+            <select class="form-select" id="clbi-filter-risk">
+              <option value="ALL">All Risk Tiers</option>
+              <option value="CRITICAL">Critical (≥0.80)</option>
+              <option value="HIGH">High (0.60-0.80)</option>
+              <option value="MEDIUM">Medium (0.30-0.60)</option>
+              <option value="LOW">Low (&lt;0.30)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="clbi-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="segment_id" data-label="Segment ID">Segment ID</th>
+                <th>Scenario</th>
+                <th class="sortable" data-sort="breach_probability" data-label="Breach Probability">Breach Probability</th>
+                <th>Risk Tier</th>
+                <th class="sortable" data-sort="vulnerability_rank" data-label="Vuln. Rank">Vuln. Rank ▲</th>
+                <th class="sortable" data-sort="priority_percentile" data-label="Percentile">Percentile</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="clbi-segments-tbody">
+              <tr><td colspan="7" style="text-align:center; padding: 1.5rem; color: var(--text-muted)">Loading candidate fireline segments...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 3: UPGRADED LINE RISK SIMULATOR        -->
+    <!-- ========================================== -->
+    <section id="tab-simulator" class="tab-pane" role="tabpanel">
+
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              Candidate Line Risk Scenario Workspace
+            </h2>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Interactive scenario modeling powered by the CLBI 7-Feature Logistic Regression benchmark model via <code style="color:var(--accent-orange)">POST /api/v1/predict</code>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Preset Selectors -->
+        <div class="preset-bar">
+          <span style="font-size:0.78rem; font-weight:700; color:var(--text-dim); display:flex; align-items:center; margin-right:0.25rem;">PRESETS:</span>
+          <button type="button" class="preset-btn" data-preset="vulnerable_ridge">Vulnerable Ridge</button>
+          <button type="button" class="preset-btn" data-preset="direct_attack">Direct Head-Fire Attack</button>
+          <button type="button" class="preset-btn" data-preset="wide_barrier">Wide Cleared Barrier Defense</button>
+        </div>
+
+        <div id="sim-preset-desc" style="font-size:0.8rem; color:var(--accent-orange); margin-bottom:1.5rem; background:rgba(255,107,43,0.06); padding:0.6rem 0.85rem; border-radius:var(--radius-sm); border:1px solid rgba(255,107,43,0.15)">
+          Select a benchmark preset above or adjust the synchronized scenario controls below.
+        </div>
+
+        <!-- Simulator Workspace Grid -->
+        <div class="sim-workspace">
+
+          <!-- Left Column: Controls Form -->
+          <form id="sim-form">
+
+            <!-- Group 1: Terrain -->
+            <div style="margin-bottom: 1.25rem;">
+              <div class="control-group-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 22 22 22 12 2"/></svg>
+                Terrain Topography
+              </div>
+
+              <div class="input-slider-row">
+                <label class="input-slider-label" for="sim-slope-range">Terrain Slope (°)</label>
+                <input type="range" class="input-slider-range" id="sim-slope-range" min="0" max="50" step="0.5" value="18.5">
+                <input type="number" class="input-slider-number" id="sim-slope-num" min="0" max="60" step="0.5" value="18.5" required>
+              </div>
+
+              <div class="input-slider-row">
+                <label class="input-slider-label" for="sim-elev-range">Elevation (m)</label>
+                <input type="range" class="input-slider-range" id="sim-elev-range" min="0" max="2500" step="10" value="520">
+                <input type="number" class="input-slider-number" id="sim-elev-num" min="0" max="4000" step="10" value="520" required>
+              </div>
+            </div>
+
+            <!-- Group 2: Fire Dynamics -->
+            <div style="margin-bottom: 1.25rem;">
+              <div class="control-group-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                Flame Front Dynamics
+              </div>
+
+              <div class="input-slider-row">
+                <label class="input-slider-label" for="sim-dist-range">Distance to Fire (m)</label>
+                <input type="range" class="input-slider-range" id="sim-dist-range" min="0" max="800" step="5" value="95">
+                <input type="number" class="input-slider-number" id="sim-dist-num" min="0" max="2000" step="5" value="95" required>
+              </div>
+
+              <div class="input-slider-row">
+                <label class="input-slider-label" for="sim-burn-range">Burn Intensity [0-1]</label>
+                <input type="range" class="input-slider-range" id="sim-burn-range" min="0" max="1" step="0.01" value="0.48">
+                <input type="number" class="input-slider-number" id="sim-burn-num" min="0" max="1" step="0.01" value="0.48" required>
+              </div>
+
+              <div class="input-slider-row">
+                <label class="input-slider-label" for="sim-angle-range">Attack Angle (°)</label>
+                <input type="range" class="input-slider-range" id="sim-angle-range" min="0" max="90" step="1" value="32">
+                <input type="number" class="input-slider-number" id="sim-angle-num" min="0" max="90" step="1" value="32" required>
+              </div>
+
+              <div class="input-slider-row">
+                <label class="input-slider-label" for="sim-dot-range">Alignment (cos θ)</label>
+                <input type="range" class="input-slider-range" id="sim-dot-range" min="-1" max="1" step="0.05" value="0.75">
+                <input type="number" class="input-slider-number" id="sim-dot-num" min="-1" max="1" step="0.05" value="0.75" required>
+              </div>
+            </div>
+
+            <!-- Group 3: Containment -->
+            <div style="margin-bottom: 1.5rem;">
+              <div class="control-group-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Containment Defenses
+              </div>
+
+              <div class="input-slider-row">
+                <label class="input-slider-label" for="sim-barrier-range">Barrier Width (m)</label>
+                <input type="range" class="input-slider-range" id="sim-barrier-range" min="0.5" max="25" step="0.5" value="6.0">
+                <input type="number" class="input-slider-number" id="sim-barrier-num" min="0.5" max="30" step="0.5" value="6.0" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="btn-run-sim" style="width: 100%;">
+              Run Benchmark Scenario
+            </button>
+          </form>
+
+          <!-- Right Column: Live Analysis Card -->
+          <div class="sim-result-card" id="sim-result-container">
+            <div>
+              <div class="metric-label" style="text-align:center;">Scenario Holding Assessment</div>
+              <div class="sim-gauge-container">
+                <div class="sim-prob-number" id="sim-prob-display">--%</div>
+                <div><span class="badge" id="sim-tier-badge" style="font-size:0.85rem">INITIALIZING</span></div>
+                <div id="sim-hold-display" style="font-size:0.82rem; color:var(--text-muted); margin-top:0.4rem; font-weight:600">
+                  Hold Confidence: --%
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="metric-label">Decision Model Reasoning</div>
+              <div class="sim-explanation-box" id="sim-explanation-box">
+                Executing benchmark decision logic...
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
+              <div>
+                <div class="metric-label" style="color:#f87171">Risk Drivers</div>
+                <div class="factor-tag-list" id="sim-risk-factors"></div>
+              </div>
+              <div>
+                <div class="metric-label" style="color:#4ade80">Holding Buffers</div>
+                <div class="factor-tag-list" id="sim-protective-factors"></div>
+              </div>
+            </div>
+
+            <div style="font-size:0.72rem; color:var(--text-dim); text-align:center; padding-top:0.5rem; border-top:1px solid var(--border-color);">
+              *Evaluated using the standardized 7-feature logistic regression baseline pipeline.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 4: RESEARCH & ACADEMIC AUDIT           -->
+    <!-- ========================================== -->
+    <section id="tab-audit" class="tab-pane" role="tabpanel">
+
+      <div class="section-card">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Research Methodology & Verification Protocols
+            </h2>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Rigorous empirical evaluation principles for Next Day Wildfire Spread (NDWS) Project 17.
+            </div>
+          </div>
+        </div>
+
+        <div class="narrative-grid">
+
+          <!-- Card 1: The Prediction Problem -->
+          <div class="narrative-card">
+            <div class="narrative-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div class="narrative-title">Predicting Active Spread Transitions</div>
+            <div class="narrative-body">
+              Our Phase 1 tabular baseline explicitly models the transition from <strong>unburned to burning</strong> state (<code style="color:var(--accent-orange)">PrevFireMask = 0 → FireMask = 1</code>). Under extreme class imbalance (<strong style="color:var(--text-main)">0.58% to 0.96% positive prevalence</strong>), traditional ROC-AUC is misleading because 99.4% true negatives mask thousands of false alarms. <strong>Average Precision (PR-AUC)</strong> is the essential metric for honest wildfire evaluation.
+            </div>
+          </div>
+
+          <!-- Card 2: Leakage-Safe Data Partitions -->
+          <div class="narrative-card">
+            <div class="narrative-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+            </div>
+            <div class="narrative-title">Strict Partition & Scaler Isolation</div>
+            <div class="narrative-body">
+              To eliminate data leakage, preprocessors and scalers were fitted exclusively on training shards (<code style="color:var(--accent-orange)">train_00..13</code>). The operating decision threshold (<code style="color:var(--accent-orange)">τ* = 0.028115</code>) was optimized strictly on internal validation holdouts (<code style="color:var(--accent-orange)">train_14</code>). Official evaluation shard <code style="color:var(--accent-orange)">eval_00</code> was scored zero-touch without tuning.
+            </div>
+          </div>
+
+          <!-- Card 3: Kaggle NDWS Dataset Audit Finding -->
+          <div class="narrative-card">
+            <div class="narrative-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="narrative-title">Dataset Terrain Autocorrelation Audit</div>
+            <div class="narrative-body">
+              An independent terrain-fingerprinting audit on the public Kaggle NDWS release revealed that <strong>94.7% of official evaluation patches and 95.1% of test patches share identical 8×8 km SRTM elevation tiles with training data</strong>. Models on the official partition achieve 0.26 PR-AUC by memorizing local terrain; performance drops to 0.138 on location-disjoint spatial splits.
+            </div>
+          </div>
+
+          <!-- Card 4: Roadmap to Phase 2 Spatial Deep Learning -->
+          <div class="narrative-card">
+            <div class="narrative-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <div class="narrative-title">Phase 2: Spatial Deep Learning (U-Net)</div>
+            <div class="narrative-body">
+              While LightGBM establishes a superior tabular baseline (+77.8% AP over linear models), 1D tabular point features cannot represent 2D perimeter curvature, spotting jumps, or contiguous fuel barriers. Phase 2 transitions to <strong>U-Net convolutional encoder-decoder architectures</strong> processing full 64×64 multi-channel spatial rasters.
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color); font-size: 0.8rem; color: var(--text-dim); display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+          <span><strong>Project Provenance:</strong> FireWild (Project 17) • CSAI Advanced Machine Learning</span>
+          <span>Sourced from verified artifacts in <code style="color:var(--text-muted)">experiments/results_ndws/</code> and <code style="color:var(--text-muted)">models/ndws/</code></span>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Segment Inspector Modal Drawer -->
+  <div class="modal-overlay" id="segment-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title" style="font-size:1.15rem; font-weight:700;">Segment Telemetry</h3>
+        <button type="button" class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="modal-details"></div>
+      <div style="display:flex; justify-content:flex-end; margin-top:1.5rem;">
+        <button type="button" class="btn-primary" onclick="closeModal()">Close Drawer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

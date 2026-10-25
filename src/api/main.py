@@ -2,13 +2,16 @@
 main.py - FastAPI Application Entry Point for Candidate Line Breach Intelligence (CLBI)
 """
 
+import os
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from src.api.routes import router
+from src.api.ndws_routes import ndws_router
 
 app = FastAPI(
     title="Candidate Line Breach Intelligence (CLBI) API",
@@ -87,8 +90,22 @@ async def value_error_handler(request: Request, exc: ValueError):
         }
     )
 
-# Include API router
+# Include API routers
 app.include_router(router)
+app.include_router(ndws_router)
+
+# Mount Static Assets and Dashboard Frontend
+static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+    @app.get("/", include_in_schema=False)
+    async def serve_index():
+        return FileResponse(os.path.join(static_dir, "index.html"))
+
+    @app.get("/demo", include_in_schema=False)
+    async def serve_demo():
+        return FileResponse(os.path.join(static_dir, "index.html"))
 
 if __name__ == "__main__":
     import uvicorn
