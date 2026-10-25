@@ -232,7 +232,7 @@ def get_demo_response(engine: CLBIDecisionEngine = Depends(get_engine)) -> Dict[
             "product": "Candidate Line Breach Intelligence",
             "version": "1.0.0",
             "model": "Standardized 7-Feature Logistic Regression Pipeline",
-            "data_source": "NDWS-derived historical benchmark (CZU Lightning Complex)",
+            "data_source": "Synthetic simulated benchmark fireline_segments_v1 (scenario label: CZU)",
             "retrospective": True
         },
         "summary": {

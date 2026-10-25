@@ -1,5 +1,7 @@
 # SPATIAL NEIGHBORHOOD ABLATION REPORT
 
+> **SYNTHETIC DATA. NOT EMPIRICAL EVIDENCE.** `fireline_segments_v1` is simulated by `src/data/build_dataset.py` (random terrain/geometry and a hand-written logistic label rule). Fire names and incident IDs are scenario labels only; no data from those incidents is used. These results test the CLBI software pipeline, not real fireline behaviour, and are outside the Phase 1 NDWS evaluation (see `docs/CLBI_SYNTHETIC_DATASET_CARD.md`).
+
 **Project:** Candidate Line Breach Intelligence (CLBI)  
 **Date:** 2026-09-30  
 **Evaluation Protocol:** 5-fold Leave-One-Fire-Out (LOFO) Cross-Validation  
@@ -60,8 +62,8 @@ Strict pre-engagement aggregation was enforced. All 8 neighborhood features were
 ## 5. Empirical Findings & Spatial Signal Test
 
 1. **Number of Fires Improved:** **0 / 5 FIRES**
-   - Spatial neighborhood enrichment improved PR-AUC on **ALL 5 HELD-OUT WILDFIRES**.
-2. **Average Performance Gain:** **+-0.0003 PR-AUC** (ROC-AUC gain: **+-0.0010**).
+   - Spatial neighborhood enrichment improved PR-AUC on **0 of 5 held-out fires**.
+2. **Average Performance Change:** **-0.0003 PR-AUC** (ROC-AUC change: **-0.0010**).
 3. **Signal Strength Classification:** **NO EVIDENCE**
 
 ---
@@ -75,5 +77,6 @@ Strict pre-engagement aggregation was enforced. All 8 neighborhood features were
 ### **Answer:** **NO**
 
 ### **Justification:**
-1. **Engineered Spatial Neighborhood Features Provide Clear Signal:** Manually aggregating neighbor features (`nbr_burn_prob_max`, `nbr_attack_dot_mean`, `nbr_slope_max`) improved performance across **100% of unseen held-out fires** over the isolated 7-feature baseline.
-2. **Logical Next Evolution:** Because fixed linear neighborhood pooling (mean/min/max) produces consistent gains, a Graph Neural Network (1D Polyline GCN / Graph Attention Network) can now learn dynamic attention weights and multi-hop message-passing along the polyline chain.
+1. Neighbour aggregates improved PR-AUC on only 0/5 held-out fires (mean change -0.0003).
+2. Fixed neighbourhood pooling adds no measurable signal, so there is no empirical case for a GNN on this data.
+3. Expected here: in the synthetic generator (`src/data/build_dataset.py`) each segment's label depends only on its own features.

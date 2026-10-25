@@ -8,12 +8,12 @@
       "barrier_width_m"
     ],
     "coefficients": {
-      "slope": -0.7158214738673587,
-      "elevation": 0.14453437923203943,
-      "distance_to_fire": 1.4578492245693537,
+      "slope": -0.7158214738673588,
+      "elevation": 0.1445343792320395,
+      "distance_to_fire": 1.457849224569354,
       "barrier_width_m": 0.5740183358786355
     },
-    "intercept": 1.2518237959057958,
+    "intercept": 1.251823795905796,
     "val_metrics": {
       "pr_auc": 0.9172,
       "roc_auc": 0.7903,
@@ -51,13 +51,13 @@
       "burn_prob"
     ],
     "coefficients": {
-      "slope": -0.19437296611269478,
-      "elevation": 0.16713737333413062,
-      "distance_to_fire": -0.6849384886922717,
+      "slope": -0.19437296611269486,
+      "elevation": 0.16713737333413053,
+      "distance_to_fire": -0.6849384886922708,
       "barrier_width_m": 0.686905657487741,
-      "burn_prob": -2.326107784333869
+      "burn_prob": -2.3261077843338684
     },
-    "intercept": 1.3932089561332834,
+    "intercept": 1.3932089561332837,
     "val_metrics": {
       "pr_auc": 0.9508,
       "roc_auc": 0.8731,
@@ -99,17 +99,17 @@
       "dist_pred_boundary"
     ],
     "coefficients": {
-      "slope": -0.7188418559080126,
-      "elevation": 0.18853618602107508,
-      "distance_to_fire": 0.5545962006636327,
+      "slope": -0.7188418559080128,
+      "elevation": 0.18853618602107544,
+      "distance_to_fire": 0.554596200663632,
       "barrier_width_m": 0.7573259893535432,
-      "burn_prob": -0.6060909167056306,
-      "prob_gradient": 0.041509057762605134,
-      "attack_angle": -0.07858604346630922,
-      "attack_dot_product": -1.2467473843046553,
-      "dist_pred_boundary": 0.5881033394853542
+      "burn_prob": -0.606090916705631,
+      "prob_gradient": 0.04150905776260517,
+      "attack_angle": -0.07858604346630833,
+      "attack_dot_product": -1.2467473843046548,
+      "dist_pred_boundary": 0.5881033394853548
     },
-    "intercept": 1.6235706203624671,
+    "intercept": 1.6235706203624676,
     "val_metrics": {
       "pr_auc": 0.9617,
       "roc_auc": 0.8969,
@@ -148,14 +148,14 @@
       "attack_dot_product"
     ],
     "coefficients": {
-      "slope": -0.9402016719057906,
-      "elevation": 0.18640101807819526,
-      "distance_to_fire": 1.7859459137817426,
-      "barrier_width_m": 0.7416366284142287,
-      "attack_angle": -0.06206059793291385,
-      "attack_dot_product": -1.440270232650731
+      "slope": -0.9402016719057908,
+      "elevation": 0.1864010180781947,
+      "distance_to_fire": 1.785945913781742,
+      "barrier_width_m": 0.7416366284142284,
+      "attack_angle": -0.06206059793291374,
+      "attack_dot_product": -1.4402702326507322
     },
-    "intercept": 1.6504463592370084,
+    "intercept": 1.6504463592370087,
     "val_metrics": {
       "pr_auc": 0.959,
       "roc_auc": 0.8902,

@@ -452,6 +452,8 @@ def update_markdown_report(bin_10_df, thresh_df, per_fire_band_df, prio_df, glob
     
     content = f"""# STEP 8 — RISK STRATIFICATION, CALIBRATION AUDIT & CLAIM VALIDATION REPORT
 
+> **SYNTHETIC DATA. NOT EMPIRICAL EVIDENCE.** `fireline_segments_v1` is simulated by `src/data/build_dataset.py` (random terrain/geometry and a hand-written logistic label rule). Fire names and incident IDs are scenario labels only; no data from those incidents is used. These results test the CLBI software pipeline, not real fireline behaviour, and are outside the Phase 1 NDWS evaluation (see `docs/CLBI_SYNTHETIC_DATASET_CARD.md`).
+
 **Project:** Candidate Line Breach Intelligence (CLBI)  
 **Date:** 2026-09-30  
 **Model:** 7-Feature Standardized Logistic Regression Pipeline  

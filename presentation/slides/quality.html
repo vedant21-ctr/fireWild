@@ -1,0 +1,17 @@
+<section id="quality" data-transition="fade" style="background:#F7F5F0;color:#1F2A33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#B0432C">Data quality</p>
+<h2 style="font-family:'EB Garamond', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1">The raw data contains physically impossible values</h2>
+</div>
+<table style="font-size:28px;color:#1F2A33">
+<tr><th style="width:52%;text-align:left">Found in the audit</th><th style="width:48%;text-align:left">Handling</th></tr>
+<tr><td>Temperatures of 0 K and up to 344 K (71 °C)</td><td>Outside 200–330 K → missing</td></tr>
+<tr style="background:#ECE8DF"><td>Wind directions from −496,522° to 37,620°</td><td>Outside 0–361° → missing</td></tr>
+<tr><td>Negative humidity and wind speed</td><td>→ missing</td></tr>
+<tr style="background:#ECE8DF"><td>Negative precipitation (interpolation)</td><td>Clipped at 0</td></tr>
+<tr><td>Elevation slightly below sea level</td><td>Kept: real terrain</td></tr>
+<tr style="background:#ECE8DF"><td>NDVI ×10⁴, heavy-tailed population</td><td>Rescaled, log1p</td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6A7178">5 · Pratik Agade · src/aml/eda.py, features.py::clean_channels</p>
+<aside>Presenter: Pratik. Each rule is unit-tested. Trees route missing values natively; LR and RF use median imputation fitted on training data only.</aside>
+</section>

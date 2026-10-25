@@ -4,6 +4,12 @@
 **Document Version:** v1.0  
 **Evaluation Protocol:** 5-fold Leave-One-Fire-Out (LOFO) Cross-Validation  
 
+> **SYNTHETIC DATA. NOT EMPIRICAL EVIDENCE.** All numbers below come from `fireline_segments_v1`, which
+> `src/data/build_dataset.py` simulates with a logistic label rule (see `docs/CLBI_SYNTHETIC_DATASET_CARD.md`).
+> They check that the CLBI software works; they say nothing about real firelines. The model's positive
+> class is "Held" (70% of rows), so the PR-AUC below has a chance level of about 0.70, not 0.30. The
+> Phase 1 project metrics are in `experiments/ndws/RESULTS.md`.
+
 ---
 
 ## Metric Definitions & Benchmark Results

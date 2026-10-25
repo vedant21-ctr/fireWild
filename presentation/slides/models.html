@@ -1,0 +1,22 @@
+<section id="models" data-transition="fade" style="background:#F7F5F0;color:#1F2A33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#B0432C">Models and training</p>
+<h2 style="font-family:'EB Garamond', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1">Four learners, two baselines, tuned only on validation</h2>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#ECE8DF;padding:40px;border-radius:16px">
+<h3 style="font-size:32px;font-weight:600">Models</h3>
+<p style="font-size:26px;line-height:1.45;color:#3E4A54">Persistence and 3×3 persistence (no learning)<br>Logistic regression (L2)<br>Random forest<br>XGBoost, LightGBM with early stopping on val PR-AUC</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#ECE8DF;padding:40px;border-radius:16px">
+<h3 style="font-size:32px;font-weight:600">Imbalance</h3>
+<p style="font-size:26px;line-height:1.45;color:#3E4A54">All positives + 2% of negatives, train split only (1.9 M rows). Probabilities corrected back:<br><b>p = r·p̂ / (r·p̂ + 1 − p̂), r = 0.02</b></p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#ECE8DF;padding:40px;border-radius:16px">
+<h3 style="font-size:32px;font-weight:600">A bug we fixed</h3>
+<p style="font-size:26px;line-height:1.45;color:#3E4A54">First LightGBM stopped after 5 trees: pixels in a patch share weather, so small leaves memorise patches. Fix: leaves ≥ 2,000 rows, 50% column sampling.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6A7178">10 · Raghvendra Singh · src/aml/train.py</p>
+<aside>Presenter: Raghvendra. Theory to know: boosting leaf weight w* = −G/(H+λ); RF variance ρσ² + (1−ρ)σ²/B. The prior correction is monotone, so ranking metrics don’t change; only calibration does. Weighted vs unweighted training was chosen per model on validation. Thresholds for F1 also come from validation; test is scored once.</aside>
+</section>

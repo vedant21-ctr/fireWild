@@ -318,6 +318,8 @@ def generate_robustness_report(per_fire_results, aggregates, delta_summary, base
 
     content = f"""# BASELINE ROBUSTNESS VALIDATION REPORT
 
+> **SYNTHETIC DATA. NOT EMPIRICAL EVIDENCE.** `fireline_segments_v1` is simulated by `src/data/build_dataset.py` (random terrain/geometry and a hand-written logistic label rule). Fire names and incident IDs are scenario labels only; no data from those incidents is used. These results test the CLBI software pipeline, not real fireline behaviour, and are outside the Phase 1 NDWS evaluation (see `docs/CLBI_SYNTHETIC_DATASET_CARD.md`).
+
 **Project:** Candidate Line Breach Intelligence (CLBI)  
 **Date:** 2026-09-29  
 **Evaluation Protocol:** Leave-One-Fire-Out (LOFO) Cross-Validation across 5 Wildfires  

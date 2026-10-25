@@ -1,0 +1,27 @@
+[15:30:07] [official] building training sample (neg_rate=0.02)
+[15:30:27] [official] train rows=1,843,995 positives=658,270; early-stop rows=250,614
+[15:30:27] [official] scoring features for the full validation split
+[15:30:29] [official] val pixels=7,500,385 positive rate=0.0137
+[15:30:40] [official] logistic_regression weighted=False val PR-AUC=0.1502
+[15:30:49] [official] logistic_regression weighted=True val PR-AUC=0.1582
+[15:31:39] [official] random_forest weighted=False val PR-AUC=0.2053
+[15:32:29] [official] random_forest weighted=True val PR-AUC=0.2014
+[15:32:46] [official] xgboost {'max_depth': 6, 'min_child_weight': 100} trees=109 val PR-AUC=0.2064
+[15:33:06] [official] xgboost {'max_depth': 8, 'min_child_weight': 1000} trees=130 val PR-AUC=0.2039
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:33:32] [official] lightgbm {'num_leaves': 31, 'min_child_samples': 2000} trees=247 val PR-AUC=0.2039
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:34:14] [official] lightgbm {'num_leaves': 63, 'min_child_samples': 2000} trees=342 val PR-AUC=0.2028
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:34:55] [official] lightgbm {'num_leaves': 127, 'min_child_samples': 5000} trees=192 val PR-AUC=0.2024
+[15:35:22] [official] scoring the test split
+[15:36:07] [official] TEST persistence            PR-AUC=0.1065 ROC-AUC=0.6333 F1=0.3093
+[15:36:07] [official] TEST neighbourhood_persist  PR-AUC=0.1734 ROC-AUC=0.7290 F1=0.3278
+[15:36:07] [official] TEST logistic_regression    PR-AUC=0.2302 ROC-AUC=0.9029 F1=0.3269
+[15:36:07] [official] TEST random_forest          PR-AUC=0.2651 ROC-AUC=0.9010 F1=0.3426
+[15:36:07] [official] TEST xgboost                PR-AUC=0.2651 ROC-AUC=0.9107 F1=0.3318
+[15:36:07] [official] TEST lightgbm               PR-AUC=0.2626 ROC-AUC=0.9053 F1=0.3343
+[15:36:09] [official] wrote /Users/aaryankrishna/Desktop/AML:DL/fireWild/experiments/ndws/results/official/results.json

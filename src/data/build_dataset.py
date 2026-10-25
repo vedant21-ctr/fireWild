@@ -217,13 +217,7 @@ def main():
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
-        
-    # Also save as parquet-compatible or json if needed
-    json_path = os.path.join(final_dir, "fireline_segments_v1.json")
-    import json
-    with open(json_path, mode="w", encoding="utf-8") as f:
-        json.dump(rows, f, indent=2)
-        
+
     print("\nDataset generation complete!")
     print(f"Total Rows: {len(rows)}")
     

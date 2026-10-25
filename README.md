@@ -1,239 +1,189 @@
-# Candidate Line Breach Intelligence (CLBI)
+# fireWild: Next-Day Wildfire Spread Prediction
 
-**Research Focus:** Predictive Wildfire Containment Line Holding & Breach Intelligence  
-**Core Question:** *Can predicted next-day wildfire spread provide useful directional information for identifying vulnerable segments of a proposed containment line?*  
-**Benchmark Version:** `fireline_segments_v1`  
+**Course project 17 (CSAI AML/DL):** *Next Day Wildfire Spread Prediction via Tabular AML and Spatial Deep Learning.*
+**Phase 1 (this submission): machine learning.** For every 1 km pixel of a 64 × 64 km region with an active fire
+on day *t*, predict the probability that it is burning on day *t*+1. The predictions come from engineered
+environmental, fire, wind and terrain features, using logistic regression, random forest, XGBoost and LightGBM.
+Phase 2 adds a CNN / U-Net on the same splits.
 
----
-
-## Candidate Line Breach Intelligence (CLBI) Decision Engine
-
-### **Problem Statement**
-Fire managers evaluating candidate containment lines need to identify which 100-meter segments historically exhibit conditions associated with higher breach risk. The CLBI Decision Engine processes candidate firelines to stratify risk and prioritize inspection resources.
-
-### **Input Features (7 Validated Features)**
-1. `slope`: Terrain slope angle (degrees)
-2. `elevation`: Surface elevation (meters)
-3. `distance_to_fire`: Distance to active flame front at day $t$ (meters)
-4. `barrier_width_m`: Physical cleared width of barrier (meters)
-5. `burn_prob`: Deep learning predicted next-day burn probability $[0, 1]$
-6. `attack_angle`: Acute interaction angle between line normal and spread heading (degrees)
-7. `attack_dot_product`: Direct head-fire attack alignment ratio ($\cos\theta_{\text{attack}}$)
-
-### **Output Schema**
-- `breach_probability`: Predicted probability of breach $P(\text{Breach}) \in [0, 1]$
-- `hold_probability`: Predicted probability of holding $1 - P(\text{Breach})$
-- `risk_tier`: Operational risk category (`LOW` $<0.30$, `MEDIUM` $0.30\text{--}0.60$, `HIGH` $0.60\text{--}0.80$, `CRITICAL` $\ge 0.80$)
-- `vulnerability_rank`: Ordinal ranking (1 = highest breach risk)
-- `priority_percentile`: Percentile rank across candidate fireline
-- `priority_recommended`: Boolean indicator for top 10% inspection set
-- `top_risk_factors` & `protective_factors`: Structured feature attributions
-- `explanation`: Non-causal association summary
+| | |
+|---|---|
+| Data | [Next Day Wildfire Spread (Kaggle)](https://www.kaggle.com/datasets/fantineh/next-day-wildfire-spread), Huot et al., IEEE TGRS 2022. 18,545 patches, US 2012–2020 |
+| Primary metric | PR-AUC (about 1.1% positive pixels, so accuracy is meaningless) |
+| Also reported | ROC-AUC, F1 / precision / recall at a validation-chosen threshold, recall at 1% and 5% FPR, Brier score, 95% patch-bootstrap CIs, paired significance tests |
+| Splits | **official** (random weeks, temporally separated) and **spatial** (location-grouped, no shared terrain with train) |
 
 ---
 
-## Validated Benchmark Evidence
+## Key findings
 
-Evaluated via 5-fold Leave-One-Fire-Out (LOFO) cross-validation across 4,600 held-out segments:
+<!-- RESULTS:BEGIN (filled from experiments/ndws/RESULTS.md) -->
+Test PR-AUC with 95% patch-bootstrap CI (thresholds and hyperparameters chosen on validation):
 
-| Metric | Measured Benchmark Result |
-| :--- | :--- |
-| **Mean LOFO PR-AUC** | **0.9508 ± 0.0076** |
-| **Global Brier Score** | **0.1199** |
-| **ECE (10 Equal-Width Bins)** | **0.0109** (1.09 percentage points) |
-| **ECE (20 Equal-Width Bins)** | **0.0151** (1.51 percentage points) |
-| **Top-10% Inspection Precision** | **89.6% mean** (84.0% to 95.8% across fires) |
-| **Top-20% Breach Recall** | **53.8% mean** (48.8% to 57.2% across fires) |
-| **Offline Breach-Yield Enrichment**| **2.92× versus random selection** |
+| Model | Official split (prevalence 1.25%) | Spatial split (prevalence 0.48%) | Spatial ROC-AUC |
+|---|---|---|---|
+| Persistence | 0.107 [0.097, 0.118] | 0.037 [0.032, 0.041] | 0.572 |
+| Neighbourhood persistence | 0.173 [0.157, 0.191] | 0.064 [0.055, 0.071] | 0.641 |
+| Logistic regression | 0.230 [0.213, 0.249] | 0.117 [0.106, 0.127] | 0.867 |
+| Random forest | 0.265 [0.248, 0.282] | 0.135 [0.123, 0.149] | 0.885 |
+| **XGBoost** | **0.265** [0.248, 0.283] | **0.141** [0.128, 0.154] | **0.899** |
+| LightGBM | 0.263 [0.246, 0.281] | 0.138 [0.127, 0.150] | 0.896 |
+| *Huot et al. 2022 (official): persistence / LR / RF / CNN* | *0.115 / 0.198 / 0.225 / 0.284* | | |
 
----
+1. **Beats the published tabular baselines.** On the official split, engineered features lift logistic regression
+   from 0.198 to 0.230 and the random forest from 0.225 to 0.265. Boosting reaches 0.265, close to the paper's CNN
+   (0.284). Our persistence (0.107) matches theirs (0.115), so the numbers are comparable.
+2. **Boosting beats logistic regression significantly** (paired bootstrap ΔPR-AUC +0.021 spatial, +0.032 official;
+   CIs exclude 0). It is **not** significantly better than the random forest, and XGBoost ≈ LightGBM.
+3. **Spatial leakage audit.** About 95% of official test patches share terrain with training patches. On a
+   location-disjoint split, raw PR-AUC halves, but prevalence also drops (1.25% → 0.48%). Lift over chance
+   (20.9× → 28.6×), ROC-AUC (0.905 → 0.896) and the model ranking barely change. The overlap is real, but it does
+   not measurably inflate pixel-level tabular results.
+4. **What drives predictions.** Lagged burn features dominate (raw environmental channels alone: test PR-AUC 0.010;
+   fire features alone: 0.111). Wind adds the next-largest gain. Terrain, weather and vegetation effects are within
+   bootstrap noise. SHAP ranks distance to fire, the 17/9/5 km burn fractions, then downwind "wind push" and
+   relative elevation.
+5. **Physically plausible.** Predicted risk tracks observed ignition across distance bins, rises downwind, and is
+   higher on sloped ground. The physics also fixed the unknown image orientation (downwind/upwind ratio 1.12, 95% CI
+   1.09–1.15). Probability maps form halos around the active front and miss distant new ignitions. That is the gap
+   Phase 2's CNN / U-Net targets.
+<!-- RESULTS:END -->
 
-## CLBI Production Architecture
-
-```
-Research Evaluation (LOFO 5-Fold)
-            ↓
-    LOFO Validation (Mean PR-AUC = 0.9508)
-            ↓
-Production Model Training (`train_clbi_model.py`)
-            ↓
-Saved Model Artifact (`models/clbi_logistic_regression.joblib`)
-            ↓
-CLBI Inference Engine (`CLBIDecisionEngine`)
-            ↓
-   Risk Stratification (`LOW` / `MEDIUM` / `HIGH` / `CRITICAL`)
-            ↓
-Candidate-Line Prioritization (Top-K / Resource Selection)
-            ↓
-Future REST API (`docs/CLBI_API_CONTRACT.md`) & Frontend
-```
-
-### **Methodological Separation: Research vs Production**
-- **LOFO Research Evaluation:** Evaluates model generalization across 5 held-out wildfire incidents where each fire is excluded from training before evaluation. Used solely for unbiased metric reporting.
-- **Production Model:** Fitted on all historical training data (`split == 'train'`) and serialized to `models/clbi_logistic_regression.joblib`. The production `CLBIDecisionEngine` strictly loads this artifact for deterministic, fast inference without retraining.
+Full tables: [experiments/ndws/RESULTS.md](experiments/ndws/RESULTS.md). Walk-through:
+[notebooks/02_ndws_results.ipynb](notebooks/02_ndws_results.ipynb).
 
 ---
 
-## Project Structure
+## Phase 1 deliverables
 
-```
-WILDFIRE/
-├── data/
-│   ├── demo/
-│   │   └── clbi_demo_segments.csv         # 100 deterministic demo segments (CZU fire)
-│   └── final/
-│       ├── fireline_segments_v1.parquet   # Production tabular dataset (187 KB)
-│       ├── fireline_segments_v1.csv       # Inspection CSV dataset (749 KB)
-│       └── fireline_segments_v1.json      # JSON schema representation
-│
-├── docs/
-│   ├── CLBI_API_CONTRACT.md               # REST API specification & contract
-│   └── CLBI_METRICS.md                    # Benchmark metric definitions & terms
-│
-├── models/
-│   ├── clbi_logistic_regression.joblib    # Serialized production Logistic Regression model
-│   └── clbi_model_metadata.json          # Production model metadata & provenance
-│
-├── src/
-│   ├── api/
-│   │   ├── __init__.py
-│   │   ├── main.py                        # FastAPI application entry point & CORS
-│   │   ├── routes.py                      # REST API endpoint route handlers
-│   │   └── schemas.py                     # Pydantic request/response validation schemas
-│   ├── data/
-│   │   └── build_dataset.py               # Standardized dataset builder pipeline
-│   ├── features/
-│   │   └── generate_data_quality_report.py# Audit & visualization generator
-│   ├── evaluation/                        # Reproducible benchmark experiments
-│   └── model/
-│       ├── train_clbi_model.py            # Reproducible model training script
-│       ├── clbi_model.py                  # Core CLBIDecisionEngine inference class
-│       └── clbi_demo.py                   # CLI demonstration script
-│
-├── tests/
-│   ├── test_clbi_model.py                 # Unit tests for CLBIDecisionEngine (14 tests)
-│   └── test_api.py                        # Unit tests for CLBI REST API (15 tests)
-│
-├── experiments/                           # Research reports and results
-│   ├── BASELINE_REPORT.md
-│   ├── ROBUSTNESS_REPORT.md
-│   ├── NONLINEAR_BASELINE_REPORT.md
-│   ├── SPATIAL_ABLATION_REPORT.md
-│   ├── RISK_STRATIFICATION_REPORT.md
-│   └── results/
-│       ├── clbi_segment_predictions.csv   # Model inference output for 4,600 segments
-│       ├── clbi_demo_predictions.csv      # 100-segment demo predictions
-│       ├── clbi_demo_response.json        # Product-ready JSON demo payload
-│       ├── calibration_audit_results.json # Calibration audit & risk tier statistics
-│       └── clbi_model_metadata.json       # Research metadata and benchmark metrics
-│
-├── requirements.txt                       # Minimal workspace dependencies
-└── README.md                              # Project overview
-```
+| Deliverable | Location |
+|---|---|
+| IEEE-format report (LaTeX source + compiled PDF) | [report/main.pdf](report/main.pdf), [report/main.tex](report/main.tex) |
+| Presentation (17 slides, speaker notes name each presenter) | [presentation/fireWild_phase1.pptx](presentation/fireWild_phase1.pptx), [presentation/fireWild_phase1.pdf](presentation/fireWild_phase1.pdf) |
+| Results tables | [experiments/ndws/RESULTS.md](experiments/ndws/RESULTS.md) |
+| EDA and results notebooks (executed) | [notebooks/](notebooks/) |
+| Literature review | [docs/LITERATURE_REVIEW.md](docs/LITERATURE_REVIEW.md) |
+| Theory and viva preparation | [docs/THEORY_AND_VIVA_PREP.md](docs/THEORY_AND_VIVA_PREP.md) |
+| Dataset card | [DATASET_CARD.md](DATASET_CARD.md) |
+| Team contributions | [CONTRIBUTIONS.md](CONTRIBUTIONS.md) |
+
+Rebuild the report with `cd report && tectonic main.tex` (or upload `report/` to Overleaf). Rebuild the slides with
+`python presentation/build_deck.py` (needs Google Chrome).
 
 ---
 
-## Quickstart & Usage
+## Reproducing Phase 1
 
-### 1. Train Production Model Artifact
 ```bash
-python -m src.model.train_clbi_model
-```
+# 0. environment (Python 3.12). macOS: brew install libomp
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 
-### 2. Run Unit Tests (29 Tests)
-```bash
+# 1. download NDWS from Kaggle (kagglehub) and cache it as NumPy (~4.3 GB in data/ndws/, gitignored)
+python -m src.aml.ndws
+
+# 2. terrain-fingerprint leakage audit and spatial split -> data/splits/ (committed)
+python -m src.aml.splits
+
+# 3. EDA and data-quality audit -> experiments/ndws/eda/
+python -m src.aml.eda
+
+# 4. train and select models (about 10 min each on an 8-core laptop)
+python -m src.aml.train --protocol spatial --ablation
+python -m src.aml.train --protocol official
+
+# 5. test metrics, bootstrap CIs, significance, figures -> experiments/ndws/results/, RESULTS.md
+python -m src.aml.evaluate
+
+# tests (CLBI + Phase 1 pipeline)
 python -m unittest discover -s tests -p "test_*.py"
 ```
 
-### 3. Run CLBI Demo & Generate Product JSON
-```bash
-python -m src.model.clbi_demo
+If you already have the TFRecords, set `NDWS_RAW_DIR=/path/to/tfrecords` before step 1.
+
+---
+
+## Method summary
+
+1. **Data quality.** Physically impossible values become NaN: temperatures outside 200–330 K (missing values are
+   stored as 0 K), non-positive humidity, negative wind speed, and corrupted wind directions (down to −496,522°).
+   Negative precipitation is clipped, NDVI rescaled and population log-transformed.
+   Unknown labels (−1, about 2.4%) are excluded.
+2. **Orientation check.** The Kaggle release has no georeferencing. Of the four row/column conventions, only
+   rows south→north, columns west→east makes new fire significantly more frequent downwind than upwind:
+   1.12× (95% CI 1.09–1.15) over all training patches, vs 1.01× (0.98–1.04) for rows north→south. It is adopted
+   ([EDA](experiments/ndws/eda/wind_orientation.png)).
+3. **Leakage audit.** Elevation is static, so patches sharing an identical non-flat 8×8 km elevation block cover the same
+   ground. Union-find over these matches gives 845 location groups (mirrored-patch control: 0 / 1,855 matches).
+   **About 95% of official test patches share terrain with training.** The spatial protocol assigns whole groups to
+   train / val / test (14,822 / 1,855 / 1,868 patches), with zero shared terrain.
+4. **Features (32).** Raw channels; lagged burn activity (day-t fire, burning fraction in 3/5/9/17 km windows,
+   distance to fire, patch fire count); wind (u/v, fire upwind/downwind within 3 km, wind–fire alignment, wind push);
+   terrain (slope, aspect, rise-over-run from the nearest fire); dryness (temperature range, vapour-pressure deficit);
+   vegetation (local NDVI mean/std). Every feature uses day-t inputs only (unit-tested).
+5. **Imbalance.** All positives plus 2% of negatives from the training split only. Models are trained unweighted
+   with a closed-form prior correction, or importance-weighted, whichever is better on validation. Val and test are
+   never resampled.
+6. **Models.** Persistence and neighbourhood-persistence baselines; logistic regression; random forest; XGBoost and
+   LightGBM with small grids and early stopping on validation PR-AUC.
+7. **Evaluation.** Thresholds and hyperparameters come from validation; the test split is scored once. Patch-level
+   bootstrap CIs, paired bootstrap ΔPR-AUC, feature-group ablations, SHAP, calibration, probability maps and
+   distance / wind / slope plausibility checks.
+
+---
+
+## Repository layout
+
+```
+src/aml/                     Phase 1 pipeline
+  ndws.py                    TFRecord download + NumPy cache
+  splits.py                  terrain-fingerprint leakage audit, spatial split
+  features.py                per-pixel feature engineering (32 features)
+  dataset.py                 pixel sampling, protocols
+  train.py                   model fitting, validation-based selection, ablations
+  metrics.py                 PR-AUC, recall@FPR, fast patch bootstrap
+  evaluate.py                test metrics, significance, figures, RESULTS.md
+  eda.py                     EDA and data-quality figures
+notebooks/                   01 EDA, 02 results (executed)
+experiments/ndws/            EDA figures, results per protocol, logs, RESULTS.md
+data/splits/                 split manifest + audit (committed); data/ndws/ is the gitignored cache
+models/ndws/                 saved LightGBM / XGBoost / LR models
+report/                      IEEE-format LaTeX report (main.tex, references.bib, main.pdf)
+presentation/                slide sources, build script, fireWild_phase1.pptx / .pdf
+docs/                        literature review, theory and viva prep, CLBI dataset card and API docs
+tests/test_aml.py            pipeline unit tests (features, metrics, splits)
+
+src/model, src/api, src/evaluation, data/final, experiments/*.md
+                             CLBI prototype on SYNTHETIC data (see below)
 ```
 
 ---
 
-## Running the CLBI REST API
+## CLBI prototype (synthetic data, not part of Phase 1)
 
-### 1. Install API Dependencies
+The repository also contains **Candidate Line Breach Intelligence (CLBI)**, a FastAPI decision-support prototype that
+ranks 100 m containment-line segments by breach risk. **Its dataset `fireline_segments_v1` is simulated** by
+`src/data/build_dataset.py`. Labels come from a hand-written logistic rule, and the fire names are scenario labels,
+not data sources (see [docs/CLBI_SYNTHETIC_DATASET_CARD.md](docs/CLBI_SYNTHETIC_DATASET_CARD.md)). Its metrics
+(e.g. PR-AUC about 0.95 for the majority "Held" class) exercise the software and are **not** empirical evidence. A
+future version could use real NDWS spread predictions and USFS Fireline Effectiveness outcomes.
+
 ```bash
-python -m pip install -r requirements.txt
+python -m src.model.train_clbi_model          # train the CLBI logistic model
+python -m src.model.clbi_demo                 # 100-segment demo
+python -m uvicorn src.api.main:app --reload   # API at http://localhost:8000/docs
 ```
 
-### 2. Start API Server
-```bash
-python -m uvicorn src.api.main:app --reload
-```
-
-### 3. Interactive API Documentation
-- **Swagger / OpenAPI UI:** `http://localhost:8000/docs`
-- **ReDoc UI:** `http://localhost:8000/redoc`
-- **OpenAPI Schema:** `http://localhost:8000/openapi.json`
-
-### 4. Example Curl Requests
-
-- **Health Check:**
-```bash
-curl http://localhost:8000/api/v1/health
-```
-
-- **Model Info & Provenance:**
-```bash
-curl http://localhost:8000/api/v1/model/info
-```
-
-- **Single Segment Risk Prediction:**
-```bash
-curl -X POST http://localhost:8000/api/v1/predict \
-  -H "Content-Type: application/json" \
-  -d '{
-    "segment_id": "demo_001",
-    "slope": 35.0,
-    "elevation": 800.0,
-    "distance_to_fire": 100.0,
-    "barrier_width_m": 2.0,
-    "burn_prob": 0.85,
-    "attack_angle": 20.0,
-    "attack_dot_product": 0.94
-  }'
-```
-
-- **Candidate Line Prioritization (Top 10% Cutoff):**
-```bash
-curl -X POST http://localhost:8000/api/v1/prioritize \
-  -H "Content-Type: application/json" \
-  -d '{
-    "segments": [
-      {
-        "segment_id": "seg_001",
-        "slope": 35.0,
-        "elevation": 800.0,
-        "distance_to_fire": 100.0,
-        "barrier_width_m": 2.0,
-        "burn_prob": 0.85,
-        "attack_angle": 20.0,
-        "attack_dot_product": 0.94
-      }
-    ],
-    "selection": {
-      "type": "percentage",
-      "value": 10
-    }
-  }'
-```
-
-- **100-Segment Benchmark Demo:**
-```bash
-curl http://localhost:8000/api/v1/demo
-```
-
-> **Disclaimer:** The CLBI REST API is a prototype decision-support interface based on retrospective historical wildfire data. It does NOT provide live field validation or guaranteed fire behavior containment.
+API details: [docs/CLBI_API_CONTRACT.md](docs/CLBI_API_CONTRACT.md).
 
 ---
 
-## Explicit Project Limitations
+## Limitations
 
-1. **Five Wildfire Complexes:** Benchmark evaluated on 5 historical California incidents ($N=5$).
-2. **Offline Retrospective Evaluation:** Demonstrates retrospective predictive accuracy on historical data; not live field validation during active incidents.
-3. **Daily NDWS Resolution:** Input spread predictions use daily NDWS layers; cannot support sub-hourly tactical fire behavior claims.
-4. **Decision Support Simulation:** Resource prioritization metrics represent offline mathematical simulations, not field operational trials.
-5. **Non-Causal Associations:** Model coefficients represent multivariate statistical associations, not physical causal mechanisms.
+1. The Kaggle NDWS release has no coordinates or dates, so spatial independence is audited by terrain fingerprint
+   (exact block matches). Partial overlaps with fewer than 64 km² shared, or resampled terrain, would be missed.
+2. Labels are 1 km daily MODIS detections: clouds, detection timing and smoke make them noisy, and 74% of next-day
+   fire is new rather than persistent.
+3. Inputs lack fuel moisture, fuel type, suppression activity and sub-daily wind.
+4. Pixel-level tabular models see fire-front geometry only through hand-made summaries. That is the gap Phase 2's
+   spatial models address.

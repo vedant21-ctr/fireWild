@@ -3,7 +3,7 @@
     "product": "Candidate Line Breach Intelligence",
     "version": "v1.0.0",
     "model": "Standardized 7-Feature Logistic Regression Pipeline",
-    "data_source": "NDWS-derived historical benchmark (CZU Lightning Complex)",
+    "data_source": "Synthetic simulated benchmark fireline_segments_v1 (scenario label: CZU)",
     "retrospective": true
   },
   "summary": {

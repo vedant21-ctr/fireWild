@@ -3,7 +3,7 @@
 **Version:** v1.0.0  
 **Service:** CLBI Decision Engine API  
 **Framework:** FastAPI / Uvicorn  
-**Data Basis:** NDWS-derived historical benchmark dataset  
+**Data Basis:** Synthetic simulated benchmark `fireline_segments_v1` (see `docs/CLBI_SYNTHETIC_DATASET_CARD.md`). Not real fireline outcomes.  
 
 > **Disclaimer:** CLBI is a retrospective decision-support prototype built on historical wildfire benchmark data. It does NOT provide guaranteed fire behavior predictions, exact arrival times, guaranteed containment, or live field operational validation.
 

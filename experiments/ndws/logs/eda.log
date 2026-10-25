@@ -1,0 +1,53 @@
+class balance ...
+quality audit ...
+distributions / examples ...
+physical plausibility checks ...
+{
+  "wind_orientation": {
+    "rows N->S, cols W->E": {
+      "p_new_fire_downwind_of_fire": 0.15650592781048603,
+      "p_new_fire_upwind_of_fire": 0.15496562551280074,
+      "ratio": 1.0099396385010433,
+      "ratio_ci95": [
+        0.9823864437000127,
+        1.0402063572314495
+      ]
+    },
+    "rows S->N, cols W->E (adopted)": {
+      "p_new_fire_downwind_of_fire": 0.16793524845100777,
+      "p_new_fire_upwind_of_fire": 0.14953634987582112,
+      "ratio": 1.1230396394620141,
+      "ratio_ci95": [
+        1.0943418258195667,
+        1.1530016019223113
+      ]
+    },
+    "rows N->S, cols E->W": {
+      "p_new_fire_downwind_of_fire": 0.14953634987582112,
+      "p_new_fire_upwind_of_fire": 0.16793524845100777,
+      "ratio": 0.8904405195163408,
+      "ratio_ci95": [
+        0.8673014842068137,
+        0.9137912644377637
+      ]
+    },
+    "rows S->N, cols E->W": {
+      "p_new_fire_downwind_of_fire": 0.15496562551280074,
+      "p_new_fire_upwind_of_fire": 0.15650592781048603,
+      "ratio": 0.9901581855765205,
+      "ratio_ci95": [
+        0.9613477105367653,
+        1.0179293561761849
+      ]
+    }
+  },
+  "terrain_effect": {
+    "downslope of fire": 0.16557784378528595,
+    "level": 0.07933752238750458,
+    "upslope of fire": 0.17008483409881592
+  },
+  "fire_dynamics_sample": {
+    "stayed_burning": 0.34596385542168673,
+    "new_fraction_of_t1_fire": 0.7324377839034049
+  }
+}

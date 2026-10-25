@@ -24,3 +24,13 @@ htmlcov/
 # System Files
 Thumbs.db
 Desktop.ini
+
+# NDWS cache (regenerate with `python -m src.aml.ndws`)
+data/ndws/
+
+# LaTeX build files (keep report/main.pdf)
+report/*.aux
+report/*.log
+report/*.bbl
+report/*.blg
+report/*.out

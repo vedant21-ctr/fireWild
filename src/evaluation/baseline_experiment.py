@@ -376,6 +376,8 @@ def create_baseline_report(detailed_results, metrics_df, base_dir):
 
     content = f"""# BASELINE EXPERIMENT REPORT: Candidate Line Breach Intelligence (CLBI)
 
+> **SYNTHETIC DATA. NOT EMPIRICAL EVIDENCE.** `fireline_segments_v1` is simulated by `src/data/build_dataset.py` (random terrain/geometry and a hand-written logistic label rule). Fire names and incident IDs are scenario labels only; no data from those incidents is used. These results test the CLBI software pipeline, not real fireline behaviour, and are outside the Phase 1 NDWS evaluation (see `docs/CLBI_SYNTHETIC_DATASET_CARD.md`).
+
 **Experiment Version:** `fireline_segments_v1_baseline`  
 **Date:** 2026-09-29  
 **Model Architecture:** Standardized Logistic Regression Pipeline (`StandardScaler` + `LogisticRegression`)  
@@ -387,9 +389,9 @@ def create_baseline_report(detailed_results, metrics_df, base_dir):
 
 > **Core Research Question:** *Does predicted next-day wildfire spread provide useful directional information for identifying vulnerable segments of a proposed containment line?*
 
-### **Verdict:** **YES (HYPOTHESIS CONFIRMED)**
+### **Verdict:** **YES on synthetic data (expected by construction: the generator's label rule uses these features)**
 
-Adding directional fire-spread features (`attack_angle`, `attack_dot_product`, `burn_prob`, `prob_gradient`, `dist_pred_boundary`) to the static environmental baseline yields a **substantial and statistically significant performance gain** on an unseen wildfire test incident:
+Adding directional fire-spread features (`attack_angle`, `attack_dot_product`, `burn_prob`, `prob_gradient`, `dist_pred_boundary`) to the static environmental baseline yields a **substantial performance gain (no significance test was run)** on an unseen wildfire test incident:
 
 - **Static Baseline (Exp A):** PR-AUC = **{static_pr:.4f}** | ROC-AUC = **{static_roc:.4f}**
 - **Full Directional Model (Exp C):** PR-AUC = **{full_pr:.4f}** | ROC-AUC = **{full_roc:.4f}**
@@ -486,12 +488,12 @@ Every feature in the dataset was audited prior to model fitting:
 ## 8. Artifacts Generated
 
 All result artifacts are saved in `experiments/results/`:
-- [`baseline_results.json`](file:///c:/Users/Admin/Documents/WILDFIRE/experiments/results/baseline_results.json)
-- [`baseline_metrics.csv`](file:///c:/Users/Admin/Documents/WILDFIRE/experiments/results/baseline_metrics.csv)
-- [`pr_curve.png`](file:///c:/Users/Admin/Documents/WILDFIRE/experiments/results/pr_curve.png)
-- [`model_comparison.png`](file:///c:/Users/Admin/Documents/WILDFIRE/experiments/results/model_comparison.png)
-- [`confusion_matrix.png`](file:///c:/Users/Admin/Documents/WILDFIRE/experiments/results/confusion_matrix.png)
-- [`feature_coefficients.png`](file:///c:/Users/Admin/Documents/WILDFIRE/experiments/results/feature_coefficients.png)
+- [`baseline_results.json`](results/baseline_results.json)
+- [`baseline_metrics.csv`](results/baseline_metrics.csv)
+- [`pr_curve.png`](results/pr_curve.png)
+- [`model_comparison.png`](results/model_comparison.png)
+- [`confusion_matrix.png`](results/confusion_matrix.png)
+- [`feature_coefficients.png`](results/feature_coefficients.png)
 
 ---
 

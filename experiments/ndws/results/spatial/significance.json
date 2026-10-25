@@ -1,0 +1,38 @@
+{
+  "lightgbm - logistic_regression": {
+    "delta": 0.021193114646849393,
+    "ci_low": 0.01588850524288618,
+    "ci_high": 0.02638413873119001,
+    "p_le_zero": 0.0
+  },
+  "lightgbm - random_forest": {
+    "delta": 0.002688489228616975,
+    "ci_low": -0.0018616571004738422,
+    "ci_high": 0.006446486048719073,
+    "p_le_zero": 0.094
+  },
+  "lightgbm - xgboost": {
+    "delta": -0.002444012866519657,
+    "ci_low": -0.00666719368373373,
+    "ci_high": 0.0009687927254683511,
+    "p_le_zero": 0.896
+  },
+  "lightgbm - persistence": {
+    "delta": 0.10131349396506839,
+    "ci_low": 0.09267709219513162,
+    "ci_high": 0.11044609540547137,
+    "p_le_zero": 0.0
+  },
+  "xgboost - logistic_regression": {
+    "delta": 0.02363712751336905,
+    "ci_low": 0.01815228060388821,
+    "ci_high": 0.02978548389087729,
+    "p_le_zero": 0.0
+  },
+  "logistic_regression - persistence": {
+    "delta": 0.080120379318219,
+    "ci_low": 0.07198556280153658,
+    "ci_high": 0.08806720427554822,
+    "p_le_zero": 0.0
+  }
+}

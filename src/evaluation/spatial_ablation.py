@@ -377,7 +377,26 @@ def generate_spatial_report(per_fire_dict, aggregates, delta_summary, base_dir):
         gnn_recommendation = "NO"
         action_status = "🔴 STOP"
 
+    if gnn_recommendation == "YES":
+        justification = (
+            f"1. Neighbour aggregates improved PR-AUC on {dB_count}/5 held-out fires (mean {dB_mean:+.4f}).\n"
+            "2. Fixed mean/min/max pooling helps, so a learned aggregation (polyline GCN / GAT) is worth testing."
+        )
+    elif gnn_recommendation == "NOT YET":
+        justification = (
+            f"1. Neighbour aggregates improved PR-AUC on {dB_count}/5 held-out fires, but the mean change ({dB_mean:+.4f}) is small.\n"
+            "2. Gather more evidence (more fires, CIs) before investing in graph models."
+        )
+    else:
+        justification = (
+            f"1. Neighbour aggregates improved PR-AUC on only {dB_count}/5 held-out fires (mean change {dB_mean:+.4f}).\n"
+            "2. Fixed neighbourhood pooling adds no measurable signal, so there is no empirical case for a GNN on this data.\n"
+            "3. Expected here: in the synthetic generator (`src/data/build_dataset.py`) each segment's label depends only on its own features."
+        )
+
     content = f"""# SPATIAL NEIGHBORHOOD ABLATION REPORT
+
+> **SYNTHETIC DATA. NOT EMPIRICAL EVIDENCE.** `fireline_segments_v1` is simulated by `src/data/build_dataset.py` (random terrain/geometry and a hand-written logistic label rule). Fire names and incident IDs are scenario labels only; no data from those incidents is used. These results test the CLBI software pipeline, not real fireline behaviour, and are outside the Phase 1 NDWS evaluation (see `docs/CLBI_SYNTHETIC_DATASET_CARD.md`).
 
 **Project:** Candidate Line Breach Intelligence (CLBI)  
 **Date:** 2026-09-30  
@@ -439,8 +458,8 @@ Strict pre-engagement aggregation was enforced. All 8 neighborhood features were
 ## 5. Empirical Findings & Spatial Signal Test
 
 1. **Number of Fires Improved:** **{dB_count} / 5 FIRES**
-   - Spatial neighborhood enrichment improved PR-AUC on **ALL 5 HELD-OUT WILDFIRES**.
-2. **Average Performance Gain:** **+{dB_mean:+.4f} PR-AUC** (ROC-AUC gain: **+{aggregates['Model_B_Spatial_Enriched']['roc_auc']['mean'] - aggregates['Model_A_Current_Baseline']['roc_auc']['mean']:+.4f}**).
+   - Spatial neighborhood enrichment improved PR-AUC on **{dB_count} of 5 held-out fires**.
+2. **Average Performance Change:** **{dB_mean:+.4f} PR-AUC** (ROC-AUC change: **{aggregates['Model_B_Spatial_Enriched']['roc_auc']['mean'] - aggregates['Model_A_Current_Baseline']['roc_auc']['mean']:+.4f}**).
 3. **Signal Strength Classification:** **{signal_classification}**
 
 ---
@@ -454,8 +473,7 @@ Strict pre-engagement aggregation was enforced. All 8 neighborhood features were
 ### **Answer:** **{gnn_recommendation}**
 
 ### **Justification:**
-1. **Engineered Spatial Neighborhood Features Provide Clear Signal:** Manually aggregating neighbor features (`nbr_burn_prob_max`, `nbr_attack_dot_mean`, `nbr_slope_max`) improved performance across **100% of unseen held-out fires** over the isolated 7-feature baseline.
-2. **Logical Next Evolution:** Because fixed linear neighborhood pooling (mean/min/max) produces consistent gains, a Graph Neural Network (1D Polyline GCN / Graph Attention Network) can now learn dynamic attention weights and multi-hop message-passing along the polyline chain.
+{justification}
 """
     with open(report_path, "w", encoding="utf-8") as f:
         f.write(content)

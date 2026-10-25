@@ -20,16 +20,16 @@
           "brier_score": 0.1256
         },
         "RandomForest": {
-          "pr_auc": 0.9442,
-          "roc_auc": 0.8739,
-          "precision": 0.8842,
-          "recall": 0.8583,
-          "f1": 0.871,
-          "brier_score": 0.1274
+          "pr_auc": 0.9444,
+          "roc_auc": 0.8737,
+          "precision": 0.8831,
+          "recall": 0.8563,
+          "f1": 0.8695,
+          "brier_score": 0.1277
         }
       },
       "delta_HGB_vs_LR": -0.005,
-      "delta_RF_vs_LR": -0.0084
+      "delta_RF_vs_LR": -0.0082
     },
     "CA-SHU-007808": {
       "fire_name": "Carr Fire",
@@ -51,16 +51,16 @@
           "brier_score": 0.1428
         },
         "RandomForest": {
-          "pr_auc": 0.9263,
-          "roc_auc": 0.8661,
-          "precision": 0.804,
-          "recall": 0.9482,
-          "f1": 0.8702,
-          "brier_score": 0.1416
+          "pr_auc": 0.9225,
+          "roc_auc": 0.8635,
+          "precision": 0.7938,
+          "recall": 0.9395,
+          "f1": 0.8605,
+          "brier_score": 0.1419
         }
       },
       "delta_HGB_vs_LR": -0.0111,
-      "delta_RF_vs_LR": -0.0192
+      "delta_RF_vs_LR": -0.023
     },
     "CA-SNF-000958": {
       "fire_name": "Creek Fire",
@@ -82,16 +82,16 @@
           "brier_score": 0.1372
         },
         "RandomForest": {
-          "pr_auc": 0.9157,
-          "roc_auc": 0.87,
-          "precision": 0.839,
-          "recall": 0.8851,
-          "f1": 0.8614,
-          "brier_score": 0.1359
+          "pr_auc": 0.9169,
+          "roc_auc": 0.8703,
+          "precision": 0.8349,
+          "recall": 0.8835,
+          "f1": 0.8585,
+          "brier_score": 0.1362
         }
       },
       "delta_HGB_vs_LR": -0.0108,
-      "delta_RF_vs_LR": -0.0256
+      "delta_RF_vs_LR": -0.0244
     },
     "CA-MEU-008674": {
       "fire_name": "Mendocino Complex",
@@ -114,11 +114,11 @@
         },
         "RandomForest": {
           "pr_auc": 0.9502,
-          "roc_auc": 0.8701,
-          "precision": 0.8518,
-          "recall": 0.91,
-          "f1": 0.8799,
-          "brier_score": 0.1255
+          "roc_auc": 0.869,
+          "precision": 0.846,
+          "recall": 0.9067,
+          "f1": 0.8753,
+          "brier_score": 0.1265
         }
       },
       "delta_HGB_vs_LR": -0.0182,
@@ -144,16 +144,16 @@
           "brier_score": 0.1377
         },
         "RandomForest": {
-          "pr_auc": 0.935,
-          "roc_auc": 0.8731,
-          "precision": 0.8934,
-          "recall": 0.8401,
-          "f1": 0.8659,
-          "brier_score": 0.1314
+          "pr_auc": 0.9341,
+          "roc_auc": 0.8726,
+          "precision": 0.8893,
+          "recall": 0.8362,
+          "f1": 0.862,
+          "brier_score": 0.132
         }
       },
       "delta_HGB_vs_LR": -0.0094,
-      "delta_RF_vs_LR": -0.0177
+      "delta_RF_vs_LR": -0.0186
     }
   },
   "aggregate_statistics": {
@@ -204,23 +204,23 @@
     "RandomForest": {
       "name": "Random Forest (Bagged Trees)",
       "pr_auc": {
-        "mean": 0.9343,
-        "std": 0.0138,
-        "median": 0.935,
-        "min": 0.9157,
+        "mean": 0.9336,
+        "std": 0.0141,
+        "median": 0.9341,
+        "min": 0.9169,
         "max": 0.9502
       },
       "roc_auc": {
-        "mean": 0.8706,
-        "std": 0.0031
+        "mean": 0.8698,
+        "std": 0.004
       },
       "f1": {
-        "mean": 0.8697,
-        "std": 0.0069
+        "mean": 0.8652,
+        "std": 0.007
       },
       "brier": {
-        "mean": 0.1324,
-        "std": 0.0065
+        "mean": 0.1329,
+        "std": 0.0063
       }
     }
   },
@@ -234,10 +234,10 @@
       "total_fires": 5
     },
     "RF_vs_LR": {
-      "mean_delta_pr_auc": -0.0165,
-      "std_delta_pr_auc": 0.0067,
-      "min_delta_pr_auc": -0.0256,
-      "max_delta_pr_auc": -0.0084,
+      "mean_delta_pr_auc": -0.0172,
+      "std_delta_pr_auc": 0.007,
+      "min_delta_pr_auc": -0.0244,
+      "max_delta_pr_auc": -0.0082,
       "improved_fires_count": 0,
       "total_fires": 5
     }
@@ -298,29 +298,29 @@
       ]
     },
     "RandomForest": {
-      "overall_brier": 0.1316,
+      "overall_brier": 0.132,
       "fraction_of_positives": [
-        0.1218,
-        0.1789,
-        0.2431,
-        0.3612,
-        0.4674,
-        0.5993,
-        0.7036,
-        0.7488,
-        0.861,
-        0.9609
+        0.0943,
+        0.2196,
+        0.2419,
+        0.3515,
+        0.5052,
+        0.5672,
+        0.6696,
+        0.7754,
+        0.8594,
+        0.9614
       ],
       "mean_predicted_value": [
-        0.0627,
-        0.158,
-        0.2539,
-        0.3539,
-        0.4552,
-        0.5573,
-        0.6565,
-        0.755,
-        0.8582,
+        0.0631,
+        0.1594,
+        0.256,
+        0.3542,
+        0.4559,
+        0.5582,
+        0.6556,
+        0.7559,
+        0.8583,
         0.969
       ]
     }
@@ -336,13 +336,13 @@
       "attack_dot_product": 0.009174937849269704
     },
     "RandomForest": {
-      "slope": 0.013694943536254767,
-      "elevation": 0.0027927333125969734,
-      "distance_to_fire": 0.013783266735832245,
-      "barrier_width_m": 0.010963188566467353,
-      "burn_prob": 0.053979986772568364,
-      "attack_angle": 0.0066185779438403865,
-      "attack_dot_product": 0.012637445184008589
+      "slope": 0.013634798620550437,
+      "elevation": 0.0028978379368091666,
+      "distance_to_fire": 0.01375138244838131,
+      "barrier_width_m": 0.010810426154355946,
+      "burn_prob": 0.05310387516230395,
+      "attack_angle": 0.007561600088947162,
+      "attack_dot_product": 0.011794936013009849
     }
   }
 }

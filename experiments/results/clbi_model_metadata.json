@@ -33,5 +33,5 @@
     "total_segments": 4600,
     "total_fires": 5
   },
-  "disclaimer": "Retrospective historical benchmark evaluation results. Demonstrates offline predictive performance, not live operational field validation."
+  "disclaimer": "Results on a SYNTHETIC simulated benchmark (src/data/build_dataset.py), not historical observations. Demonstrates offline predictive performance, not live operational field validation."
 }
