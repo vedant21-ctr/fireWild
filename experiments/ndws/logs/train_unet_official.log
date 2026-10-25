@@ -1,0 +1,22 @@
+[00:43:21] [official] loading tensors
+[00:43:21] [official] train (14979, 13, 64, 64), val (1877, 13, 64, 64), device mps
+[00:43:44] [official] epoch  1 loss=0.2094 val PR-AUC=0.1463 (22s)
+[00:44:04] [official] epoch  2 loss=0.0955 val PR-AUC=0.1525 (20s)
+[00:44:24] [official] epoch  3 loss=0.0860 val PR-AUC=0.1726 (20s)
+[00:44:43] [official] epoch  4 loss=0.0833 val PR-AUC=0.1774 (20s)
+[00:45:03] [official] epoch  5 loss=0.0836 val PR-AUC=0.1878 (20s)
+[00:45:23] [official] epoch  6 loss=0.0838 val PR-AUC=0.1853 (20s)
+[00:45:43] [official] epoch  7 loss=0.0821 val PR-AUC=0.1892 (20s)
+[00:46:03] [official] epoch  8 loss=0.0830 val PR-AUC=0.1921 (20s)
+[00:46:23] [official] epoch  9 loss=0.0815 val PR-AUC=0.1998 (19s)
+[00:46:43] [official] epoch 10 loss=0.0816 val PR-AUC=0.1979 (20s)
+[00:47:02] [official] epoch 11 loss=0.0822 val PR-AUC=0.2005 (20s)
+[00:47:22] [official] epoch 12 loss=0.0810 val PR-AUC=0.1955 (20s)
+[00:47:42] [official] epoch 13 loss=0.0816 val PR-AUC=0.1977 (20s)
+[00:48:01] [official] epoch 14 loss=0.0808 val PR-AUC=0.1947 (19s)
+[00:48:21] [official] epoch 15 loss=0.0803 val PR-AUC=0.1975 (20s)
+[00:48:41] [official] epoch 16 loss=0.0802 val PR-AUC=0.1937 (20s)
+[00:48:41] [official] early stop (best epoch 11)
+[00:48:48] [official] scoring the test split
+[00:48:54] [official] TEST unet PR-AUC=0.2462 ROC-AUC=0.8835 F1=0.3511
+[00:48:54] [official] wrote experiments/ndws/dl/official/unet/results.json

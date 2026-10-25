@@ -16,6 +16,9 @@ shap==0.54.1
 tfrecord==1.14.6
 kagglehub==1.0.3
 
+# spatial deep learning (src/dl)
+torch==2.14.1
+
 # notebooks
 jupyter==1.1.1
 nbconvert==7.17.2

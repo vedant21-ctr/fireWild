@@ -1,0 +1,40 @@
+[official] dual-target evaluation
+    target                 model   pr_auc  pr_auc_ci_low  pr_auc_ci_high  roc_auc
+    active          centre_prior 0.135106       0.128685        0.141871 0.798468
+    active           persistence 0.106548       0.096910        0.117679 0.633270
+    active neighbourhood_persist 0.173408       0.157144        0.191170 0.728976
+    active   logistic_regression 0.230186       0.212993        0.249045 0.902935
+    active         random_forest 0.265013       0.247506        0.282373 0.900976
+    active               xgboost 0.265043       0.248346        0.282711 0.910650
+    active              lightgbm 0.262564       0.245704        0.280594 0.905321
+    active        unet_fullpatch 0.356691       0.341049        0.372046 0.943146
+    active                  unet 0.246104       0.230680        0.261079 0.883458
+transition          centre_prior 0.118844       0.112353        0.126294 0.805924
+transition           persistence 0.009221       0.008545        0.010037 0.500000
+transition neighbourhood_persist 0.068402       0.062409        0.074450 0.633214
+transition   logistic_regression 0.122668       0.114604        0.130174 0.874341
+transition         random_forest 0.135156       0.125623        0.143368 0.871592
+transition               xgboost 0.140543       0.131461        0.148558 0.885279
+transition              lightgbm 0.138043       0.128434        0.146518 0.877612
+transition        unet_fullpatch 0.263276       0.250054        0.277105 0.928367
+transition                  unet 0.136148       0.127057        0.145089 0.847666
+[spatial] dual-target evaluation
+    target                 model   pr_auc  pr_auc_ci_low  pr_auc_ci_high  roc_auc
+    active          centre_prior 0.121361       0.114513        0.128759 0.884569
+    active           persistence 0.036802       0.031993        0.041137 0.571585
+    active neighbourhood_persist 0.063729       0.055477        0.071398 0.641370
+    active   logistic_regression 0.116922       0.106283        0.127167 0.867276
+    active         random_forest 0.135427       0.123296        0.148574 0.885238
+    active               xgboost 0.140560       0.128068        0.154099 0.898730
+    active              lightgbm 0.138116       0.126718        0.149982 0.896292
+    active        unet_fullpatch 0.240621       0.226770        0.255180 0.933732
+    active                  unet 0.124137       0.113421        0.136128 0.837164
+transition          centre_prior 0.111299       0.104681        0.118536 0.886358
+transition           persistence 0.004186       0.003878        0.004553 0.500000
+transition neighbourhood_persist 0.028110       0.025161        0.031439 0.582035
+transition   logistic_regression 0.078215       0.069814        0.087415 0.846790
+transition         random_forest 0.086784       0.078275        0.095959 0.868165
+transition               xgboost 0.090200       0.081082        0.099749 0.883348
+transition              lightgbm 0.089186       0.080692        0.097289 0.880596
+transition        unet_fullpatch 0.196136       0.183049        0.210370 0.924743
+transition                  unet 0.069729       0.062353        0.076878 0.811457

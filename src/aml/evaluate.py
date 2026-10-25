@@ -26,7 +26,6 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import lightgbm as lgb
 from sklearn.metrics import precision_recall_curve, roc_curve
 from sklearn.calibration import calibration_curve
 
@@ -158,6 +157,7 @@ def probability_maps(protocol, y, patch, pix, scores, n=4):
 
 
 def importance_and_shap(protocol):
+    import lightgbm as lgb  # lazy: keeps this module importable alongside PyTorch (see train.fit_xgboost)
     booster = lgb.Booster(model_file=os.path.join(MODEL_DIR, f"{protocol}_lightgbm.txt"))
     gain = booster.feature_importance(importance_type="gain")
     gain = gain / gain.sum()

@@ -1,0 +1,19 @@
+[00:38:33] [spatial] loading tensors
+[00:38:33] [spatial] train (14822, 13, 64, 64), val (1855, 13, 64, 64), device mps
+[00:38:59] [spatial] epoch  1 loss=0.2136 val PR-AUC=0.1693 (26s)
+[00:39:21] [spatial] epoch  2 loss=0.1028 val PR-AUC=0.1891 (22s)
+[00:39:42] [spatial] epoch  3 loss=0.0956 val PR-AUC=0.1917 (21s)
+[00:40:03] [spatial] epoch  4 loss=0.0922 val PR-AUC=0.2008 (21s)
+[00:40:24] [spatial] epoch  5 loss=0.0926 val PR-AUC=0.2030 (20s)
+[00:40:44] [spatial] epoch  6 loss=0.0915 val PR-AUC=0.2100 (21s)
+[00:41:04] [spatial] epoch  7 loss=0.0914 val PR-AUC=0.2119 (20s)
+[00:41:24] [spatial] epoch  8 loss=0.0917 val PR-AUC=0.2219 (20s)
+[00:41:44] [spatial] epoch  9 loss=0.0913 val PR-AUC=0.2039 (20s)
+[00:42:04] [spatial] epoch 10 loss=0.0912 val PR-AUC=0.2166 (20s)
+[00:42:24] [spatial] epoch 11 loss=0.0900 val PR-AUC=0.2200 (20s)
+[00:42:44] [spatial] epoch 12 loss=0.0902 val PR-AUC=0.2131 (20s)
+[00:43:04] [spatial] epoch 13 loss=0.0891 val PR-AUC=0.2211 (20s)
+[00:43:04] [spatial] early stop (best epoch 8)
+[00:43:12] [spatial] scoring the test split
+[00:43:18] [spatial] TEST unet PR-AUC=0.1242 ROC-AUC=0.8372 F1=0.2249
+[00:43:18] [spatial] wrote experiments/ndws/dl/spatial/unet/results.json

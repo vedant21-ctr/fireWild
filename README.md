@@ -52,6 +52,16 @@ Test PR-AUC with 95% patch-bootstrap CI (thresholds and hyperparameters chosen o
 Full tables: [experiments/ndws/RESULTS.md](experiments/ndws/RESULTS.md). Walk-through:
 [notebooks/02_ndws_results.ipynb](notebooks/02_ndws_results.ipynb).
 
+### Spatial U-Net and the patch-centre leak
+
+A compact U-Net (`src/dl/`) is evaluated against the tabular models on both targets: next-day **active** fire and
+new-fire **transition** (pixels not burning at day t). NDWS patches are centred on next-day fire. A position-only
+prior reaches PR-AUC 0.121 on the spatial test, and a U-Net trained on full patches learns this (0.241). Trained
+on random 32×32 crops so position carries no information, the U-Net reaches 0.124. That beats logistic regression
+but stays significantly below XGBoost (0.141) on both targets. Details:
+[docs/SPATIAL_UNET_DUAL_TARGET.md](docs/SPATIAL_UNET_DUAL_TARGET.md), tables:
+[experiments/ndws/dl/DUAL_TARGET_RESULTS.md](experiments/ndws/dl/DUAL_TARGET_RESULTS.md).
+
 ---
 
 ## Phase 1 deliverables
@@ -144,14 +154,21 @@ src/aml/                     Phase 1 pipeline
   metrics.py                 PR-AUC, recall@FPR, fast patch bootstrap
   evaluate.py                test metrics, significance, figures, RESULTS.md
   eda.py                     EDA and data-quality figures
+src/dl/                      spatial U-Net
+  data.py                    day-t input tensors, train-only normalisation, wind-consistent augmentation, crops
+  model.py                   compact U-Net, masked loss
+  train.py                   training with early stopping on validation PR-AUC
+  evaluate.py                dual-target (active / transition) evaluation with leak probe
 notebooks/                   01 EDA, 02 results (executed)
-experiments/ndws/            EDA figures, results per protocol, logs, RESULTS.md
+experiments/ndws/            EDA figures, results per protocol, logs, RESULTS.md; dl/ for the U-Net
 data/splits/                 split manifest + audit (committed); data/ndws/ is the gitignored cache
 models/ndws/                 saved LightGBM / XGBoost / LR models
+models/ndws_dl/              saved U-Net weights (leak-free variant)
 report/                      IEEE-format LaTeX report (main.tex, references.bib, main.pdf)
 presentation/                slide sources, build script, fireWild_phase1.pptx / .pdf
 docs/                        literature review, theory and viva prep, CLBI dataset card and API docs
 tests/test_aml.py            pipeline unit tests (features, metrics, splits)
+tests/test_dl.py             U-Net unit tests (inputs, augmentation physics, masked loss, targets, leak probe)
 
 src/model, src/api, src/evaluation, data/final, experiments/*.md
                              CLBI prototype on SYNTHETIC data (see below)

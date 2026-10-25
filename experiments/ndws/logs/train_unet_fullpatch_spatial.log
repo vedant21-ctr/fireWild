@@ -1,0 +1,20 @@
+[23:52:48] [spatial] loading tensors
+[23:52:50] [spatial] train (14822, 13, 64, 64), val (1855, 13, 64, 64), device mps
+[23:53:41] [spatial] epoch  1 loss=0.1269 val PR-AUC=0.1841 (50s)
+[23:54:28] [spatial] epoch  2 loss=0.0450 val PR-AUC=0.2854 (46s)
+[23:55:16] [spatial] epoch  3 loss=0.0401 val PR-AUC=0.2753 (49s)
+[23:56:00] [spatial] epoch  4 loss=0.0390 val PR-AUC=0.2949 (43s)
+[23:56:45] [spatial] epoch  5 loss=0.0384 val PR-AUC=0.3139 (45s)
+[23:57:32] [spatial] epoch  6 loss=0.0381 val PR-AUC=0.3385 (46s)
+[23:58:19] [spatial] epoch  7 loss=0.0378 val PR-AUC=0.3458 (48s)
+[23:59:04] [spatial] epoch  8 loss=0.0375 val PR-AUC=0.3388 (45s)
+[23:59:50] [spatial] epoch  9 loss=0.0374 val PR-AUC=0.3487 (45s)
+[00:00:38] [spatial] epoch 10 loss=0.0372 val PR-AUC=0.3395 (48s)
+[00:01:23] [spatial] epoch 11 loss=0.0371 val PR-AUC=0.3459 (45s)
+[00:02:09] [spatial] epoch 12 loss=0.0370 val PR-AUC=0.3442 (46s)
+[00:02:54] [spatial] epoch 13 loss=0.0364 val PR-AUC=0.3268 (44s)
+[00:03:40] [spatial] epoch 14 loss=0.0363 val PR-AUC=0.3404 (47s)
+[00:03:40] [spatial] early stop (best epoch 9)
+[00:03:48] [spatial] scoring the test split
+[00:03:58] [spatial] TEST unet PR-AUC=0.2407 ROC-AUC=0.9337 F1=0.3090
+[00:03:58] [spatial] wrote experiments/ndws/dl/spatial/results.json

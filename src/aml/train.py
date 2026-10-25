@@ -30,8 +30,6 @@ import time
 import argparse
 import numpy as np
 import joblib
-import lightgbm as lgb
-import xgboost as xgb
 from sklearn.pipeline import make_pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
@@ -83,12 +81,17 @@ def log(msg):
 
 def fit_lightgbm(X, y, Xv, yv, wv, params):
     """Early stopping uses a validation pixel sample weighted back to the true class prior."""
+    import lightgbm as lgb  # imported lazily: see note at fit_xgboost
     model = lgb.LGBMClassifier(**LGB_COMMON, **params)
     model.fit(X, y, eval_set=[(Xv, yv)], eval_sample_weight=[wv], callbacks=[lgb.early_stopping(100, verbose=False)])
     return model
 
 
 def fit_xgboost(X, y, Xv, yv, wv, params):
+    # LightGBM / XGBoost load Homebrew's OpenMP runtime; if that happens before PyTorch loads its
+    # own copy, PyTorch tensor ops segfault on macOS. Importing them only when fitting keeps
+    # `import src.aml.*` free of OpenMP so src/dl can use these helpers safely.
+    import xgboost as xgb
     model = xgb.XGBClassifier(**XGB_COMMON, **params)
     model.fit(X, y, eval_set=[(Xv, yv)], sample_weight_eval_set=[wv], verbose=False)
     return model
