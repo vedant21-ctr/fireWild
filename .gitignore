@@ -34,3 +34,12 @@ report/*.log
 report/*.bbl
 report/*.blg
 report/*.out
+
+# Raw and large datasets
+data/raw/
+data/processed/ndws/
+*.parquet
+
+# NDWS Generated Experiment Artifacts & Models
+models/ndws/
+experiments/results_ndws/
