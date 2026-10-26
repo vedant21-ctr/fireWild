@@ -1,0 +1,16 @@
+<section id="data" data-transition="fade" style="display:flex; flex-direction:column; gap:40px; padding:128px 128px 160px; background:#f7f5f0">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#b0432c">Data</p>
+    <h2 style="font-family:'EB Garamond', Georgia, serif; font-size:72px; font-weight:600; line-height:1.1; color:#1f2a33">Each sample: inputs at day t, fire mask at day t+1</h2>
+  </div>
+  <div style="display:flex; flex-direction:row; gap:48px; align-items:center">
+    <img src="/_blob/a6597fc4e5b1a9a51ccce4071dfaabaf" alt="Four example NDWS patches showing elevation, NDVI, wind speed, ERC, fire at day t and fire at day t+1" style="width:980px; height:640px; background:#ffffff; border-radius:12px; object-fit:contain">
+    <div style="display:flex; flex-direction:column; gap:24px; flex:1">
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:30px; line-height:1.4; color:#3e4a54"><b>Official split:</b> 14,979 / 1,877 / 1,689 patches, by random weeks</p>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:30px; line-height:1.4; color:#3e4a54"><b>Labels:</b> 1 fire · 0 no fire · −1 unknown (cloud), excluded</p>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:30px; line-height:1.4; color:#3e4a54"><b>Cached</b> as NumPy (4.3 GB) for fast, repeatable runs</p>
+    </div>
+  </div>
+  <p style="position:absolute; bottom:64px; left:128px; width:1664px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#6a7178">4 · Vedant Satbhai · src/aml/ndws.py</p>
+  <aside>Presenter: Vedant. Walk through one row of the figure: weather fields are smooth (≈4 km source), elevation and NDVI are detailed. The last two columns are day t and day t+1 fire. The official split assigns random weeks 8:1:1 with a one-day buffer.</aside>
+</section>

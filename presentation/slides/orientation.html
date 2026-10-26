@@ -1,0 +1,16 @@
+<section id="orientation" data-transition="fade" style="background:#F7F5F0;color:#1F2A33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#B0432C">A physics test</p>
+<h2 style="font-family:'EB Garamond', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1">The data has no map orientation, so we let the wind decide</h2>
+</div>
+<div style="display:flex;gap:48px;align-items:center">
+<img src="/_blob/60329f20556fe30d306e75ce4beee656" alt="Bar chart of downwind-to-upwind spread ratio for four image orientations; only rows south to north, columns west to east is clearly above 1" style="width:1000px;height:520px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<p style="font-size:30px;line-height:1.4;color:#3E4A54">Fire should spread <b>downwind</b>. We tested all four row/column conventions on 14,979 patches.</p>
+<p style="font-size:30px;line-height:1.4;color:#3E4A54">Only rows south→north gives a real effect: <b>1.12×</b> (95% CI 1.09–1.15).</p>
+<p style="font-size:30px;line-height:1.4;color:#3E4A54">The usual assumption gives 1.01×: no wind effect at all.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6A7178">7 · Pratik Agade · eda.py::wind_orientation</p>
+<aside>Presenter: Pratik. Why it matters: every wind and slope feature depends on knowing which way is north. Confidence intervals come from resampling patches. The effect is modest because wind is a daily ~4 km average. Terrain: sloped ground near fire burns about 2× more than level ground.</aside>
+</section>

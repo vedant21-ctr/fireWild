@@ -380,6 +380,8 @@ def generate_report(per_fire_results, band_metrics_list, simulation_summary, glo
     
     content = f"""# RISK STRATIFICATION, CALIBRATION & PRIORITIZATION REPORT
 
+> **SYNTHETIC DATA. NOT EMPIRICAL EVIDENCE.** `fireline_segments_v1` is simulated by `src/data/build_dataset.py` (random terrain/geometry and a hand-written logistic label rule). Fire names and incident IDs are scenario labels only; no data from those incidents is used. These results test the CLBI software pipeline, not real fireline behaviour, and are outside the Phase 1 NDWS evaluation (see `docs/CLBI_SYNTHETIC_DATASET_CARD.md`).
+
 **Project:** Candidate Line Breach Intelligence (CLBI)  
 **Date:** 2026-09-30  
 **Model:** 7-Feature Standardized Logistic Regression Pipeline  

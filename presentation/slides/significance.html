@@ -1,0 +1,15 @@
+<section id="significance" data-transition="fade" style="background:#C8553D;color:#FBFBF8;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:center;gap:64px">
+<h2 style="font-family:'EB Garamond', Georgia, serif;font-size:88px;font-weight:600;line-height:1.1;color:#FBFBF8">Non-linearity matters.<br>The choice of tree ensemble does not.</h2>
+<div style="display:flex;gap:64px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'EB Garamond', Georgia, serif;font-size:72px;font-weight:600;line-height:1">+0.021</p>
+<p style="font-size:30px;line-height:1.4">LightGBM over logistic regression (spatial), CI [+0.016, +0.026]: significant</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'EB Garamond', Georgia, serif;font-size:72px;font-weight:600;line-height:1">+0.003</p>
+<p style="font-size:30px;line-height:1.4">LightGBM over random forest, CI [−0.002, +0.006]: not significant</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#FBE3DC">12 · Aaryan Krishna · paired patch bootstrap, 500 resamples</p>
+<aside>Presenter: Aaryan. Paired bootstrap: the same resampled patches for both models, so the difference’s CI is tight. Official split shows the same picture (+0.032 over LR; −0.002 vs RF). XGBoost and LightGBM are tied. Be honest about this in the viva.</aside>
+</section>

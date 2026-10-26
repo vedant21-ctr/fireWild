@@ -1,10 +1,33 @@
-pandas
-numpy
-pyarrow
-scipy
-matplotlib
-scikit-learn
-fastapi
-uvicorn
-pydantic
-httpx
+# Python 3.12. macOS: XGBoost / LightGBM need the OpenMP runtime (`brew install libomp`).
+
+# core
+numpy==2.5.4
+pandas==3.1.0
+pyarrow==26.0.0
+scipy==1.18.1
+matplotlib==3.11.2
+joblib==1.6.0
+
+# Phase 1 ML pipeline (src/aml)
+scikit-learn==1.9.1
+xgboost==3.4.1
+lightgbm==4.7.0
+shap==0.54.1
+tfrecord==1.14.6
+kagglehub==1.0.3
+
+# spatial deep learning (src/dl)
+torch==2.14.1
+
+# notebooks
+jupyter==1.1.1
+nbconvert==7.17.2
+
+# presentation build (presentation/build_deck.py)
+python-pptx==1.0.2
+
+# CLBI prototype API (src/api)
+fastapi==0.162.0
+uvicorn==0.54.0
+pydantic==2.14.1
+httpx==0.28.1

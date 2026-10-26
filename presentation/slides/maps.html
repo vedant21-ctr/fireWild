@@ -1,0 +1,16 @@
+<section id="maps" data-transition="fade" style="background:#1F2A33;color:#F7F5F0;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#E8A08F">Probability maps</p>
+<h2 style="font-family:'EB Garamond', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#F7F5F0">Tabular models draw halos, not fire fronts</h2>
+</div>
+<div style="display:flex;gap:48px;align-items:center">
+<img src="/_blob/1ac0d87dea927f5d74550b2080f15248" alt="Spatial-test examples: fire at t, truth at t+1, and logistic regression, LightGBM and XGBoost probability maps" style="width:700px;height:620px;object-fit:contain;background:#FBFBF8;border-radius:12px">
+<div style="flex:1;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:30px;line-height:1.4;color:#C9D3DA">Risk concentrates around the active front, and predicted rates match observed ones by distance (0.124 vs 0.117 within 1.5 km).</p>
+<p style="font-size:30px;line-height:1.4;color:#C9D3DA">But blobs miss the front’s shape and distant new ignitions (bottom row).</p>
+<p style="font-size:30px;line-height:1.4;color:#F7F5F0"><b>That gap is what Phase 2’s U-Net must close.</b></p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#9AA7B1">15 · Aaryan Krishna · results/spatial/probability_maps.png, plausibility.png</p>
+<aside>Presenter: Aaryan. Plausibility checks: predicted risk rises from upwind to downwind pixels like the observed rate, and is higher on sloped than level ground near fire. Boosted models are also the best calibrated (Brier 0.0044).</aside>
+</section>

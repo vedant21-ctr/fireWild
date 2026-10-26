@@ -25,6 +25,16 @@ htmlcov/
 Thumbs.db
 Desktop.ini
 
+# NDWS cache (regenerate with `python -m src.aml.ndws`)
+data/ndws/
+
+# LaTeX build files (keep report/main.pdf)
+report/*.aux
+report/*.log
+report/*.bbl
+report/*.blg
+report/*.out
+
 # Raw and large datasets
 data/raw/
 data/processed/ndws/
@@ -33,3 +43,6 @@ data/processed/ndws/
 # NDWS Generated Experiment Artifacts & Models
 models/ndws/
 experiments/results_ndws/
+
+# Diagnostic (position-leaking) U-Net weights; results are kept in experiments/ndws/dl/
+models/ndws_dl/*_unet_fullpatch.pt

@@ -1,0 +1,63 @@
+[15:13:09] [spatial] building training sample (neg_rate=0.02)
+[15:13:33] [spatial] train rows=1,924,212 positives=747,147; early-stop rows=209,865
+[15:13:33] [spatial] scoring features for the full validation split
+[15:13:36] [spatial] val pixels=7,388,698 positive rate=0.0086
+[15:13:51] [spatial] logistic_regression weighted=False val PR-AUC=0.1711
+[15:14:06] [spatial] logistic_regression weighted=True val PR-AUC=0.1877
+[15:15:46] [spatial] random_forest weighted=False val PR-AUC=0.2269
+[15:17:01] [spatial] random_forest weighted=True val PR-AUC=0.2280
+[15:17:20] [spatial] xgboost {'max_depth': 6, 'min_child_weight': 100} trees=88 val PR-AUC=0.2289
+[15:17:51] [spatial] xgboost {'max_depth': 8, 'min_child_weight': 1000} trees=241 val PR-AUC=0.2304
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:18:12] [spatial] lightgbm {'num_leaves': 31, 'min_child_samples': 2000} trees=167 val PR-AUC=0.2250
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:18:38] [spatial] lightgbm {'num_leaves': 63, 'min_child_samples': 2000} trees=154 val PR-AUC=0.2297
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:19:15] [spatial] lightgbm {'num_leaves': 127, 'min_child_samples': 5000} trees=171 val PR-AUC=0.2255
+[15:19:42] [spatial] scoring the test split
+[15:20:31] [spatial] TEST persistence            PR-AUC=0.0368 ROC-AUC=0.5716 F1=0.1766
+[15:20:31] [spatial] TEST neighbourhood_persist  PR-AUC=0.0637 ROC-AUC=0.6414 F1=0.2013
+[15:20:31] [spatial] TEST logistic_regression    PR-AUC=0.1169 ROC-AUC=0.8673 F1=0.2256
+[15:20:31] [spatial] TEST random_forest          PR-AUC=0.1355 ROC-AUC=0.8852 F1=0.2344
+[15:20:31] [spatial] TEST xgboost                PR-AUC=0.1406 ROC-AUC=0.8987 F1=0.2456
+[15:20:31] [spatial] TEST lightgbm               PR-AUC=0.1381 ROC-AUC=0.8963 F1=0.2440
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:20:59] [spatial] ablation raw_only                 val=0.0247 test=0.0097
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:21:12] [spatial] ablation fire_only                val=0.1911 test=0.1107
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:21:39] [spatial] ablation raw+fire                 val=0.2122 test=0.1298
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:22:50] [spatial] ablation raw+fire+wind            val=0.2257 test=0.1398
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:24:17] [spatial] ablation raw+fire+wind+terrain    val=0.2276 test=0.1425
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:24:55] [spatial] ablation all_features             val=0.2297 test=0.1381
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:25:36] [spatial] ablation all_minus_raw            val=0.2261 test=0.1385
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:27:00] [spatial] ablation all_minus_fire           val=0.2126 test=0.1305
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:27:40] [spatial] ablation all_minus_wind           val=0.2196 test=0.1394
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:28:36] [spatial] ablation all_minus_terrain        val=0.2270 test=0.1388
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:29:20] [spatial] ablation all_minus_weather        val=0.2266 test=0.1415
+/Users/aaryankrishna/Desktop/AML:DL/fireWild/.venv/lib/python3.12/site-packages/lightgbm/sklearn.py:1106: LGBMDeprecationWarning: The argument 'eval_set' is deprecated, use 'eval_X' and 'eval_y' instead.
+  eval_set = _validate_eval_set_Xy(eval_set=eval_set, eval_X=eval_X, eval_y=eval_y)
+[15:30:04] [spatial] ablation all_minus_vegetation     val=0.2272 test=0.1456
+[15:30:04] [spatial] wrote /Users/aaryankrishna/Desktop/AML:DL/fireWild/experiments/ndws/results/spatial/results.json

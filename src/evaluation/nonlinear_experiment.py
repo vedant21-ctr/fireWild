@@ -383,9 +383,22 @@ def generate_report(per_fire_dict, aggregates, delta_summary, calibration_data, 
         case_verdict = "🟢 TABULAR ML APPROACHING LIMIT -> JUSTIFIES SPATIAL/GRAPH MODELING"
     else:
         decision_case = "CASE C — TREE MODEL WORSE"
-        case_verdict = "🟢 JUSTIFIES SPATIAL/GRAPH MODELING"
+        case_verdict = "🔴 NO NONLINEAR GAIN -> THE LINEAR MODEL IS SUFFICIENT FOR THESE FEATURES"
+
+    if hgb_delta > 0.02:
+        case_explanation = f"Tree models beat logistic regression by {hgb_delta:+.4f} PR-AUC, so non-linear interactions carry signal that the linear model misses."
+    elif hgb_delta >= -0.005:
+        case_explanation = f"Tree models change PR-AUC by only {hgb_delta:+.4f}, so single-segment tabular features appear close to their limit."
+    else:
+        case_explanation = (
+            f"Tree models are worse than logistic regression ({hgb_delta:+.4f} PR-AUC). This is expected: the synthetic "
+            "generator (`src/data/build_dataset.py`) assigns labels with a linear logistic rule, so a linear model is the "
+            "correctly specified model. A result like this says nothing about whether graph/spatial models would help."
+        )
 
     content = f"""# NONLINEAR TABULAR EXPERIMENT REPORT
+
+> **SYNTHETIC DATA. NOT EMPIRICAL EVIDENCE.** `fireline_segments_v1` is simulated by `src/data/build_dataset.py` (random terrain/geometry and a hand-written logistic label rule). Fire names and incident IDs are scenario labels only; no data from those incidents is used. These results test the CLBI software pipeline, not real fireline behaviour, and are outside the Phase 1 NDWS evaluation (see `docs/CLBI_SYNTHETIC_DATASET_CARD.md`).
 
 **Project:** Candidate Line Breach Intelligence (CLBI)  
 **Date:** 2026-09-30  
@@ -407,7 +420,7 @@ The non-linear tree models (`HistGradientBoosting` and `RandomForest`) yield **n
 
 ### **Classification:** **{decision_case}**
 
-Because non-linear tree algorithms provide **only marginal improvement (+{hgb_delta:.4f} PR-AUC / +0.1%)**, tabular non-linear modeling has reached its empirical limit on single-segment feature vectors. This provides **strong empirical justification for advancing to Spatial / Graph Neural Network (GNN) modeling**, which captures spatial contiguity and message-passing between adjacent 100-meter line segments.
+{case_explanation}
 
 ---
 
@@ -448,8 +461,8 @@ Because non-linear tree algorithms provide **only marginal improvement (+{hgb_de
 
 ### **Verdict:** {case_verdict}
 
-1. **Tabular Limit Reached:** Single-segment tabular feature vectors have been exhausted by Linear and Tree-based models.
-2. **Justification for Graph / Spatial Modeling:** Because firelines operate as continuous 1D spatial polylines through 2D landscapes, adjacent segments share physical momentum and spatial context. A Graph Neural Network (GNN / Polyline GCN) is the logical next architectural evolution to test whether spatial message-passing yields significant gains over this tabular baseline.
+1. {case_explanation}
+2. Whether spatial / graph models help must be decided by a separate ablation (see `SPATIAL_ABLATION_REPORT.md`), not by this linear-vs-tree comparison.
 """
     with open(report_path, "w", encoding="utf-8") as f:
         f.write(content)
