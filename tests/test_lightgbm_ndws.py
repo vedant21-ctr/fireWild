@@ -140,6 +140,73 @@ class TestLightGBMNDWS(unittest.TestCase):
         # Ensure non-trivial distribution
         self.assertGreater(np.max(probs), np.min(probs))
 
+    def test_8_serialized_fixed_fpr_artifacts_integrity(self):
+        """
+        Verifies that serialized result artifacts (lightgbm_results.json,
+        lightgbm_metadata.json, baseline_results.json) contain valid, backward-compatible
+        fixed-FPR metrics that strictly satisfy empirical bounds.
+        """
+        import json
+
+        # 1. LightGBM Metadata
+        meta_path = "models/ndws/lightgbm_metadata.json"
+        if os.path.exists(meta_path):
+            with open(meta_path, "r") as f:
+                meta = json.load(f)
+
+            # Check eval metrics
+            eval_m = meta["eval_metrics"]
+            self.assertIn("recall_at_1pct_fpr", eval_m)
+            self.assertIn("recall_at_5pct_fpr", eval_m)
+            self.assertLessEqual(eval_m["achieved_fpr_at_1pct"], 0.01)
+            self.assertLessEqual(eval_m["achieved_fpr_at_5pct"], 0.05)
+            self.assertGreaterEqual(eval_m["recall_at_1pct_fpr"], 0.0)
+            self.assertLessEqual(eval_m["recall_at_1pct_fpr"], 1.0)
+            self.assertGreaterEqual(eval_m["recall_at_5pct_fpr"], 0.0)
+            self.assertLessEqual(eval_m["recall_at_5pct_fpr"], 1.0)
+            # Ensure preservation of baseline benchmark numbers
+            self.assertAlmostEqual(eval_m["average_precision"], 0.083720, places=5)
+            self.assertAlmostEqual(meta["optimal_threshold"], 0.028115, places=5)
+
+            # Check val metrics
+            val_m = meta["validation_metrics"]
+            self.assertIn("recall_at_1pct_fpr", val_m)
+            self.assertIn("recall_at_5pct_fpr", val_m)
+            self.assertLessEqual(val_m["achieved_fpr_at_1pct"], 0.01)
+            self.assertLessEqual(val_m["achieved_fpr_at_5pct"], 0.05)
+            self.assertAlmostEqual(val_m["average_precision"], 0.114470, places=5)
+
+        # 2. LightGBM Results JSON
+        lgb_res_path = "experiments/results_ndws/lightgbm_results.json"
+        if os.path.exists(lgb_res_path):
+            with open(lgb_res_path, "r") as f:
+                lgb_res = json.load(f)
+
+            held_out = lgb_res["held_out_eval_results"]
+            self.assertIn("recall_at_1pct_fpr", held_out)
+            self.assertIn("recall_at_5pct_fpr", held_out)
+            self.assertLessEqual(held_out["achieved_fpr_at_1pct"], 0.01)
+            self.assertLessEqual(held_out["achieved_fpr_at_5pct"], 0.05)
+            self.assertAlmostEqual(held_out["average_precision"], 0.083720, places=5)
+
+            val_best = lgb_res["validation_results"]["LightGBM_Unweighted"]
+            self.assertIn("recall_at_1pct_fpr", val_best)
+            self.assertLessEqual(val_best["achieved_fpr_at_1pct"], 0.01)
+            self.assertAlmostEqual(val_best["average_precision"], 0.114470, places=5)
+
+        # 3. Baseline Results JSON
+        base_res_path = "experiments/results_ndws/baseline_results.json"
+        if os.path.exists(base_res_path):
+            with open(base_res_path, "r") as f:
+                base_res = json.load(f)
+
+            base_eval = base_res["held_out_eval_results"]
+            self.assertIn("recall_at_1pct_fpr", base_eval)
+            self.assertIn("recall_at_5pct_fpr", base_eval)
+            self.assertLessEqual(base_eval["achieved_fpr_at_1pct"], 0.01)
+            self.assertLessEqual(base_eval["achieved_fpr_at_5pct"], 0.05)
+            self.assertAlmostEqual(base_eval["average_precision"], 0.061643, places=5)
+
 
 if __name__ == "__main__":
     unittest.main()

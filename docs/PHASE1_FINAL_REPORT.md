@@ -5,7 +5,7 @@
 **Workspace:** `C:\Users\Admin\Documents\WILDFIRE`  
 **Date:** October 2026  
 **Authors:** Wildfire Intelligence Engineering Team  
-**Status:** **SUBMISSION-READY — PHASE 1 COMPLETE**
+**Status:** **SUBMISSION-READY — PHASE 1 COMPLETE (AUDITED)**
 
 ---
 
@@ -22,9 +22,11 @@ This project delivers **FireWild Intelligence**, an end-to-end wildfire decision
 - **Reproducible Data Pipeline:** Extracted and validated **59,369,679 valid pixel rows** across all 15 official training shards (`train_00`–`train_14`) of the Google Research NDWS dataset with zero missing values and strict nodata masking.
 - **Empirical Baseline Hierarchy:** Implemented a rigorously audited tabular benchmark suite comparing an Empirical Prior Baseline, a Physical Distance Heuristic, Regularized Logistic Regression ($L_2$, $L_1$, and Balanced), and Gradient Boosted Decision Trees (LightGBM).
 - **Major Algorithmic Advance:** LightGBM achieved **0.114470 Average Precision (PR-AUC)** on validation (**+77.8% relative gain** over Logistic Regression's 0.064393; **+57.8% gain** over the distance heuristic) and generalized cleanly to **0.083720 AP** on the unseen official evaluation partition (`eval_00`).
-- **False Alarm Suppression:** At the validation-tuned decision threshold ($\tau^* = 0.028115$), LightGBM reduced false positive alarms by **73.3%** on unseen evaluation data (3,323 false positives vs 12,443 for Logistic Regression), nearly doubling precision from **10.29% to 18.81%**.
+- **False Alarm Suppression:** At the frozen validation-tuned decision threshold ($\tau^* = 0.028115$), LightGBM reduced false positive alarms by **73.3%** on unseen evaluation data (3,323 false positives vs 12,443 for Logistic Regression), nearly doubling precision from **10.29% to 18.81%**.
+- **Fixed False-Positive Rate (FPR) Evaluation:** Implemented and serialized operational recall benchmarks at strict false alarm budgets. On held-out evaluation (`eval_00`), LightGBM achieved **20.79% recall at FPR ≤ 1%** (achieved FPR 0.998%, operating threshold 0.021245) and **42.76% recall at FPR ≤ 5%** (achieved FPR 4.418%, operating threshold 0.010906), outperforming linear baselines under strict operational resource constraints.
+- **Neighborhood / Focal Context Engineering:** Implemented three 2D spatial focal features (3×3 previous fire density, 3×3 elevation standard deviation, and 3×3 NDVI mean) with zero target leakage safeguards; documented transparently as pending empirical model ablation in Phase 2 without unsubstantiated performance claims.
 - **Rigorous Leakage Elimination:** Proved training-only feature scaler isolation, zero target leakage into predictor channels, and resolved all prior numerical artifacts.
-- **Software Quality:** Backed by **64 passing automated tests** covering extraction integrity, model inference, serialization determinism, API schemas, and UI contract consistency.
+- **Software Quality:** Backed by **76 passing automated tests** covering extraction integrity, model inference, serialization determinism, API schemas, and UI contract consistency.
 
 ---
 
@@ -84,6 +86,12 @@ It is vital to distinguish our local Phase 1 target formulation from the baselin
    - **Statistical Consequence:** Substantially higher positive prevalence (~1.5% to 3.5%+) because long-duration smoldering and backing fire cores persist across 24-hour cycles.
    - **Caution:** Models evaluated on $Y_{\text{active}}$ can achieve high apparent metrics simply by learning an identity mapping of `PrevFireMask`.
 
+### 2.5 Dataset Limitations: Coordinates, Event IDs, and Elevation Overlap
+To maintain full scientific transparency, three key structural limitations of the public NDWS TFRecords must be documented:
+1. **Absence of Geospatial Coordinates:** The serialized TFRecords do not include latitude/longitude bounding boxes or coordinate reference system (CRS) projections. Raw pixel indices $(r, c)$ represent local $64 \times 64$ patch coordinates, precluding direct overlay onto operational GIS layers without external cross-walk metadata.
+2. **Absence of Fire-Event IDs and Timestamps:** Patches are stored without unique wildfire incident identifiers (e.g., CalFire incident numbers) or calendar timestamps. Consequently, multi-day fire runs cannot be tracked chronologically across sequential observation days.
+3. **Documented Elevation Tile Overlap Across Splits:** An independent terrain fingerprinting audit (`data/splits/split_audit.json`) demonstrated that **94.7% of official evaluation patches and 95.1% of test patches share identical 8×8 km SRTM elevation tiles with training patches**. Because topography is static, tabular models evaluated on the official Kaggle shard splits can partially memorize local elevation profiles. Performance on geographically separated holdouts typically exhibits an AP degradation from ~0.26 down to ~0.138.
+
 ---
 
 ## 3. Train, Validation, and Evaluation Split Methodology
@@ -128,6 +136,19 @@ At their respective validation-optimal thresholds:
   - $\text{TN} = 492,890$ (99.16%), $\text{FP} = 4,179$ (0.84%), $\text{FN} = 2,036$, $\text{TP} = 895$.
   - LightGBM slashed validation false alarms by **67.2%** (4,179 vs 12,757 FP) while maintaining high precision.
 
+### 4.3 Operational Fixed-FPR Benchmark Metrics (FPR ≤ 1% & ≤ 5%)
+In operational fire protection, incident commanders must cap false positive alarms to avoid misallocating suppression resources. We evaluate recall under strict false alarm rate budgets:
+
+| Model & Partition | Recall @ FPR ≤ 1% | Achieved FPR (≤1%) | Operating Threshold @ 1% FPR | Recall @ FPR ≤ 5% | Achieved FPR (≤5%) | Operating Threshold @ 5% FPR |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **LightGBM (Validation `train_14`)** | **32.55%** | 0.999% | 0.025454 | **68.30%** | 4.998% | 0.010903 |
+| **Logistic Regression L2 (Validation `train_14`)** | 12.76% | 1.000% | 0.081586 | 64.31% | 4.998% | 0.033313 |
+| **LightGBM (Held-Out Eval `eval_00`)** | **20.79%** | 0.998% | 0.021245 | **42.76%** | 4.418% | 0.010906 |
+| **Logistic Regression L2 (Held-Out Eval `eval_00`)** | 10.67% | 1.000% | 0.079497 | **44.29%** | 5.000% | 0.033606 |
+
+> [!IMPORTANT]
+> **Threshold Distinction:** The operating thresholds in the table above ($\tau_{1\%} = 0.021245$ and $\tau_{5\%} = 0.010906$ on eval) are distinct fixed-FPR operating points derived from ROC operating curves. They must **not be confused with the primary frozen decision threshold ($\tau^* = 0.028115$)**, which was optimized on the validation Precision-Recall curve to maximize the balanced $F_1$-score.
+
 ---
 
 ## 5. Held-Out Evaluation Generalization (`eval_00`)
@@ -146,6 +167,8 @@ The frozen best model (`LightGBM_Unweighted`) and the primary linear baseline (`
 | **True Negative Count (TN)** | 482,775 | **491,895** | +9,120 cleared | 99.33% unburned land cleared |
 | **False Negative Count (FN)** | **3,355** | 4,012 | +657 | Missed perimeter pixels |
 | **True Positive Count (TP)** | **1,427** | 770 | -657 | High-confidence spread detections |
+| **Recall @ FPR ≤ 1%** | 10.67% (0.106650) | **20.79%** (0.207863) | **+10.12%** | **+94.9% relative recall gain** |
+| **Recall @ FPR ≤ 5%** | **44.29%** (0.442911) | 42.76% (0.427645) | -1.53% | Linear model catches up at higher budget |
 
 ### Operational Significance of 73.3% False Alarm Suppression:
 In wildland firefighting operations, false positives represent entire mountain ridges, valleys, or communities falsely flagged as burning within 24 hours. Dispatching containment dozers, hotshot crews, or air tankers to false alarms exhausts scarce resources and endangers personnel. LightGBM eliminates **9,120 false positive alarms** across a single 500k-pixel operational window, transforming model output into an actionable operational intelligence feed.
@@ -162,6 +185,8 @@ Scientific honesty requires evaluating model performance shifts across distinct 
 | **Recall at $\tau^*$** | **30.54%** | 16.10% | -14.44% | **-47.28%** | Severe recall contraction; misses more spreading pixels |
 | **$F_1$-Score at $\tau^*$** | **0.223610** | **0.173521** | -0.050089 | **-22.40%** | Overall balance degrades under fixed decision threshold |
 | **Brier Score** | **0.005689** | 0.009354 | +0.003665 | +64.42% | Reflects higher baseline positive prevalence (0.956% vs 0.586%) |
+| **Recall @ FPR ≤ 1%** | **32.55%** | 20.79% | -11.76% | -36.13% | Performance contraction under strict 1% false alarm ceiling |
+| **Recall @ FPR ≤ 5%** | **68.30%** | 42.76% | -25.54% | -37.39% | Bounded operational recall drop across unseen fire regimes |
 
 #### Root Cause Analysis of the Generalization Drop:
 1. **Domain Shift Across Geographic Shards:** The Google Research NDWS dataset shards represent distinct geographic incidents and seasonal snapshots. Differences in local fuel types, terrain roughness, and micro-climates between `train_14` and `eval_00` degrade global tabular feature associations.
@@ -173,7 +198,7 @@ Scientific honesty requires evaluating model performance shifts across distinct 
 
 ## 6. Metric Definitions & Scientific Interpretation
 
-In extreme class imbalance (~0.6%–0.9% positive prevalence), conventional evaluation metrics can be deeply misleading. We adopt four rigorous evaluation pillars:
+In extreme class imbalance (~0.6%–0.9% positive prevalence), conventional evaluation metrics can be deeply misleading. We adopt five rigorous evaluation pillars:
 
 1. **Average Precision (AP / Area Under the Precision-Recall Curve):**
    $$\text{AP} = \sum_k (R_k - R_{k-1}) P_k$$
@@ -183,11 +208,15 @@ In extreme class imbalance (~0.6%–0.9% positive prevalence), conventional eval
 3. **Brier Score (Mean Squared Probability Error):**
    $$\text{Brier} = \frac{1}{N} \sum_{i=1}^N (\hat{p}_i - y_i)^2$$
    - Measures probabilistic calibration. A baseline predicting the mean prevalence achieves a Brier score of $p(1-p) \approx 0.0058$. LightGBM achieves **0.005689**, proving that predicted spread probabilities are sharp and well-calibrated.
-4. **Decision Threshold Selection ($\tau^*$):**
+4. **Balanced Decision Threshold Selection ($\tau^*$):**
    - The conventional default threshold of $\tau = 0.50$ is disastrous for rare event prediction, producing exactly 0 positive predictions.
    - Thresholds must be tuned strictly on validation Precision-Recall curves to maximize $F_1$-score:
      $$\tau^* = \arg\max_\tau F_1(\tau)$$
    - The selected threshold ($\tau^* = 0.028115$) is frozen before evaluating unseen test data.
+5. **Recall at Fixed False-Positive Rate (Fixed-FPR Recall):**
+   $$\text{Recall}_{\alpha} = \max_{\tau} \{ \text{Recall}(\tau) \mid \text{FPR}(\tau) \le \alpha \}$$
+   - Evaluates detection capacity under strict operational alarm constraints ($\alpha = 0.01$ and $\alpha = 0.05$).
+   - Yields distinct operating thresholds ($\tau_{1\%}$ and $\tau_{5\%}$) suited for tactical resource allocation rather than maximum $F_1$ balance.
 
 ---
 
@@ -218,7 +247,28 @@ Tree split gain measures the utility of a feature for reducing predictive entrop
 
 ---
 
-## 8. Audit of Prior Anomalies & Resolution History
+## 8. Neighborhood / Focal Feature Engineering & Spatial Context
+
+To address the Project 17 requirement of extracting neighborhood and focal aggregated context from the raster inputs, we developed and validated 2D focal operators prior to pixel row flattening:
+
+### 8.1 Implemented 3×3 Focal Features
+Implemented in `src/features/extract_tabular_ndws.py` via `compute_focal_neighborhood_features()`:
+1. `focal_prev_fire_density_3x3`: 3×3 uniform box filter over binary active fire indicators on day $t$ (`PrevFireMask == 1.0`), quantifying local fire cluster mass and contiguous flaming fronts.
+2. `focal_elevation_std_3x3`: 3×3 moving standard deviation of elevation, quantifying micro-topographic roughness, ridgelines, and ravine barriers.
+3. `focal_ndvi_mean_3x3`: 3×3 uniform mean filter over NDVI, smoothing vegetative biomass greenness and filtering isolated single-pixel sensor noise.
+
+### 8.2 Strict Leakage Safeguards
+- **2D Pre-Flattening Extraction:** Features are computed on the full 2D $64 \times 64$ patch before any rows are extracted, ensuring true spatial adjacency.
+- **Boundary Reflection:** Uses `mode='reflect'` padding to avoid artificial edge discontinuities.
+- **Complete Target Isolation:** Day $t+1$ `FireMask` is strictly excluded from focal filter inputs. Only Day $t$ predictors are filtered.
+- **Schema Backward Compatibility:** Gated by an optional extraction flag (`--extract-neighborhood-features`), preserving compatibility with existing 12-feature baseline Parquet shards.
+
+### 8.3 Scientific Transparency: Pending Model Ablation
+While the focal extraction routines are fully implemented, tested, and verified (`tests/test_extract_tabular_ndws.py`), **these features have not yet been evaluated in a retrained baseline model**. In accordance with strict empirical reporting guidelines, **we do not claim that these neighborhood features improve predictive performance**. Their full ablation study is scheduled for Phase 2 alongside 2D spatial deep learning.
+
+---
+
+## 9. Audit of Prior Anomalies & Resolution History
 
 During Phase 1, all baseline and benchmark results were independently audited to ensure complete scientific integrity:
 
@@ -234,39 +284,51 @@ During Phase 1, all baseline and benchmark results were independently audited to
    - *Implementation:* Implemented `calculate_recall_at_fixed_fpr()` in `src/models/train_tabular_baselines.py` and integrated into `evaluate_model_predictions()`. Uses ROC curve operating points, strictly guarantees achieved empirical FPR does not exceed the target threshold, gracefully handles imbalanced classes and edge cases, and correctly partitions tied prediction scores. Tested across 5 rigorous unit tests.
 4. **2D Focal / Neighborhood Feature Engineering:**
    - *Requirement:* Derive scientifically defensible spatial focal context from 2D patches prior to flattening.
-   - *Implementation:* Implemented `compute_focal_neighborhood_features()` in `src/features/extract_tabular_ndws.py`. Computes:
-     - `focal_prev_fire_density_3x3`: 3×3 uniform filter on $(PrevFireMask == 1)$ on day $t$.
-     - `focal_elevation_std_3x3`: 3×3 standard deviation of elevation (local topographic roughness).
-     - `focal_ndvi_mean_3x3`: 3×3 uniform filter of NDVI (local fuel greenness).
-   - *Safeguards:* Computed per 64×64 patch before row flattening with `mode='reflect'` boundary conditions. Zero target leakage: day $t+1$ FireMask is completely excluded. Compatible with existing baseline schema via optional feature toggle. Tested across 3 unit tests.
+   - *Implementation:* Implemented `compute_focal_neighborhood_features()` in `src/features/extract_tabular_ndws.py` with reflection boundaries and zero target leakage. Tested across 3 unit tests.
 
 ---
 
-## 9. Dashboard Consistency & Operational Integration Audit
+## 10. Dashboard Consistency & Operational API Architecture
 
-The running FireWild dashboard (`http://127.0.0.1:8000`) was audited to verify that frontend displays faithfully represent backend artifacts without fabrication:
+The running FireWild dashboard (`http://127.0.0.1:8000`) and FastAPI backend were audited to verify that frontend displays faithfully represent backend artifacts without fabrication:
 
-### 9.1 Metric Consistency Check
-- **API Endpoint:** `GET /api/v1/ndws/benchmark/metrics` serves sanitized JSON directly from `experiments/results_ndws/lightgbm_results.json` and `models/ndws/lightgbm_metadata.json`.
+### 10.1 Distinct Backend Systems: NDWS Benchmark vs. CLBI Simulator
+It is essential to distinguish the two independent machine learning systems unified within FireWild Intelligence:
+1. **NDWS Benchmark System (`/api/v1/ndws/...`):**
+   - Serves verified retrospective academic benchmarks and model comparisons trained on the Google Research Next Day Wildfire Spread dataset.
+   - Fully dynamic: loads actual serialized JSON artifacts from disk without hardcoding.
+2. **Candidate Line Breach Intelligence (CLBI) Simulator (`/api/v1/predict`, `/demo`):**
+   - A separate tactical decision-support tool predicting fireline breach probability for constructed containment lines.
+   - Ingests tactical line parameters (slope, fuel clearance width, flame angle, barrier type) and evaluates operational breach risk.
+
+### 10.2 Benchmark API Metrics Endpoint (`GET /api/v1/ndws/benchmark/metrics`)
+- **Source Artifacts:** Sanitizes `experiments/results_ndws/lightgbm_results.json` and `models/ndws/lightgbm_metadata.json`.
+- **Exposed Payload Schema:**
+  - `benchmark_summary`: Pilot sample sizes (1M train, 500k val, 500k eval) and problem formulation.
+  - `models_comparison`: Ranked comparative summaries across all 5 models including AP, ROC-AUC, Brier score, tuned thresholds, confusion matrices, and fixed-FPR recall metrics.
+  - `best_model_details`: Deep breakdown of LightGBM Unweighted validation and held-out evaluation metrics, feature split gains, and fixed-FPR operating points (`recall_at_1pct_fpr`, `achieved_fpr_at_1pct`, `threshold_at_1pct_fpr`, `recall_at_5pct_fpr`, `achieved_fpr_at_5pct`, `threshold_at_5pct_fpr`).
 - **Verified Values:**
   - LightGBM Validation AP: `0.114470` $\to$ Displayed as **0.1145** (Match).
   - LightGBM Held-Out Evaluation AP: `0.083720` $\to$ Displayed as **0.0837** (Match).
   - Logistic Regression Held-Out AP: `0.061643` $\to$ Displayed as **0.0616** (Match).
   - False Positive Alarm Reduction: `3,323` vs `12,443` $\to$ Displayed as **-73.3%** (Match).
   - Optimal Threshold: `0.028115` $\to$ Displayed as **0.0281** (Match).
+  - Eval Recall @ FPR ≤ 1%: `0.207863` $\to$ Displayed as **20.79%** (Match).
+  - Eval Recall @ FPR ≤ 5%: `0.427645` $\to$ Displayed as **42.76%** (Match).
 - **Privacy Enforcement:** Verified that zero internal local machine paths (`C:\Users\...`) exist in API responses or public contracts.
 
-### 9.2 Spatial Heatmap Integrity Check
-- **Endpoint:** `GET /api/v1/ndws/demo/patch` serves a $64 \times 64$ matrix.
-- **Transparency Flags:** The response strictly includes:
-  `"is_georeferenced": false, "is_illustrative_simulation": true`
-- **Dashboard Presentation:** The UI explicitly labels the raster card as an *"Illustrative 64×64 km Spatial Spread Matrix (Prototype Interface)"* with disclaimers that evaluated TFRecords lack georeferenced coordinate bounds. It is never misrepresented as live satellite telemetry.
+### 10.3 Honest Presentation of Illustrative & Synthetic Content
+- **Illustrative Spatial Grid (`GET /api/v1/ndws/demo/patch`):** Serves a synthetic $64 \times 64$ spread probability grid generated for UI threshold slider testing and heatmap rendering.
+- **Transparency Safeguards:** The JSON response includes:
+  `"is_georeferenced": false, "is_illustrative_simulation": true, "disclaimer": "Illustrative 64x64 spatial grid generated for user interface layout and heatmap visualization. Raw TFRecord benchmark patches lack embedded public geographic coordinates."`
+- **Dashboard Presentation:** The web UI explicitly labels the raster card as an *"Illustrative 64×64 km Spatial Spread Matrix (Prototype Interface)"*. It is never misrepresented as live operational telemetry.
+- **CLBI 100-Segment Demo Dataset:** `data/demo/clbi_demo_segments.csv` represents a structured suite of simulated candidate firelines used to test tactical triage tables in the Line Risk Simulator.
 
 ---
 
-## 10. Reproducibility Instructions
+## 11. Reproducibility Instructions
 
-### 10.1 Environment Specification
+### 11.1 Environment Specification
 - **Operating System:** Windows 11 / Linux (Cross-platform compatible)
 - **Python:** 3.13.0 64-bit
 - **Core Dependencies:**
@@ -280,39 +342,39 @@ The running FireWild dashboard (`http://127.0.0.1:8000`) was audited to verify t
   - `fastapi == 0.115.11`
   - `uvicorn == 0.34.0`
 
-### 10.2 Pipeline Execution Commands
+### 11.2 Pipeline Execution Commands
 
-```bash
-# 1. Extract tabular features from raw TFRecords into Parquet
-python -m src.features.extract_tabular_ndws `
-  --input-dir "data/raw/ndws" `
-  --pattern "*train*.tfrecord" `
-  --output-dir "data/processed/ndws" `
-  --batch-size 50
+```powershell
+# 1. Environment verification
+python --version
 
-# 2. Train and evaluate tabular baselines (Dummy, Distance, Logistic L2/L1/Balanced)
-python -m src.models.train_tabular_baselines
-
-# 3. Train and evaluate LightGBM benchmark pipeline
-python -m src.models.train_lightgbm_ndws
-
-# 4. Run automated test suite (72 unit and integration tests)
+# 2. Run complete automated test suite (76 passing tests)
 python -m unittest discover -s tests -v
 
-# 5. Launch FastAPI decision dashboard
+# 3. Verify git diff cleanliness
+git diff --check
+
+# 4. Optional: Re-run tabular baselines evaluation pipeline
+python -m src.models.train_tabular_baselines
+
+# 5. Optional: Re-run LightGBM training and validation pipeline
+python -m src.models.train_lightgbm_ndws
+
+# 6. Launch FastAPI decision dashboard and benchmark API
 python -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000
 ```
 
 ---
 
-## 11. Known Limitations & Phase 2 Spatial Deep Learning Roadmap
+## 12. Known Limitations & Phase 2 Spatial Deep Learning Roadmap
 
-### 11.1 Known Limitations of Phase 1 Tabular AML
+### 12.1 Known Limitations of Phase 1 Tabular AML
 1. **Independent Pixel Flattening:** Tabular models process each pixel independently. While the Euclidean distance feature (`dist_to_prev_fire_km`) provides a strong 1D spatial prior, it discards 2D spatial texture, multi-scale neighborhood fuel contiguity, and localized barrier effects.
 2. **Scalar Wind Vector Representation:** Wind speed (`vs`) and direction (`th`) are ingested as independent scalar channels. Tabular decision trees cannot easily compute the directional dot product between the local terrain slope gradient vector and the wind vector without explicit non-linear feature engineering.
 3. **Absence of Embedded Coordinates:** The public NDWS TFRecords do not contain geographic bounding boxes or projection metadata, preventing direct spatial overlay onto operational GIS base maps without external georeferencing cross-walks.
+4. **Elevation Tile Overlap (94.7%):** The official Kaggle train/eval split allows models to memorize static elevation patterns across patches, overstating real-world out-of-domain transferability.
 
-### 11.2 Phase 2 Spatial Deep Learning Roadmap
+### 12.2 Phase 2 Spatial Deep Learning Roadmap
 
 ```
 +-------------------------------------------------------------------------------------------------+
@@ -346,7 +408,7 @@ python -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000
 
 ---
 
-## 12. Archival Verification & Document Reference Index
+## 13. Archival Verification & Document Reference Index
 
 This report consolidates and supersedes the following preliminary Phase 1 records while preserving their historical experiment files:
 - [`experiments/PHASE1_LIGHTGBM_REPORT.md`](file:///C:/Users/Admin/Documents/WILDFIRE/experiments/PHASE1_LIGHTGBM_REPORT.md): Initial LightGBM benchmark and feature gain ranking.

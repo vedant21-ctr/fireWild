@@ -580,6 +580,81 @@
         </div>
       </section>
 
+      <!-- Operational Fixed-FPR Benchmark Leaderboard -->
+      <section class="section-block" aria-labelledby="fixed-fpr-heading">
+        <div class="section-header">
+          <div>
+            <h2 id="fixed-fpr-heading" class="section-title">Operational Decision Benchmarks: Fixed False-Positive Rates (FPR ≤ 1% &amp; ≤ 5%)</h2>
+            <p class="section-subtitle">Real-world fireline containment requires strictly budgeted false alarms. True fire spread detection recall under fixed FPR constraints.</p>
+          </div>
+          <span class="badge badge-subtle">Requirement: Project 17</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="fixed-fpr-table">
+            <thead>
+              <tr>
+                <th scope="col">Model / Architecture</th>
+                <th scope="col">Partition Scope</th>
+                <th scope="col" class="text-right">Recall @ FPR ≤ 1%</th>
+                <th scope="col" class="text-right">Achieved FPR (≤1%)</th>
+                <th scope="col" class="text-right">Threshold @ 1% FPR</th>
+                <th scope="col" class="text-right">Recall @ FPR ≤ 5%</th>
+                <th scope="col" class="text-right">Achieved FPR (≤5%)</th>
+                <th scope="col" class="text-right">Threshold @ 5% FPR</th>
+              </tr>
+            </thead>
+            <tbody id="fixed-fpr-tbody">
+              <tr class="row-highlight-eval">
+                <td>
+                  <div class="model-name-group">
+                    <strong>LightGBM (Unweighted, Eval)</strong>
+                    <span class="badge badge-eval">Unseen Eval</span>
+                  </div>
+                  <span class="model-arch">Official eval_00 partition</span>
+                </td>
+                <td>Held-Out Eval (eval_00)</td>
+                <td class="text-right font-mono font-bold text-forest" id="fpr-lgbm-eval-rec1">20.79%</td>
+                <td class="text-right font-mono text-muted" id="fpr-lgbm-eval-fpr1">0.998%</td>
+                <td class="text-right font-mono" id="fpr-lgbm-eval-tau1">0.021245</td>
+                <td class="text-right font-mono font-bold text-forest" id="fpr-lgbm-eval-rec5">42.76%</td>
+                <td class="text-right font-mono text-muted" id="fpr-lgbm-eval-fpr5">4.418%</td>
+                <td class="text-right font-mono" id="fpr-lgbm-eval-tau5">0.010906</td>
+              </tr>
+              <tr class="row-highlight">
+                <td>
+                  <div class="model-name-group">
+                    <strong>LightGBM (Unweighted, Val)</strong>
+                    <span class="badge badge-best">Top Model</span>
+                  </div>
+                  <span class="model-arch">Validation partition</span>
+                </td>
+                <td>Validation (train_14)</td>
+                <td class="text-right font-mono font-bold text-accent" id="fpr-lgbm-val-rec1">32.55%</td>
+                <td class="text-right font-mono text-muted" id="fpr-lgbm-val-fpr1">0.999%</td>
+                <td class="text-right font-mono" id="fpr-lgbm-val-tau1">0.025454</td>
+                <td class="text-right font-mono font-bold text-accent" id="fpr-lgbm-val-rec5">68.30%</td>
+                <td class="text-right font-mono text-muted" id="fpr-lgbm-val-fpr5">4.998%</td>
+                <td class="text-right font-mono" id="fpr-lgbm-val-tau5">0.010903</td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Logistic Regression (L2, Val)</strong>
+                  <span class="model-arch">Linear Baseline on Validation</span>
+                </td>
+                <td>Validation (train_14)</td>
+                <td class="text-right font-mono" id="fpr-log-val-rec1">12.76%</td>
+                <td class="text-right font-mono text-muted" id="fpr-log-val-fpr1">1.000%</td>
+                <td class="text-right font-mono" id="fpr-log-val-tau1">0.081586</td>
+                <td class="text-right font-mono" id="fpr-log-val-rec5">64.31%</td>
+                <td class="text-right font-mono text-muted" id="fpr-log-val-fpr5">4.998%</td>
+                <td class="text-right font-mono" id="fpr-log-val-tau5">0.033313</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- Two-Column Diagnostic & Attribution Section -->
       <div class="lab-grid-two-col">
 

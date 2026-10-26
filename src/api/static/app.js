@@ -407,6 +407,53 @@ async function loadBenchmarkMetrics() {
       if (heroEvalAp && evalPerf.average_precision) {
         heroEvalAp.textContent = Number(evalPerf.average_precision).toFixed(4);
       }
+
+      // Update operational fixed-FPR benchmark table
+      if (evalPerf.recall_at_1pct_fpr !== undefined) {
+        const elRec1 = document.getElementById('fpr-lgbm-eval-rec1');
+        const elFpr1 = document.getElementById('fpr-lgbm-eval-fpr1');
+        const elTau1 = document.getElementById('fpr-lgbm-eval-tau1');
+        const elRec5 = document.getElementById('fpr-lgbm-eval-rec5');
+        const elFpr5 = document.getElementById('fpr-lgbm-eval-fpr5');
+        const elTau5 = document.getElementById('fpr-lgbm-eval-tau5');
+        if (elRec1) elRec1.textContent = (evalPerf.recall_at_1pct_fpr * 100).toFixed(2) + '%';
+        if (elFpr1) elFpr1.textContent = (evalPerf.achieved_fpr_at_1pct * 100).toFixed(3) + '%';
+        if (elTau1) elTau1.textContent = Number(evalPerf.threshold_at_1pct_fpr).toFixed(6);
+        if (elRec5) elRec5.textContent = (evalPerf.recall_at_5pct_fpr * 100).toFixed(2) + '%';
+        if (elFpr5) elFpr5.textContent = (evalPerf.achieved_fpr_at_5pct * 100).toFixed(3) + '%';
+        if (elTau5) elTau5.textContent = Number(evalPerf.threshold_at_5pct_fpr).toFixed(6);
+      }
+      if (valPerf.recall_at_1pct_fpr !== undefined) {
+        const elRec1 = document.getElementById('fpr-lgbm-val-rec1');
+        const elFpr1 = document.getElementById('fpr-lgbm-val-fpr1');
+        const elTau1 = document.getElementById('fpr-lgbm-val-tau1');
+        const elRec5 = document.getElementById('fpr-lgbm-val-rec5');
+        const elFpr5 = document.getElementById('fpr-lgbm-val-fpr5');
+        const elTau5 = document.getElementById('fpr-lgbm-val-tau5');
+        if (elRec1) elRec1.textContent = (valPerf.recall_at_1pct_fpr * 100).toFixed(2) + '%';
+        if (elFpr1) elFpr1.textContent = (valPerf.achieved_fpr_at_1pct * 100).toFixed(3) + '%';
+        if (elTau1) elTau1.textContent = Number(valPerf.threshold_at_1pct_fpr).toFixed(6);
+        if (elRec5) elRec5.textContent = (valPerf.recall_at_5pct_fpr * 100).toFixed(2) + '%';
+        if (elFpr5) elFpr5.textContent = (valPerf.achieved_fpr_at_5pct * 100).toFixed(3) + '%';
+        if (elTau5) elTau5.textContent = Number(valPerf.threshold_at_5pct_fpr).toFixed(6);
+      }
+      if (data.models_comparison) {
+        const logModel = data.models_comparison.find(m => m.model_id === 'Logistic_Regression_L2');
+        if (logModel && logModel.recall_at_1pct_fpr !== undefined) {
+          const elRec1 = document.getElementById('fpr-log-val-rec1');
+          const elFpr1 = document.getElementById('fpr-log-val-fpr1');
+          const elTau1 = document.getElementById('fpr-log-val-tau1');
+          const elRec5 = document.getElementById('fpr-log-val-rec5');
+          const elFpr5 = document.getElementById('fpr-log-val-fpr5');
+          const elTau5 = document.getElementById('fpr-log-val-tau5');
+          if (elRec1) elRec1.textContent = (logModel.recall_at_1pct_fpr * 100).toFixed(2) + '%';
+          if (elFpr1) elFpr1.textContent = (logModel.achieved_fpr_at_1pct * 100).toFixed(3) + '%';
+          if (elTau1) elTau1.textContent = Number(logModel.threshold_at_1pct_fpr).toFixed(6);
+          if (elRec5) elRec5.textContent = (logModel.recall_at_5pct_fpr * 100).toFixed(2) + '%';
+          if (elFpr5) elFpr5.textContent = (logModel.achieved_fpr_at_5pct * 100).toFixed(3) + '%';
+          if (elTau5) elTau5.textContent = Number(logModel.threshold_at_5pct_fpr).toFixed(6);
+        }
+      }
     }
   } catch (err) {
     console.warn('Could not load live benchmark metrics; verified fallbacks active:', err);
