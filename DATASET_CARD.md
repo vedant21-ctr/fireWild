@@ -1,103 +1,70 @@
-# DATASET CARD: fireline_segments_v1
+# Dataset Card: Next Day Wildfire Spread (NDWS), as used in Phase 1
 
-**Dataset Name:** Candidate Line Breach Intelligence Benchmark (v1)  
-**Task Type:** Binary Classification / Spatial Line Survivability Prediction  
-**Primary Target:** `label` (1 = Held, 0 = Burned Over)  
-**File Formats Available:**  
-- `data/final/fireline_segments_v1.parquet` (187 KB)  
-- `data/final/fireline_segments_v1.csv` (749 KB)  
-- `data/final/fireline_segments_v1.json` (2.78 MB)  
+**Source:** Kaggle `fantineh/next-day-wildfire-spread` (version 2), released with Huot, Hu, Goyal, Sankar,
+Ihme & Chen, "Next Day Wildfire Spread: A Machine Learning Dataset to Predict Wildfire Spreading From
+Remote-Sensing Data", *IEEE TGRS* 60, 2022 (arXiv:2112.02447). Built with Google Earth Engine.
+**Download:** `python -m src.aml.ndws` (kagglehub). Raw TFRecords are about 2 GB; the NumPy cache in
+`data/ndws/` (gitignored) is about 4.3 GB.
+**Task:** per-pixel binary classification. Is a 1 km² pixel burning at day *t*+1, given day-*t* inputs?
 
----
+## Composition
 
-## 1. Provenance and Sources
+| Split (official) | Patches | Pixels | Positive rate (known labels) | Unknown labels |
+|---|---:|---:|---:|---:|
+| train | 14,979 | 61.4 M | 1.10% | 2.35% |
+| eval | 1,877 | 7.7 M | 1.37% | 2.44% |
+| test | 1,689 | 6.9 M | 1.25% | 2.75% |
 
-This dataset connects the **Next Day Wildfire Spread (NDWS)** benchmark with the **USDA Forest Service Fireline Effectiveness (FLE)** empirical database:
+Each patch is 64 × 64 pixels at 1 km, covering the contiguous US from 2012 to 2020. A sample exists only if
+the day-*t* mask contains fire.
 
-1. **Next Day Wildfire Spread (NDWS):**
-   - *Authors:* Fantine Huot, R. Lily Hu, Nita Goyal, Tharun Sankar, Matthias Ihme, Yi-Fan Chen (Google Research / Stanford).
-   - *Publication:* *IEEE Transactions on Geoscience and Remote Sensing (TGRS)*, Vol. 60, 2022 (arXiv:2112.02447).
-   - *Role in Pipeline:* Source of the deep learning fire spread velocity field, 10m synoptic wind vectors (GridMET), and regional topographic slope.
-2. **USFS Fireline Effectiveness Dataset (FLE):**
-   - *Authors:* Alexander P. Arkowitz, Scott M. Ritter, Matthew P. Thompson, Jesse D. Young, Bradley M. Pietruszka, David E. Calkin.
-   - *Repository:* USDA Forest Service Research Data Archive (DOI: [`10.2737/RDS-2025-0011`](https://doi.org/10.2737/RDS-2025-0011)).
-   - *Role in Pipeline:* Source of polyline geometries for constructed firelines and verified post-incident ground-truth engagement outcomes (`Held` vs. `Burned Over`).
+| Channel | Meaning | Source | Units |
+|---|---|---|---|
+| `elevation` | terrain height | SRTM | m |
+| `th` | wind direction (blowing **from**) | GRIDMET | degrees from north |
+| `vs` | wind speed | GRIDMET | m/s |
+| `tmmn`, `tmmx` | daily min / max temperature | GRIDMET | K |
+| `sph` | specific humidity | GRIDMET | kg/kg |
+| `pr` | precipitation | GRIDMET | mm |
+| `pdsi` | Palmer Drought Severity Index | GRIDMET | index |
+| `NDVI` | vegetation index | VIIRS | ×10⁴ |
+| `population` | population density | GPWv4 | people/km² |
+| `erc` | energy release component | NFDRS | index |
+| `PrevFireMask` | fire at day *t* (input) | MODIS MOD14A1 | 1 / 0 / −1 unknown |
+| `FireMask` | fire at day *t*+1 (**target**) | MODIS MOD14A1 | 1 / 0 / −1 unknown |
 
----
+## Official split and why we add a second one
 
-## 2. Selected Fires & Geographic Scope
+Huot et al. assign **random weeks** to train/eval/test (8:1:1) with a one-day buffer. That separates time
+periods but not places. Our terrain-fingerprint audit (`src/aml/splits.py`) finds that **about 95% of
+official test patches share an identical, non-flat 8 × 8 km elevation block with a training patch**. A
+mirrored-patch control produces 0 / 1,855 matches. We therefore also evaluate on a **spatial split** that
+assigns whole location groups (845 groups, from union-find over shared terrain) to train / val / test:
+14,822 / 1,855 / 1,868 patches, with zero shared terrain. Manifest: `data/splits/ndws_split_manifest.csv`.
+Audit: `data/splits/split_audit.json`.
 
-Five major historical California wildfire incidents (2018–2020) were selected based on high fireline engagement density, distinct fuel regimes, and documented extreme spread events:
+## Data-quality issues found (EDA) and handling
 
-| Fire Incident | Incident ID | Year | County / Forest | Split Role | Segment Count | Dominant Fuel |
-| :--- | :--- | :---: | :--- | :---: | :---: | :--- |
-| **August Complex** | `CA-MNF-013028` | 2020 | Mendocino NF, Glenn/Tehama | `train` | 1,420 | Brush / Mixed Conifer |
-| **Carr Fire** | `CA-SHU-007808` | 2018 | Shasta County, Whiskeytown | `train` | 680 | Timber / Heavy Brush |
-| **Creek Fire** | `CA-SNF-000958` | 2020 | Sierra NF, Fresno/Madera | `train` | 950 | Heavy Timber / Snags |
-| **Mendocino Complex**| `CA-MEU-008674`| 2018 | Mendocino/Lake Counties | `val` | 810 | Grass / Oak Chaparral |
-| **CZU Lightning Complex**| `CA-CZU-005205`| 2020 | Santa Cruz/San Mateo | `test` | 740 | Coastal Redwood/Timber |
+| Issue | Handling |
+|---|---|
+| `tmmn`, `tmmx` outside 200–330 K (missing stored as 0 K; maxima up to 344 K ≈ 71 °C), about 0.35% of pixels | NaN |
+| `sph` ≤ 0, `vs` < 0 | NaN |
+| `th` (wind direction) corrupted: values from −496,522 to 37,620 in about 0.2% of pixels | outside [0, 361] → NaN; (360, 361] wrapped |
+| elevation below 0 m (minimum −5 m) | kept: sub-sea-level terrain is real |
+| `pr` slightly negative | clip at 0 |
+| `NDVI` ×10⁴ scale; heavy-tailed `population` | rescale; log1p |
+| label −1 (cloud / missing), about 2.4% | excluded from training and evaluation |
+| no georeferencing; orientation unknown | rows run south→north, columns west→east: the only convention with significantly more spread downwind than upwind (1.12×, 95% CI 1.09–1.15; EDA) |
 
----
+## Known limitations
 
-## 3. Discretization & Spatial Geometry
+- MODIS daily 1 km active-fire detections are noisy (clouds, overpass timing, smoke). About 74% of
+  day-*t*+1 fire pixels were not burning on day *t*, so persistence recall is only about 26%.
+- Weather is daily-aggregated GRIDMET (about 4 km) interpolated to 1 km, so sub-daily wind shifts are
+  lost.
+- There is no fuel type, fuel moisture or suppression information.
+- Patches are centred on fires, so the pixel distribution is not the distribution of the US landscape.
 
-- **Segment Length:** Every containment line is discretized into uniform **100-meter straight-line segments**.
-- **Coordinate Reference System (Standardized):** `EPSG:5070` (USA Contiguous Albers Equal Area Conic).
-  - *Rationale:* Preserves true surface distance in meters and area without distortion across CONUS, enabling exact angular dot-product calculations.
-- **Normal Vector Calculation:** For each 100m segment running between $(x_1, y_1)$ and $(x_2, y_2)$ with azimuth $\theta_{\text{line}} \in [0, 180)^\circ$, the unit normal vector is:
-  $$\hat{n} = (-\sin(\theta_{\text{line}}), \cos(\theta_{\text{line}}))$$
+## License and citation
 
----
-
-## 4. Target Label Construction
-
-- **Positive Class (`label = 1`):** `Held` — The fireline successfully stopped the flame front; the fire did not cross the constructed barrier.
-- **Negative Class (`label = 0`):** `Burned Over` — The fire breached, spotted over, or overrun the barrier segment.
-- **Excluded Class:** `Not Engaged` — Firelines constructed miles from the active perimeter that fire never reached were **strictly filtered out**. Including unengaged lines would severely bias the model by treating untouched lines as successful barriers.
-- **Class Balance:**
-  - `Held (1)`: 3,223 samples (**70.07%**)
-  - `Burned Over (0)`: 1,377 samples (**29.93%**)
-  - *Imbalance Ratio:* 2.34 : 1 (matches empirical USFS FLE field ratio).
-
----
-
-## 5. Feature Schema & Definitions
-
-| Column Name | Category | Type | Units / Range | Mathematical Definition | Physical Rationale |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `fire_id` | Metadata | String | Categorical | Official NIFC / IRWIN Incident Identifier | Tracking and group-splitting. |
-| `segment_id` | Metadata | String | Unique Key | Unique identifier per 100m segment | Primary key. |
-| `date` | Temporal | Date | YYYY-MM-DD | Date of observation / operational period | Temporal alignment. |
-| `split` | Protocol | String | `{train, val, test}` | Strict fire-level allocation | Prevents spatial leakage. |
-| `label` | Target | Integer | `{0, 1}` | Binary outcome: 1 = Held, 0 = Burned Over | Ground truth prediction target. |
-| `slope` | Static | Float | Degrees ($[1^\circ, 55^\circ]$) | $\arctan(\|\nabla z\|) \times \frac{180}{\pi}$ | Steep slopes accelerate flame tilt. |
-| `elevation` | Static | Float | Meters ($[50, 3200]$) | Elevation $z$ from USGS 3DEP | Fuel moisture and nocturnal inversion. |
-| `distance_to_fire`| Static | Float | Meters ($[50, 5000]$) | Euclidean distance to active front at $t$ | Proximity of flame attack. |
-| `burn_prob` | Spread ML | Float | Probability ($[0, 1]$) | $\sigma(\mathbf{W} \cdot \mathbf{x})$ from 2D spatial backbone | Predicted intensity of oncoming front. |
-| `prob_gradient`| Spread ML | Float | Magnitude ($[0, 0.5]$) | $\|\nabla P_{\text{burn}}\|$ | Sharpness / velocity of the fire wave. |
-| `spread_direction`| Spread ML | Float | Degrees ($[0, 360)^\circ$) | Azimuth of vector $\vec{J}_{\text{fire}}$ | Heading of the oncoming flame front. |
-| `line_angle` | Geometry | Float | Degrees ($[0, 180)^\circ$) | Segment bearing: $\arctan2(\Delta x, \Delta y)$ | Spatial alignment of the physical line. |
-| `attack_angle` | Geometry | Float | Degrees ($[0^\circ, 90^\circ]$) | Acute angle between $\vec{J}_{\text{fire}}$ and $\hat{n}_{\text{line}}$ | Directness of head-fire attack. |
-| `attack_dot_product`| Geometry | Float | Ratio ($[0, 1]$) | $\cos(\theta_{\text{attack}}) = \frac{\vec{J}_{\text{fire}} \cdot \hat{n}}{\|\vec{J}_{\text{fire}}\|}$ | 1.0 = direct head fire; 0.0 = flank fire. |
-| `dist_pred_boundary`| Spread ML | Float | Meters | Distance to predicted $P=0.5$ contour | Estimated buffer clearance before arrival. |
-| `line_type` | Operational | String | Categorical | `Dozer Line`, `Road as Line`, `Hand Line` | Equipment construction type. |
-| `barrier_width_m` | Operational | Float | Meters ($[2.0, 9.0]$) | Physical cleared width of scrape | Wider barriers resist spotting. |
-| `fuel_model_group` | Environmental | String | Categorical | `Brush`, `Timber`, `Grass/Brush` | Dominant fuel carrying the fire. |
-
----
-
-## 6. Critical Leakage Audit
-
-To prevent subtle temporal or spatial leakage:
-
-1. **No Post-Event Perimeter Features:** Fire perimeter features are sampled strictly from day $t$ (before engagement). Next-day burn perimeters ($t+1$) are never used as inputs.
-2. **No Post-Incident Suppression Data:** Attributes that record post-incident mop-up or suppression repairs are excluded.
-3. **Strict Fire-Level Grouping:** No individual segment from the August Complex or Creek Fire is allowed in the test set. The model is trained on 3 fires, validated on 1 fire, and tested on a completely unseen 5th fire (CZU Complex).
-
----
-
-## 7. Known Limitations
-
-1. **Tactical Resource Absence:** The dataset records where lines held or breached, but does not record whether air tankers dropped retardant on that specific segment.
-2. **Sub-Daily Timing:** Breach events are aggregated over the 24-hour operational period.
-3. **Macro Weather Resolution:** Wind vectors represent regional GridMET (~4 km) flow; extreme micro-canyon vortex winds are smoothed out.
+Use under the terms on the Kaggle dataset page. Cite Huot et al. (2022) when using the data.
