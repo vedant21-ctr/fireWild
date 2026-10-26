@@ -191,6 +191,9 @@ python -m src.model.clbi_demo                 # 100-segment demo
 python -m uvicorn src.api.main:app --reload   # API at http://localhost:8000/docs
 ```
 
+With the server running, the dashboard is at `http://localhost:8000/` (also `/demo`), Swagger docs at
+`http://localhost:8000/docs` and ReDoc at `http://localhost:8000/redoc`.
+
 API details: [docs/CLBI_API_CONTRACT.md](docs/CLBI_API_CONTRACT.md).
 
 ---

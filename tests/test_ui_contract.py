@@ -129,6 +129,141 @@ class TestNDWSUIContract(unittest.TestCase):
         self.assertEqual(res_js.status_code, 200)
         self.assertIn("loadNDWSBenchmarkMetrics", res_js.text)
 
+    def test_9_fixed_fpr_metrics_in_benchmark_payload(self):
+        """Verifies that fixed-FPR evaluation fields are exposed and match serialized artifacts."""
+        payload = get_sanitized_benchmark_payload()
+        eval_perf = payload["best_model_details"]["held_out_evaluation_performance"]
+        val_perf = payload["best_model_details"]["validation_performance"]
+
+        fixed_fpr_keys = [
+            "recall_at_1pct_fpr",
+            "achieved_fpr_at_1pct",
+            "threshold_at_1pct_fpr",
+            "recall_at_5pct_fpr",
+            "achieved_fpr_at_5pct",
+            "threshold_at_5pct_fpr",
+        ]
+
+        # Verify all 6 keys exist in evaluation and validation details
+        for key in fixed_fpr_keys:
+            self.assertIn(key, eval_perf, f"Missing {key} in held_out_evaluation_performance")
+            self.assertIn(key, val_perf, f"Missing {key} in validation_performance")
+
+        # Verify numeric values match the serialized artifact
+        self.assertAlmostEqual(eval_perf["recall_at_1pct_fpr"], 0.207863, places=5)
+        self.assertAlmostEqual(eval_perf["achieved_fpr_at_1pct"], 0.009983, places=5)
+        self.assertAlmostEqual(eval_perf["threshold_at_1pct_fpr"], 0.021245, places=5)
+        self.assertAlmostEqual(eval_perf["recall_at_5pct_fpr"], 0.427645, places=5)
+        self.assertAlmostEqual(eval_perf["achieved_fpr_at_5pct"], 0.044181, places=5)
+        self.assertAlmostEqual(eval_perf["threshold_at_5pct_fpr"], 0.010906, places=5)
+
+        # Verify operational bounds
+        self.assertLessEqual(eval_perf["achieved_fpr_at_1pct"], 0.01)
+        self.assertLessEqual(eval_perf["achieved_fpr_at_5pct"], 0.05)
+        self.assertLessEqual(eval_perf["recall_at_1pct_fpr"], eval_perf["recall_at_5pct_fpr"])
+
+        # Verify models_comparison items have fixed-FPR fields where available
+        models = {m["model_id"]: m for m in payload["models_comparison"]}
+        self.assertIn("LightGBM_Unweighted", models)
+        lgbm_summary = models["LightGBM_Unweighted"]
+        for key in fixed_fpr_keys:
+            self.assertIn(key, lgbm_summary, f"Missing {key} in LightGBM summary")
+
+    def test_10_fastapi_benchmark_endpoint_fixed_fpr_contract(self):
+        """Verifies GET /api/v1/ndws/benchmark/metrics exposes fixed-FPR fields over HTTP."""
+        from fastapi.testclient import TestClient
+        from src.api.main import app
+
+        client = TestClient(app)
+        response = client.get("/api/v1/ndws/benchmark/metrics")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+
+        # Check existing top-level sections remain intact
+        self.assertIn("benchmark_summary", data)
+        self.assertIn("models_comparison", data)
+        self.assertIn("best_model_details", data)
+        self.assertIn("ui_display_disclaimers", data)
+
+        # Check fixed-FPR metrics in best_model_details
+        eval_perf = data["best_model_details"]["held_out_evaluation_performance"]
+        self.assertIn("recall_at_1pct_fpr", eval_perf)
+        self.assertIn("achieved_fpr_at_1pct", eval_perf)
+        self.assertIn("threshold_at_1pct_fpr", eval_perf)
+        self.assertIn("recall_at_5pct_fpr", eval_perf)
+        self.assertIn("achieved_fpr_at_5pct", eval_perf)
+        self.assertIn("threshold_at_5pct_fpr", eval_perf)
+        self.assertAlmostEqual(eval_perf["recall_at_1pct_fpr"], 0.207863, places=5)
+
+    def test_11_backward_compatibility_without_fixed_fpr_fields(self):
+        """Verifies that legacy artifacts missing fixed-FPR fields are handled safely."""
+        import tempfile
+        import json
+        import os
+
+        # Synthetic legacy results missing fixed-FPR keys
+        legacy_results = {
+            "best_model_name": "LightGBM_Unweighted",
+            "validation_results": {
+                "LightGBM_Unweighted": {
+                    "average_precision": 0.114470,
+                    "roc_auc": 0.872004,
+                    "brier_score": 0.005689,
+                    "decision_threshold": 0.028115,
+                    "precision": 0.1764,
+                    "recall": 0.3054,
+                    "f1_score": 0.223610,
+                    "confusion_matrix": {"tp": 894, "fp": 4179, "fn": 2033, "tn": 492894},
+                    "training_time_sec": 1.2
+                }
+            },
+            "held_out_eval_results": {
+                "average_precision": 0.083720,
+                "roc_auc": 0.767868,
+                "brier_score": 0.009354,
+                "precision": 0.1881,
+                "recall": 0.1610,
+                "f1_score": 0.173521,
+                "confusion_matrix": {"tp": 770, "fp": 3323, "fn": 4012, "tn": 491895}
+            }
+        }
+        legacy_meta = {
+            "validation_metrics": {
+                "average_precision": 0.114470,
+                "roc_auc": 0.872004,
+                "brier_score": 0.005689,
+                "decision_threshold": 0.028115,
+                "precision": 0.1764,
+                "recall": 0.3054,
+                "f1_score": 0.223610,
+                "confusion_matrix": {"tp": 894, "fp": 4179, "fn": 2033, "tn": 492894}
+            },
+            "feature_importance_gain": {"dist_to_prev_fire_km": 100.0}
+        }
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            res_path = os.path.join(tmpdir, "legacy_results.json")
+            meta_path = os.path.join(tmpdir, "legacy_meta.json")
+            with open(res_path, "w", encoding="utf-8") as f:
+                json.dump(legacy_results, f)
+            with open(meta_path, "w", encoding="utf-8") as f:
+                json.dump(legacy_meta, f)
+
+            # Must succeed without KeyError
+            payload = get_sanitized_benchmark_payload(
+                results_path=res_path,
+                metadata_path=meta_path
+            )
+
+            # Standard fields must remain intact
+            self.assertEqual(payload["best_model_details"]["model_id"], "LightGBM_Unweighted")
+            self.assertAlmostEqual(payload["best_model_details"]["validation_performance"]["average_precision"], 0.114470, places=5)
+            self.assertAlmostEqual(payload["best_model_details"]["held_out_evaluation_performance"]["average_precision"], 0.083720, places=5)
+
+            # Fixed-FPR keys should simply be absent, not causing null crashes
+            self.assertNotIn("recall_at_1pct_fpr", payload["best_model_details"]["held_out_evaluation_performance"])
+            self.assertNotIn("recall_at_1pct_fpr", payload["models_comparison"][0])
+
 
 if __name__ == "__main__":
     unittest.main()
