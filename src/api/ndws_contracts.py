@@ -65,8 +65,17 @@ def get_sanitized_benchmark_payload(
         "LightGBM_Weighted_spw10": "LightGBM (Weighted, spw=10)"
     }
 
+    FIXED_FPR_FIELDS = [
+        "recall_at_1pct_fpr",
+        "achieved_fpr_at_1pct",
+        "threshold_at_1pct_fpr",
+        "recall_at_5pct_fpr",
+        "achieved_fpr_at_5pct",
+        "threshold_at_5pct_fpr"
+    ]
+
     for key, data in val_results.items():
-        model_summaries.append({
+        summary_item: Dict[str, Any] = {
             "model_id": key,
             "display_name": display_names.get(key, key),
             "is_best_model": (key == best_model_name),
@@ -79,7 +88,11 @@ def get_sanitized_benchmark_payload(
             "f1_at_threshold": data["f1_score"],
             "confusion_matrix": data["confusion_matrix"],
             "training_time_seconds": data.get("training_time_sec", 0.0)
-        })
+        }
+        for field in FIXED_FPR_FIELDS:
+            if field in data:
+                summary_item[field] = data[field]
+        model_summaries.append(summary_item)
 
     # Sort models by validation Average Precision descending
     model_summaries.sort(key=lambda m: m["average_precision"], reverse=True)
@@ -94,6 +107,34 @@ def get_sanitized_benchmark_payload(
             "gain": round(gain, 2),
             "percentage_share": round((gain / total_gain) * 100.0, 2)
         })
+
+    val_perf: Dict[str, Any] = {
+        "average_precision": best_meta_metrics.get("average_precision"),
+        "roc_auc": best_meta_metrics.get("roc_auc"),
+        "brier_score": best_meta_metrics.get("brier_score"),
+        "precision": best_meta_metrics.get("precision"),
+        "recall": best_meta_metrics.get("recall"),
+        "f1_score": best_meta_metrics.get("f1_score"),
+        "confusion_matrix": best_meta_metrics.get("confusion_matrix")
+    }
+    for field in FIXED_FPR_FIELDS:
+        if field in best_meta_metrics:
+            val_perf[field] = best_meta_metrics[field]
+
+    held_out_perf: Dict[str, Any] = {
+        "partition_source": "Official held-out evaluation shard (eval_00)",
+        "average_precision": held_out.get("average_precision"),
+        "roc_auc": held_out.get("roc_auc"),
+        "brier_score": held_out.get("brier_score"),
+        "precision": held_out.get("precision"),
+        "recall": held_out.get("recall"),
+        "f1_score": held_out.get("f1_score"),
+        "confusion_matrix": held_out.get("confusion_matrix"),
+        "false_positive_reduction_vs_logistic": "73.3% reduction in false alarms (3,323 vs 12,443)"
+    }
+    for field in FIXED_FPR_FIELDS:
+        if field in held_out:
+            held_out_perf[field] = held_out[field]
 
     payload = {
         "project": "Next Day Wildfire Spread Prediction via Tabular AML and Spatial Deep Learning",
@@ -114,26 +155,8 @@ def get_sanitized_benchmark_payload(
             "model_architecture": "LightGBM Gradient Boosted Decision Trees",
             "best_iteration": best_meta_metrics.get("best_iteration", 3),
             "optimal_decision_threshold": best_meta_metrics.get("decision_threshold", 0.028115),
-            "validation_performance": {
-                "average_precision": best_meta_metrics.get("average_precision"),
-                "roc_auc": best_meta_metrics.get("roc_auc"),
-                "brier_score": best_meta_metrics.get("brier_score"),
-                "precision": best_meta_metrics.get("precision"),
-                "recall": best_meta_metrics.get("recall"),
-                "f1_score": best_meta_metrics.get("f1_score"),
-                "confusion_matrix": best_meta_metrics.get("confusion_matrix")
-            },
-            "held_out_evaluation_performance": {
-                "partition_source": "Official held-out evaluation shard (eval_00)",
-                "average_precision": held_out.get("average_precision"),
-                "roc_auc": held_out.get("roc_auc"),
-                "brier_score": held_out.get("brier_score"),
-                "precision": held_out.get("precision"),
-                "recall": held_out.get("recall"),
-                "f1_score": held_out.get("f1_score"),
-                "confusion_matrix": held_out.get("confusion_matrix"),
-                "false_positive_reduction_vs_logistic": "73.3% reduction in false alarms (3,323 vs 12,443)"
-            },
+            "validation_performance": val_perf,
+            "held_out_evaluation_performance": held_out_perf,
             "feature_importance_ranking": feature_importance
         },
         "ui_display_disclaimers": [
