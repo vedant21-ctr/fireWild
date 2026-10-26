@@ -1,0 +1,86 @@
+{
+  "model_name": "LightGBM_Unweighted",
+  "feature_names": [
+    "elevation",
+    "th",
+    "vs",
+    "tmmn",
+    "tmmx",
+    "sph",
+    "pr",
+    "pdsi",
+    "NDVI",
+    "population",
+    "erc",
+    "dist_to_prev_fire_km"
+  ],
+  "optimal_threshold": 0.028115,
+  "training_samples": 1000000,
+  "training_positive_prevalence": 0.008851,
+  "validation_samples": 500000,
+  "validation_positive_prevalence": 0.005862,
+  "validation_metrics": {
+    "average_precision": 0.114470,
+    "roc_auc": 0.872004,
+    "brier_score": 0.005689,
+    "decision_threshold": 0.028115,
+    "precision": 0.176412,
+    "recall": 0.305357,
+    "f1_score": 0.223610,
+    "recall_at_1pct_fpr": 0.325486,
+    "achieved_fpr_at_1pct": 0.009988,
+    "threshold_at_1pct_fpr": 0.025454,
+    "recall_at_5pct_fpr": 0.683043,
+    "achieved_fpr_at_5pct": 0.049983,
+    "threshold_at_5pct_fpr": 0.010903,
+    "confusion_matrix": {
+      "tp": 895,
+      "fp": 4179,
+      "fn": 2036,
+      "tn": 492890
+    },
+    "training_time_sec": 5.57
+  },
+  "eval_metrics": {
+    "average_precision": 0.083720,
+    "roc_auc": 0.767868,
+    "brier_score": 0.009354,
+    "decision_threshold": 0.028115,
+    "precision": 0.188126,
+    "recall": 0.161021,
+    "f1_score": 0.173521,
+    "recall_at_1pct_fpr": 0.207863,
+    "achieved_fpr_at_1pct": 0.009983,
+    "threshold_at_1pct_fpr": 0.021245,
+    "recall_at_5pct_fpr": 0.427645,
+    "achieved_fpr_at_5pct": 0.044181,
+    "threshold_at_5pct_fpr": 0.010906,
+    "confusion_matrix": {
+      "tp": 770,
+      "fp": 3323,
+      "fn": 4012,
+      "tn": 491895
+    }
+  },
+  "feature_importance_gain": {
+    "dist_to_prev_fire_km": 139581.69,
+    "th": 9515.53,
+    "erc": 9353.58,
+    "tmmn": 7304.68,
+    "elevation": 6861.56,
+    "population": 6429.71,
+    "vs": 6207.19,
+    "tmmx": 5469.54,
+    "pdsi": 3518.21,
+    "sph": 2539.69,
+    "NDVI": 1251.01,
+    "pr": 460.20
+  },
+  "dependencies": {
+    "lightgbm": "4.1.0",
+    "scikit-learn": "1.3.2",
+    "numpy": "1.26.0",
+    "joblib": "1.3.2"
+  },
+  "timestamp_utc": "2026-10-24T18:00:00Z"
+}
