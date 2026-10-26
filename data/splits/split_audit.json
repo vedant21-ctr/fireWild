@@ -1,0 +1,36 @@
+{
+  "n_patches": 18545,
+  "n_location_groups": 845,
+  "largest_groups": [
+    7246,
+    5952,
+    1320,
+    721,
+    261
+  ],
+  "singleton_groups": 708,
+  "mirrored_control_hits": "0 / 1855",
+  "spatial_split_sizes": {
+    "train": 14822,
+    "test": 1868,
+    "val": 1855
+  },
+  "overlap": {
+    "eval": {
+      "n_patches": 1877,
+      "share_terrain_with_train": 1778
+    },
+    "test": {
+      "n_patches": 1689,
+      "share_terrain_with_train": 1606
+    },
+    "spatial_val": {
+      "n_patches": 1855,
+      "share_terrain_with_train": 0
+    },
+    "spatial_test": {
+      "n_patches": 1868,
+      "share_terrain_with_train": 0
+    }
+  }
+}

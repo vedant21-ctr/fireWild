@@ -1,0 +1,228 @@
+{
+  "class_balance": [
+    {
+      "split": "train",
+      "patches": 14979,
+      "pixels": 61353984,
+      "positive_rate": 0.010987084358930588,
+      "unknown_label_rate": 0.023485206763427132,
+      "prev_fire_rate": 0.008207372482934442,
+      "prev_unknown_rate": 0.010930227448636424,
+      "patches_without_next_day_fire": 1706,
+      "persistence_recall": 0.26257766569948504,
+      "frac_next_day_fire_new": 0.737422334300515,
+      "frac_patches_growing": 0.5816810200947994,
+      "frac_patches_shrinking": 0.3870084785366179
+    },
+    {
+      "split": "eval",
+      "patches": 1877,
+      "pixels": 7688192,
+      "positive_rate": 0.01367849763482809,
+      "unknown_label_rate": 0.024427979946390517,
+      "prev_fire_rate": 0.009602647800679275,
+      "prev_unknown_rate": 0.013957767964171551,
+      "patches_without_next_day_fire": 204,
+      "persistence_recall": 0.18661910053219485,
+      "frac_next_day_fire_new": 0.8133808994678051,
+      "frac_patches_growing": 0.5796483750665956,
+      "frac_patches_shrinking": 0.39690996270644646
+    },
+    {
+      "split": "test",
+      "patches": 1689,
+      "pixels": 6918144,
+      "positive_rate": 0.012534894980490208,
+      "unknown_label_rate": 0.02752833708000296,
+      "prev_fire_rate": 0.009415097459665482,
+      "prev_unknown_rate": 0.012343628580150976,
+      "patches_without_next_day_fire": 202,
+      "persistence_recall": 0.27277039285671933,
+      "frac_next_day_fire_new": 0.7272296071432807,
+      "frac_patches_growing": 0.5902901124925992,
+      "frac_patches_shrinking": 0.384251036116045
+    }
+  ],
+  "quality_audit": {
+    "elevation": {
+      "invalid_fraction": 0.0,
+      "min": -5.0,
+      "p1": 0.0,
+      "median": 585.0,
+      "p99": 2932.0,
+      "max": 4080.0
+    },
+    "th": {
+      "invalid_fraction": 0.0018753870441830683,
+      "min": -496522.4375,
+      "p1": 29.150115966796875,
+      "median": 209.75912475585938,
+      "p99": 332.2687072753906,
+      "max": 37620.35546875
+    },
+    "vs": {
+      "invalid_fraction": 2.8830842208142357e-06,
+      "min": -2.6553025245666504,
+      "p1": 1.4182714223861694,
+      "median": 3.4338278770446777,
+      "p99": 7.783077716827393,
+      "max": 14.731634140014648
+    },
+    "tmmn": {
+      "invalid_fraction": 0.0034679817041318416,
+      "min": 0.0,
+      "p1": 264.9724426269531,
+      "median": 283.094482421875,
+      "p99": 296.59454345703125,
+      "max": 301.4085693359375
+    },
+    "tmmx": {
+      "invalid_fraction": 0.0034686794368428146,
+      "min": 0.0,
+      "p1": 276.689697265625,
+      "median": 299.8707275390625,
+      "p99": 312.7239685058594,
+      "max": 344.3574523925781
+    },
+    "sph": {
+      "invalid_fraction": 0.003469706288757077,
+      "min": -0.002027423121035099,
+      "p1": 0.001091829501092434,
+      "median": 0.00555784534662962,
+      "p99": 0.01753491535782814,
+      "max": 0.020294630900025368
+    },
+    "pr": {
+      "invalid_fraction": 0.09781686017120518,
+      "min": -7.3922929763793945,
+      "p1": -0.023347817361354828,
+      "median": 0.0,
+      "p99": 6.590132713317871,
+      "max": 40.010475158691406
+    },
+    "NDVI": {
+      "invalid_fraction": 0.0,
+      "min": -8882.0,
+      "p1": 0.0,
+      "median": 5440.0,
+      "p99": 8930.0,
+      "max": 9871.0
+    },
+    "population": {
+      "invalid_fraction": 0.0,
+      "min": 0.0,
+      "p1": 0.0,
+      "median": 0.16474539041519165,
+      "p99": 868.0037231445312,
+      "max": 18580.73828125
+    },
+    "erc": {
+      "invalid_fraction": 0.0003295009815651119,
+      "min": -0.2909601628780365,
+      "p1": 10.626070976257324,
+      "median": 48.17448425292969,
+      "p99": 103.90265655517578,
+      "max": 298.47760009765625
+    }
+  },
+  "fire_dynamics_sample": {
+    "stayed_burning": 0.34596385542168673,
+    "new_fraction_of_t1_fire": 0.7324377839034049
+  },
+  "spread_vs_distance_km": {
+    "0-1.5": 0.19608847796916962,
+    "1.5-2.5": 0.10395119339227676,
+    "2.5-3.5": 0.06334466487169266,
+    "3.5-5": 0.035497672855854034,
+    "5-7": 0.017975812777876854,
+    "7-10": 0.008477059192955494,
+    "10-15": 0.004094903357326984,
+    "15-25": 0.0019340146100148559,
+    "25-100": 0.0010381302563473582
+  },
+  "wind_orientation": {
+    "rows N->S, cols W->E": {
+      "p_new_fire_downwind_of_fire": 0.15650592781048603,
+      "p_new_fire_upwind_of_fire": 0.15496562551280074,
+      "ratio": 1.0099396385010433,
+      "ratio_ci95": [
+        0.9823864437000127,
+        1.0402063572314495
+      ]
+    },
+    "rows S->N, cols W->E (adopted)": {
+      "p_new_fire_downwind_of_fire": 0.16793524845100777,
+      "p_new_fire_upwind_of_fire": 0.14953634987582112,
+      "ratio": 1.1230396394620141,
+      "ratio_ci95": [
+        1.0943418258195667,
+        1.1530016019223113
+      ]
+    },
+    "rows N->S, cols E->W": {
+      "p_new_fire_downwind_of_fire": 0.14953634987582112,
+      "p_new_fire_upwind_of_fire": 0.16793524845100777,
+      "ratio": 0.8904405195163408,
+      "ratio_ci95": [
+        0.8673014842068137,
+        0.9137912644377637
+      ]
+    },
+    "rows S->N, cols E->W": {
+      "p_new_fire_downwind_of_fire": 0.15496562551280074,
+      "p_new_fire_upwind_of_fire": 0.15650592781048603,
+      "ratio": 0.9901581855765205,
+      "ratio_ci95": [
+        0.9613477105367653,
+        1.0179293561761849
+      ]
+    }
+  },
+  "terrain_effect": {
+    "downslope of fire": 0.16557784378528595,
+    "level": 0.07933752238750458,
+    "upslope of fire": 0.17008483409881592
+  },
+  "highly_correlated_feature_pairs": {
+    "tmmn ~ tmmx": 0.8977383494665571,
+    "tmmx ~ vpd_kpa": 0.9022951493951836,
+    "fire_wind_alignment ~ wind_push": 0.9059068242020276,
+    "ndvi ~ ndvi_mean_5": 0.9511579334416715
+  },
+  "split_audit": {
+    "n_patches": 18545,
+    "n_location_groups": 845,
+    "largest_groups": [
+      7246,
+      5952,
+      1320,
+      721,
+      261
+    ],
+    "singleton_groups": 708,
+    "mirrored_control_hits": "0 / 1855",
+    "spatial_split_sizes": {
+      "train": 14822,
+      "test": 1868,
+      "val": 1855
+    },
+    "overlap": {
+      "eval": {
+        "n_patches": 1877,
+        "share_terrain_with_train": 1778
+      },
+      "test": {
+        "n_patches": 1689,
+        "share_terrain_with_train": 1606
+      },
+      "spatial_val": {
+        "n_patches": 1855,
+        "share_terrain_with_train": 0
+      },
+      "spatial_test": {
+        "n_patches": 1868,
+        "share_terrain_with_train": 0
+      }
+    }
+  }
+}
