@@ -19,29 +19,134 @@ from typing import Dict, Any, List, Optional
 import numpy as np
 
 
+DEFAULT_RESULTS_PATH = "experiments/results_ndws/lightgbm_results.json"
+DEPLOYMENT_RESULTS_PATH = "deployment/ndws/lightgbm_results.json"
+
+DEFAULT_METADATA_PATH = "models/ndws/lightgbm_metadata.json"
+DEPLOYMENT_METADATA_PATH = "deployment/ndws/lightgbm_metadata.json"
+
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+
+def resolve_results_path(results_path: Optional[str] = None) -> str:
+    """
+    Resolves the benchmark results file path in priority order:
+    1. Explicit results_path parameter (if provided)
+    2. NDWS_RESULTS_PATH environment variable (if set)
+    3. Default local path: experiments/results_ndws/lightgbm_results.json
+    4. Packaged deployment fallback path: deployment/ndws/lightgbm_results.json
+
+    Resolves against current working directory and repository root.
+    Raises FileNotFoundError with actionable guidance if the artifact is missing.
+    """
+    if results_path is not None:
+        if os.path.exists(results_path):
+            return results_path
+        repo_relative = os.path.join(REPO_ROOT, results_path)
+        if os.path.exists(repo_relative):
+            return repo_relative
+        raise FileNotFoundError(f"Benchmark results artifact not found at: {results_path}")
+
+    env_path = os.environ.get("NDWS_RESULTS_PATH")
+    if env_path:
+        if os.path.exists(env_path):
+            return env_path
+        repo_relative = os.path.join(REPO_ROOT, env_path)
+        if os.path.exists(repo_relative):
+            return repo_relative
+        raise FileNotFoundError(
+            f"Benchmark results artifact specified in NDWS_RESULTS_PATH environment variable "
+            f"not found at: {env_path}"
+        )
+
+    if os.path.exists(DEFAULT_RESULTS_PATH):
+        return DEFAULT_RESULTS_PATH
+    repo_relative = os.path.join(REPO_ROOT, DEFAULT_RESULTS_PATH)
+    if os.path.exists(repo_relative):
+        return repo_relative
+
+    if os.path.exists(DEPLOYMENT_RESULTS_PATH):
+        return DEPLOYMENT_RESULTS_PATH
+    repo_relative = os.path.join(REPO_ROOT, DEPLOYMENT_RESULTS_PATH)
+    if os.path.exists(repo_relative):
+        return repo_relative
+
+    raise FileNotFoundError(
+        f"Benchmark results artifact not found. Checked default path '{DEFAULT_RESULTS_PATH}', "
+        f"packaged deployment fallback '{DEPLOYMENT_RESULTS_PATH}', and NDWS_RESULTS_PATH environment variable."
+    )
+
+
+def resolve_metadata_path(metadata_path: Optional[str] = None) -> str:
+    """
+    Resolves the model metadata file path in priority order:
+    1. Explicit metadata_path parameter (if provided)
+    2. NDWS_METADATA_PATH environment variable (if set)
+    3. Default local path: models/ndws/lightgbm_metadata.json
+    4. Packaged deployment fallback path: deployment/ndws/lightgbm_metadata.json
+
+    Resolves against current working directory and repository root.
+    Raises FileNotFoundError with actionable guidance if the artifact is missing.
+    """
+    if metadata_path is not None:
+        if os.path.exists(metadata_path):
+            return metadata_path
+        repo_relative = os.path.join(REPO_ROOT, metadata_path)
+        if os.path.exists(repo_relative):
+            return repo_relative
+        raise FileNotFoundError(f"Model metadata artifact not found at: {metadata_path}")
+
+    env_path = os.environ.get("NDWS_METADATA_PATH")
+    if env_path:
+        if os.path.exists(env_path):
+            return env_path
+        repo_relative = os.path.join(REPO_ROOT, env_path)
+        if os.path.exists(repo_relative):
+            return repo_relative
+        raise FileNotFoundError(
+            f"Model metadata artifact specified in NDWS_METADATA_PATH environment variable "
+            f"not found at: {env_path}"
+        )
+
+    if os.path.exists(DEFAULT_METADATA_PATH):
+        return DEFAULT_METADATA_PATH
+    repo_relative = os.path.join(REPO_ROOT, DEFAULT_METADATA_PATH)
+    if os.path.exists(repo_relative):
+        return repo_relative
+
+    if os.path.exists(DEPLOYMENT_METADATA_PATH):
+        return DEPLOYMENT_METADATA_PATH
+    repo_relative = os.path.join(REPO_ROOT, DEPLOYMENT_METADATA_PATH)
+    if os.path.exists(repo_relative):
+        return repo_relative
+
+    raise FileNotFoundError(
+        f"Model metadata artifact not found. Checked default path '{DEFAULT_METADATA_PATH}', "
+        f"packaged deployment fallback '{DEPLOYMENT_METADATA_PATH}', and NDWS_METADATA_PATH environment variable."
+    )
+
+
 def load_raw_benchmark_results(
-    results_path: str = "experiments/results_ndws/lightgbm_results.json"
+    results_path: Optional[str] = None
 ) -> Dict[str, Any]:
     """Loads actual LightGBM benchmark results from disk."""
-    if not os.path.exists(results_path):
-        raise FileNotFoundError(f"Benchmark results artifact not found at: {results_path}")
-    with open(results_path, "r", encoding="utf-8") as f:
+    resolved_path = resolve_results_path(results_path)
+    with open(resolved_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def load_raw_model_metadata(
-    metadata_path: str = "models/ndws/lightgbm_metadata.json"
+    metadata_path: Optional[str] = None
 ) -> Dict[str, Any]:
     """Loads actual LightGBM model metadata from disk."""
-    if not os.path.exists(metadata_path):
-        raise FileNotFoundError(f"Model metadata artifact not found at: {metadata_path}")
-    with open(metadata_path, "r", encoding="utf-8") as f:
+    resolved_path = resolve_metadata_path(metadata_path)
+    with open(resolved_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
 def get_sanitized_benchmark_payload(
-    results_path: str = "experiments/results_ndws/lightgbm_results.json",
-    metadata_path: str = "models/ndws/lightgbm_metadata.json"
+    results_path: Optional[str] = None,
+    metadata_path: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Constructs the sanitized public API payload for frontend consumption.
