@@ -1,10 +1,26 @@
-pandas
-numpy
-pyarrow
-scipy
-matplotlib
-scikit-learn
-fastapi
-uvicorn
-pydantic
-httpx
+# Core tabular and scientific stack
+numpy>=1.26.0
+pandas>=2.1.0
+scipy>=1.11.0
+scikit-learn>=1.3.0
+pyarrow>=14.0.0
+matplotlib>=3.8.0
+joblib>=1.3.0
+
+# Phase 1 ML pipeline (LightGBM, XGBoost, feature attribution, remote sensing)
+lightgbm>=4.1.0
+xgboost>=2.0.0
+shap>=0.44.0
+tfrecord>=1.14.0
+kagglehub>=0.2.0
+
+# Report & Presentation build dependencies
+python-pptx>=0.6.21
+jupyter>=1.0.0
+nbconvert>=7.10.0
+
+# API & Interface serving
+fastapi>=0.104.0
+uvicorn>=0.24.0
+pydantic>=2.4.0
+httpx>=0.25.0

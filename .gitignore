@@ -22,14 +22,23 @@ htmlcov/
 .idea/
 
 # System Files
+.DS_Store
 Thumbs.db
 Desktop.ini
 
-# Raw and large datasets
+# NDWS Cache (downloaded TFRecords/raw shards)
+data/ndws/
 data/raw/
 data/processed/ndws/
 *.parquet
 
-# NDWS Generated Experiment Artifacts & Models
-models/ndws/
-experiments/results_ndws/
+# LaTeX Build Intermediates (keep report/main.pdf and source)
+report/*.aux
+report/*.log
+report/*.bbl
+report/*.blg
+report/*.out
+report/*.fls
+report/*.fdb_latexmk
+report/*.synctex.gz
+report/*.xdv
