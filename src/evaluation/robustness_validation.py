@@ -15,6 +15,7 @@ Outputs:
 
 import os
 import json
+from datetime import date
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -30,8 +31,7 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
     f1_score,
-    brier_score_loss,
-    confusion_matrix
+    brier_score_loss
 )
 
 def define_experiments():
@@ -64,7 +64,7 @@ def run_lofo_validation(df, experiments, results_dir):
     fire_names = {fid: df[df['fire_id'] == fid]['fire_name'].iloc[0] for fid in unique_fires}
     
     print("=" * 75)
-    print("LEAVE-ONE-FIRE-OUT (LOFO) CROSS-VALIDATION ACROSS 5 WILDFIRES")
+    print(f"LEAVE-ONE-FIRE-OUT (LOFO) CROSS-VALIDATION ACROSS {len(unique_fires)} FIRE PROFILES")
     print("=" * 75)
     
     lofo_rows = []
@@ -128,6 +128,7 @@ def run_lofo_validation(df, experiments, results_dir):
             
         per_fire_results[test_fire_id] = {
             "fire_name": test_fire_name,
+            "test_segments": len(test_df),
             "metrics": fire_metrics,
             "delta_B_minus_A": round(fire_metrics["Exp_B_Static_BurnProb"]["pr_auc"] - fire_metrics["Exp_A_Static"]["pr_auc"], 4),
             "delta_D_minus_A": round(fire_metrics["Exp_D_Static_Geometry"]["pr_auc"] - fire_metrics["Exp_A_Static"]["pr_auc"], 4),
@@ -248,8 +249,9 @@ def generate_lofo_plots(unique_fires, fire_names, per_fire_results, aggregates, 
     plt.bar(x + 1.5*w, pr_C, width=w, label='Exp C (Full Dir)', color='#2ca02c', edgecolor='black')
     
     plt.ylabel('PR-AUC on Held-Out Test Fire', fontsize=12)
-    plt.ylim(0.8, 1.0)
-    plt.title('Leave-One-Fire-Out Cross-Validation: PR-AUC Across All 5 Fires', fontsize=13, fontweight='bold')
+    all_pr_aucs = pr_A + pr_B + pr_D + pr_C
+    plt.ylim(max(0.0, min(all_pr_aucs) - 0.03), min(1.0, max(all_pr_aucs) + 0.03))
+    plt.title(f'Leave-One-Fire-Out Cross-Validation: PR-AUC Across {len(unique_fires)} Fire Profiles', fontsize=13, fontweight='bold')
     plt.xticks(x, f_names, fontsize=10, fontweight='bold')
     plt.legend(loc='lower right', frameon=True)
     plt.grid(axis='y', linestyle='--', alpha=0.5)
@@ -272,7 +274,7 @@ def generate_lofo_plots(unique_fires, fire_names, per_fire_results, aggregates, 
     
     plt.axhline(0, color='black', linestyle='-', linewidth=1.2)
     plt.ylabel('Δ PR-AUC Improvement over Static Baseline', fontsize=12)
-    plt.title('PR-AUC Gain from Directional Information per Unseen Wildfire', fontsize=13, fontweight='bold')
+    plt.title('PR-AUC Difference Across Held-Out Synthetic Profiles', fontsize=13, fontweight='bold')
     plt.xticks(x, f_names, fontsize=10, fontweight='bold')
     
     for i in range(len(unique_fires)):
@@ -290,6 +292,10 @@ def generate_lofo_plots(unique_fires, fire_names, per_fire_results, aggregates, 
 
 def generate_robustness_report(per_fire_results, aggregates, delta_summary, base_dir):
     report_path = os.path.join(base_dir, "experiments", "ROBUSTNESS_REPORT.md")
+    fire_count = len(per_fire_results)
+    test_segment_count = sum(
+        result.get("test_segments", 0) for result in per_fire_results.values()
+    )
     
     mean_A_pr = aggregates["Exp_A_Static"]["pr_auc"]["mean"]
     std_A_pr  = aggregates["Exp_A_Static"]["pr_auc"]["std"]
@@ -316,63 +322,68 @@ def generate_robustness_report(per_fire_results, aggregates, delta_summary, base
     best_fire_name = per_fire_results[best_fire_id]["fire_name"]
     best_fire_delta = per_fire_results[best_fire_id]["delta_C_minus_A"]
 
-    content = f"""# BASELINE ROBUSTNESS VALIDATION REPORT
+    per_fire_rows = []
+    for fire_id, fire_result in per_fire_results.items():
+        metrics = fire_result["metrics"]
+        per_fire_rows.append(
+            f"| **{fire_result['fire_name']}** | `{fire_id}` | "
+            f"{metrics['Exp_A_Static']['pr_auc']:.4f} | "
+            f"{metrics['Exp_B_Static_BurnProb']['pr_auc']:.4f} | "
+            f"{metrics['Exp_D_Static_Geometry']['pr_auc']:.4f} | "
+            f"**{metrics['Exp_C_Full_Directional']['pr_auc']:.4f}** | "
+            f"**{fire_result['delta_C_minus_A']:+.4f}** |"
+        )
+
+    content = f"""# CLBI Synthetic Benchmark Evaluation Report
 
 **Project:** Candidate Line Breach Intelligence (CLBI)  
-**Date:** 2026-09-29  
-**Evaluation Protocol:** Leave-One-Fire-Out (LOFO) Cross-Validation across 5 Wildfires  
+**Generated:** {date.today().isoformat()}  
+**Evaluation Protocol:** Leave-One-Fire-Out (LOFO) across {fire_count} generated fire profiles  
 **Primary Target:** `label` (1 = Held, 0 = Burned Over)  
 
 ---
 
-## 1. Experiment Purpose & Test-Set Contamination Audit
+## 1. Dataset Origin and Interpretation
 
-### **Contamination Audit Notice:**
-- In the initial baseline experiment, the **CZU Lightning Complex** (`CA-CZU-005205`) was used to compare Experiments A, B, C, and D.
-- **Status:** CZU is **no longer an untouched, unvisited test set**. It cannot be used for future hyperparameter selection or architecture design.
-- **Remedy:** To rigorously validate whether directional spread signals generalize across independent wildfire events, we conducted a 5-fold **Leave-One-Fire-Out (LOFO)** cross-validation where each of the 5 fires served as an unseen held-out test set in turn.
+The dataset is generated by `src/data/build_dataset.py`. Feature values are sampled from
+configured distributions for five named fire profiles, and labels are derived from a
+hand-authored breach-score formula plus random noise and a per-profile hold-rate cutoff.
+The fire names and IDs provide profile context; the rows are **not measured historical
+fireline observations**, and the labels are not recorded incident outcomes.
 
----
+LOFO therefore measures how well the models recover this synthetic labeling process when
+one generated profile is held out. It does not establish generalization to real fires,
+field performance, operational safety, or causal effects. Several predictors are also
+inputs to the synthetic breach-score formula, so the high scores should not be read as
+independent evidence of predictive skill on observed outcomes.
 
-## 2. Feature Provenance & Leakage Audit
+## 2. Synthetic Feature and Target Construction
 
-A thorough code audit of `src/data/build_dataset.py` was conducted to inspect feature generation logic:
+| Feature / target | Synthetic generation |
+| :--- | :--- |
+| Terrain, distance, and line geometry | Sampled from configured per-profile distributions and formulas. |
+| `burn_prob`, `prob_gradient`, `dist_pred_boundary` | Derived from synthetic terrain, distance, and attack geometry. |
+| `label` | Thresholded synthetic breach score based on `attack_dot_product`, `slope`, `burn_prob`, `barrier_width_m`, `distance_to_fire`, and random noise. |
 
-| Feature Name | Category | Generation Formula / Source | Temporal / Leakage Audit | Leakage Status |
-| :--- | :--- | :--- | :--- | :--- |
-| `slope` | Static | Gaussian terrain slope sample | Sampled pre-engagement | **SAFE (NO LEAKAGE)** |
-| `elevation` | Static | Gaussian terrain altitude sample | Sampled pre-engagement | **SAFE (NO LEAKAGE)** |
-| `distance_to_fire` | Static | Exponential distance to flame front at day $t$ | Sampled pre-engagement at day $t$ | **SAFE (NO LEAKAGE)** |
-| `barrier_width_m` | Operational | Physical scraped width of fireline (2.0–9.0m) | Operational build spec | **SAFE (NO LEAKAGE)** |
-| `burn_prob` | Spread ML | Sigmoid logit model based on distance, slope, attack dot product | Computed pre-engagement at day t | **SAFE (NO LEAKAGE)** |
-| `prob_gradient` | Spread ML | P_burn * (1 - P_burn) * noise | Computed pre-engagement from P_burn | **SAFE (NO LEAKAGE)** |
-| `spread_direction` | Spread ML | (prevailing_spread + noise) mod 360 deg | Deep learning heading at day t | **SAFE (NO LEAKAGE)** |
-| `attack_angle` | Geometry | Acute difference between line normal and spread vector | Calculated pre-engagement | **SAFE (NO LEAKAGE)** |
-| `attack_dot_product`| Geometry | cos(attack_angle) ratio (1.0 = head, 0.0 = flank) | Calculated pre-engagement | **SAFE (NO LEAKAGE)** |
-| `dist_pred_boundary`| Spread ML | distance_to_fire - (P_burn * 1800m) | Calculated pre-engagement | **SAFE (NO LEAKAGE)** |
+The predictors and target are deliberately related by design. This experiment can
+validate the pipeline and compare feature sets against the generator; it is not a
+post-outcome leakage audit of observational data.
 
-### **Audit Conclusion:**
-- **Zero Post-Outcome Leakage:** All 6 directional features are computed **prior to** generating the breach score and target label. None of them use next-day perimeter masks, post-incident mop-up data, or ground-truth breach labels.
+## 3. Leave-One-Profile-Out (LOFO) Results
 
----
+Each fold holds out one generated profile and trains on the other profiles using
+standardized Logistic Regression (`StandardScaler` + `LogisticRegression(max_iter=1000)`).
+The {fire_count} folds contain {test_segment_count:,} generated test rows in total.
 
-## 3. Leave-One-Fire-Out (LOFO) Cross-Validation Results
+### **Per-Profile Test PR-AUC Scores:**
 
-In each fold, 1 fire was held out as the unseen test set, and the model was trained on the remaining 4 fires using standardized Logistic Regression (`StandardScaler` + `LogisticRegression(max_iter=1000)`).
-
-### **Per-Fire Test PR-AUC Scores:**
-
-| Held-Out Test Fire | Incident ID | Exp A (Static) | Exp B (+BurnProb) | Exp D (+Geometry) | Exp C (Full Dir) | Δ PR-AUC (Exp C − A) |
+| Held-Out Profile | Profile ID | Exp A (Static) | Exp B (+BurnProb) | Exp D (+Geometry) | Exp C (Full Dir) | Δ PR-AUC (Exp C − A) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| **August Complex** | `CA-MNF-013028` | {per_fire_results['CA-MNF-013028']['metrics']['Exp_A_Static']['pr_auc']:.4f} | {per_fire_results['CA-MNF-013028']['metrics']['Exp_B_Static_BurnProb']['pr_auc']:.4f} | {per_fire_results['CA-MNF-013028']['metrics']['Exp_D_Static_Geometry']['pr_auc']:.4f} | **{per_fire_results['CA-MNF-013028']['metrics']['Exp_C_Full_Directional']['pr_auc']:.4f}** | **{per_fire_results['CA-MNF-013028']['delta_C_minus_A']:+.4f}** |
-| **Carr Fire** | `CA-SHU-007808` | {per_fire_results['CA-SHU-007808']['metrics']['Exp_A_Static']['pr_auc']:.4f} | {per_fire_results['CA-SHU-007808']['metrics']['Exp_B_Static_BurnProb']['pr_auc']:.4f} | {per_fire_results['CA-SHU-007808']['metrics']['Exp_D_Static_Geometry']['pr_auc']:.4f} | **{per_fire_results['CA-SHU-007808']['metrics']['Exp_C_Full_Directional']['pr_auc']:.4f}** | **{per_fire_results['CA-SHU-007808']['delta_C_minus_A']:+.4f}** |
-| **Creek Fire** | `CA-SNF-000958` | {per_fire_results['CA-SNF-000958']['metrics']['Exp_A_Static']['pr_auc']:.4f} | {per_fire_results['CA-SNF-000958']['metrics']['Exp_B_Static_BurnProb']['pr_auc']:.4f} | {per_fire_results['CA-SNF-000958']['metrics']['Exp_D_Static_Geometry']['pr_auc']:.4f} | **{per_fire_results['CA-SNF-000958']['metrics']['Exp_C_Full_Directional']['pr_auc']:.4f}** | **{per_fire_results['CA-SNF-000958']['delta_C_minus_A']:+.4f}** |
-| **Mendocino Complex**| `CA-MEU-008674` | {per_fire_results['CA-MEU-008674']['metrics']['Exp_A_Static']['pr_auc']:.4f} | {per_fire_results['CA-MEU-008674']['metrics']['Exp_B_Static_BurnProb']['pr_auc']:.4f} | {per_fire_results['CA-MEU-008674']['metrics']['Exp_D_Static_Geometry']['pr_auc']:.4f} | **{per_fire_results['CA-MEU-008674']['metrics']['Exp_C_Full_Directional']['pr_auc']:.4f}** | **{per_fire_results['CA-MEU-008674']['delta_C_minus_A']:+.4f}** |
-| **CZU Lightning** | `CA-CZU-005205` | {per_fire_results['CA-CZU-005205']['metrics']['Exp_A_Static']['pr_auc']:.4f} | {per_fire_results['CA-CZU-005205']['metrics']['Exp_B_Static_BurnProb']['pr_auc']:.4f} | {per_fire_results['CA-CZU-005205']['metrics']['Exp_D_Static_Geometry']['pr_auc']:.4f} | **{per_fire_results['CA-CZU-005205']['metrics']['Exp_C_Full_Directional']['pr_auc']:.4f}** | **{per_fire_results['CA-CZU-005205']['delta_C_minus_A']:+.4f}** |
+{chr(10).join(per_fire_rows)}
 
 ---
 
-## 4. Aggregate Cross-Fire Statistics
+## 4. Aggregate Cross-Profile Statistics
 
 | Experiment | Mean PR-AUC ± Std | Median PR-AUC | Min PR-AUC | Max PR-AUC | Mean ROC-AUC | Mean F1 | Mean Brier |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -383,23 +394,23 @@ In each fold, 1 fire was held out as the unseen test set, and the model was trai
 
 ---
 
-## 5. Key Question: Generalization Across Held-Out Fires
+## 5. Feature Comparison Across Held-Out Profiles
 
-> **On how many held-out fires does directional information improve over the static baseline?**
+> **On how many held-out profiles does Exp C improve over the static baseline?**
 
-### **Answer:** **{dC_count} / 5 FIRES (100% GENERALIZATION)**
+### **Answer:** **{dC_count} / {fire_count} GENERATED PROFILES**
 
-- Directional features (`attack_angle`, `attack_dot_product`, `burn_prob`) improved PR-AUC over the static baseline on **ALL 5 UNSEEN WILDFIRE INCIDENTS**.
-- Average cross-fire improvement: **+{dC_mean:+.4f} PR-AUC** (Range: {delta_summary['Exp_C_minus_Exp_A']['min']:+.4f} to {delta_summary['Exp_C_minus_Exp_A']['max']:+.4f}).
-- Worst-case fire improvement: **{worst_fire_name} ({worst_fire_delta:+.4f} PR-AUC)**.
-- Best-case fire improvement: **{best_fire_name} ({best_fire_delta:+.4f} PR-AUC)**.
+- Directional features (`attack_angle`, `attack_dot_product`, `burn_prob`) improved PR-AUC over the static baseline on {dC_count} of {fire_count} held-out generated profiles.
+- Average cross-profile improvement: **{dC_mean:+.4f} PR-AUC** (Range: {delta_summary['Exp_C_minus_Exp_A']['min']:+.4f} to {delta_summary['Exp_C_minus_Exp_A']['max']:+.4f}).
+- Smallest profile difference: **{worst_fire_name} ({worst_fire_delta:+.4f} PR-AUC)**.
+- Largest profile difference: **{best_fire_name} ({best_fire_delta:+.4f} PR-AUC)**.
 
 ---
 
-## 6. Uncertainty & Sample Size Caveat
+## 6. Scope and Evidence Caveat
 
-- **Sample Size:** $N = 5$ independent fire events.
-- **Statistical Note:** Because $N=5$ is a small number of macro fire complexes, p-values from standard t-tests would overstate sample independence. However, the consistent positive sign of $\\Delta \\text{{PR-AUC}} > 0$ across all 5 independent folds provides strong qualitative and empirical evidence of robustness.
+- **Sample size:** {fire_count} generated profiles ({test_segment_count:,} generated test rows); profile folds are not independent real-world fire observations.
+- These scores describe agreement with a synthetic target-generation rule and do not support real-world reliability or deployment claims.
 
 ---
 
@@ -408,21 +419,25 @@ In each fold, 1 fire was held out as the unseen test set, and the model was trai
 1. **Directional Geometry vs. Scalar Burn Probability:**
    - `Exp D` (Static + Geometry) achieves **{mean_D_pr:.4f} Mean PR-AUC**, performing almost identically to `Exp C` (**{mean_C_pr:.4f}**).
    - `Exp B` (Static + BurnProb alone) achieves **{aggregates['Exp_B_Static_BurnProb']['pr_auc']['mean']:.4f} Mean PR-AUC**.
-   - **Takeaway:** Geometric attack vector features (`attack_angle` and `attack_dot_product`) drive the vast majority of the performance improvement.
+   - **Synthetic-benchmark takeaway:** Geometry features are associated with higher scores in this generated target comparison; this is not a physical or causal finding.
 
-2. **Safe Features:**
+2. **Features used by the model:**
    - `slope`, `elevation`, `distance_to_fire`, `barrier_width_m`, `attack_angle`, `attack_dot_product`, `burn_prob`.
 
-3. **Redundant Features:**
-   - `prob_gradient` and `dist_pred_boundary` add minimal marginal gain over `attack_dot_product` and `burn_prob`.
+3. **Features with limited marginal gain in this comparison:**
+   - `prob_gradient` and `dist_pred_boundary` add minimal gain over `attack_dot_product` and `burn_prob` against the generated labels.
 
 ---
 
-## 8. Robustness Verdict
+## 8. Interpretation
 
-### **Verdict:** 🟢 **GO**
+### **Verdict:** Exploratory pipeline comparison only
 
-Directional features (`attack_angle`, `attack_dot_product`, `burn_prob`) demonstrate **100% generalization across all 5 held-out wildfire incidents** without post-outcome leakage. The core hypothesis is validated and ready for advanced modeling.
+The experiment shows that directional features improve discrimination against the
+generator's constructed labels on {dC_count} of {fire_count} held-out profiles. The
+real-world hypothesis remains unvalidated. Operational interpretation would require
+independently sourced fireline observations and recorded outcomes, prospective
+evaluation, and domain-expert review.
 """
     with open(report_path, "w", encoding="utf-8") as f:
         f.write(content)

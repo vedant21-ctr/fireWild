@@ -1,43 +1,50 @@
 # SPATIAL NEIGHBORHOOD ABLATION REPORT
 
+> **Evidence boundary:** This experiment uses generated features and labels from
+> `src/data/build_dataset.py`. Sequential segment IDs are not spatial coordinates or
+> verified line topology. The results compare aggregation across generated row order
+> only; they do not test real spatial neighborhood effects.
+
 **Project:** Candidate Line Breach Intelligence (CLBI)  
 **Date:** 2026-09-30  
-**Evaluation Protocol:** 5-fold Leave-One-Fire-Out (LOFO) Cross-Validation  
+**Evaluation Protocol:** 5-fold leave-one-generated-profile-out (LOFO)  
 **Hypothesis:** *A fireline segment's outcome depends partly on the conditions of neighboring segments, and adding local spatial-neighborhood information improves prediction beyond the isolated 7-feature segment model.*
 
 ---
 
-## 1. Geometry & Spatial Adjacency Verification
+## 1. Generated Row Order (Not Spatial Adjacency)
 
-- **Segment Sequence:** Inspected `src/data/build_dataset.py`. `segment_id` is generated sequentially as `[fire_id]_seg_00001`, `00002`, ..., `n` for each fire.
-- **Line Length:** Uniform 100-meter straight line segments.
-- **Topology:** Continuous 1D polyline chains. For segment $i$ within a fire incident, immediate spatial neighbors are segment $i-1$ (left) and segment $i+1$ (right).
-- **Boundary Endpoint Handling:** Endpoint segments ($i=1$ and $i=n$) have only 1 neighbor. Neighborhood statistics are computed over the single available adjacent neighbor (one-sided aggregation). **No artificial zero-padding was used.**
+- **Segment Sequence:** `segment_id` increments as rows are generated for each profile.
+- **Geometry:** The generator does not assign coordinates or construct continuous line segments.
+- **Aggregation:** Neighbor features use adjacent generated rows ($i-1$ and $i+1$), not verified spatial neighbors.
+- **Boundary Handling:** Endpoint rows have one adjacent row; no zero-padding is used.
 
 ---
 
-## 2. Feature Provenance & Critical Leakage Audit
+## 2. Generated Neighborhood Features
 
-Strict pre-engagement aggregation was enforced. All 8 neighborhood features were calculated **exclusively from pre-engagement segment attributes**:
+All 8 neighborhood features were calculated from adjacent generated-row attributes. These are not pre-engagement observations:
 
-| Engineered Neighborhood Feature | Base Attribute | Aggregation | Leakage Audit |
+| Engineered Neighborhood Feature | Base Attribute | Aggregation | Value source |
 | :--- | :--- | :--- | :--- |
-| `nbr_burn_prob_mean` | `burn_prob` | Mean of $i-1, i+1$ | **SAFE (Pre-engagement ML)** |
-| `nbr_burn_prob_max` | `burn_prob` | Max of $i-1, i+1$ | **SAFE (Pre-engagement ML)** |
-| `nbr_attack_dot_mean` | `attack_dot_product` | Mean of $i-1, i+1$ | **SAFE (Pre-engagement Geometry)** |
-| `nbr_attack_dot_max` | `attack_dot_product` | Max of $i-1, i+1$ | **SAFE (Pre-engagement Geometry)** |
-| `nbr_attack_angle_mean` | `attack_angle` | Mean of $i-1, i+1$ | **SAFE (Pre-engagement Geometry)** |
-| `nbr_slope_mean` | `slope` | Mean of $i-1, i+1$ | **SAFE (Static Topography)** |
-| `nbr_slope_max` | `slope` | Max of $i-1, i+1$ | **SAFE (Static Topography)** |
-| `nbr_barrier_width_min` | `barrier_width_m` | Min of $i-1, i+1$ | **SAFE (Operational Spec)** |
+| `nbr_burn_prob_mean` | `burn_prob` | Mean of $i-1, i+1$ | Generated values |
+| `nbr_burn_prob_max` | `burn_prob` | Max of $i-1, i+1$ | Generated values |
+| `nbr_attack_dot_mean` | `attack_dot_product` | Mean of $i-1, i+1$ | Generated values |
+| `nbr_attack_dot_max` | `attack_dot_product` | Max of $i-1, i+1$ | Generated values |
+| `nbr_attack_angle_mean` | `attack_angle` | Mean of $i-1, i+1$ | Generated values |
+| `nbr_slope_mean` | `slope` | Mean of $i-1, i+1$ | Generated values |
+| `nbr_slope_max` | `slope` | Max of $i-1, i+1$ | Generated values |
+| `nbr_barrier_width_min` | `barrier_width_m` | Min of $i-1, i+1$ | Generated values |
 
-**Zero Outcome Leakage:** Ground-truth breach labels (`label`, `outcome_str`) of neighbors were **strictly excluded**.
+Neighbor target labels (`label`, `outcome_str`) are not inputs to the neighborhood
+aggregations. However, the targets are synthetic and constructed from predictor
+features; this is not validation on observed outcomes.
 
 ---
 
-## 3. Leave-One-Fire-Out (LOFO) Per-Fire Results
+## 3. Leave-One-Profile-Out (LOFO) Results
 
-| Held-Out Test Fire | Incident ID | Model A (7-Feat Base LR) | Model B (Spatial-Enriched LR) | Model C (Threat-Context LR) | Δ PR-AUC (Model B vs A) |
+| Held-Out Profile | Profile ID | Model A (7-Feat Base LR) | Model B (Spatial-Enriched LR) | Model C (Threat-Context LR) | Δ PR-AUC (Model B vs A) |
 | :--- | :--- | :---: | :---: | :---: | :---: |
 | **August Complex** | `CA-MNF-013028` | 0.9526 | **0.9522** | 0.9526 | **-0.0004** |
 | **Carr Fire** | `CA-SHU-007808` | 0.9455 | **0.9453** | 0.9453 | **-0.0002** |
@@ -47,7 +54,7 @@ Strict pre-engagement aggregation was enforced. All 8 neighborhood features were
 
 ---
 
-## 4. Aggregate Cross-Fire Statistics
+## 4. Aggregate Cross-Profile Statistics
 
 | Model | Mean PR-AUC ± Std | Median PR-AUC | Min PR-AUC | Max PR-AUC | Mean ROC-AUC | Mean Brier |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -57,23 +64,24 @@ Strict pre-engagement aggregation was enforced. All 8 neighborhood features were
 
 ---
 
-## 5. Empirical Findings & Spatial Signal Test
+## 5. Synthetic Row-Order Ablation Results
 
-1. **Number of Fires Improved:** **0 / 5 FIRES**
-   - Spatial neighborhood enrichment improved PR-AUC on **ALL 5 HELD-OUT WILDFIRES**.
-2. **Average Performance Gain:** **+-0.0003 PR-AUC** (ROC-AUC gain: **+-0.0010**).
+1. **Number of Profiles Improved:** **0 / 5 generated profiles**.
+2. **Average Performance Difference:** **-0.0003 PR-AUC** (ROC-AUC difference: **-0.0010**).
 3. **Signal Strength Classification:** **NO EVIDENCE**
 
 ---
 
-## 6. GNN Justification Verdict
+## 6. GNN Evidence Boundary
 
-### **Action Status:** 🔴 STOP
+### **Action Status:** No spatial conclusion
 
 > **Is there sufficient empirical evidence to justify implementing a Graph Neural Network?**
 
-### **Answer:** **NO**
+### **Answer:** **Not from this synthetic row-order experiment**
 
 ### **Justification:**
-1. **Engineered Spatial Neighborhood Features Provide Clear Signal:** Manually aggregating neighbor features (`nbr_burn_prob_max`, `nbr_attack_dot_mean`, `nbr_slope_max`) improved performance across **100% of unseen held-out fires** over the isolated 7-feature baseline.
-2. **Logical Next Evolution:** Because fixed linear neighborhood pooling (mean/min/max) produces consistent gains, a Graph Neural Network (1D Polyline GCN / Graph Attention Network) can now learn dynamic attention weights and multi-hop message-passing along the polyline chain.
+1. The average PR-AUC difference is negative, and no generated profile improved.
+2. The row order is not verified spatial topology. This ablation provides no evidence
+   for or against real spatial neighborhood effects. Real geometry and outcomes are
+   required before making a spatial-modeling decision.

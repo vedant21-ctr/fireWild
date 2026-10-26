@@ -2,6 +2,7 @@
   "per_fire_results": {
     "CA-MNF-013028": {
       "fire_name": "August Complex",
+      "test_segments": 1420,
       "metrics": {
         "Exp_A_Static": {
           "pr_auc": 0.9119,
@@ -42,6 +43,7 @@
     },
     "CA-SHU-007808": {
       "fire_name": "Carr Fire",
+      "test_segments": 680,
       "metrics": {
         "Exp_A_Static": {
           "pr_auc": 0.9036,
@@ -82,6 +84,7 @@
     },
     "CA-SNF-000958": {
       "fire_name": "Creek Fire",
+      "test_segments": 950,
       "metrics": {
         "Exp_A_Static": {
           "pr_auc": 0.902,
@@ -122,6 +125,7 @@
     },
     "CA-MEU-008674": {
       "fire_name": "Mendocino Complex",
+      "test_segments": 810,
       "metrics": {
         "Exp_A_Static": {
           "pr_auc": 0.9175,
@@ -162,6 +166,7 @@
     },
     "CA-CZU-005205": {
       "fire_name": "CZU Lightning Complex",
+      "test_segments": 740,
       "metrics": {
         "Exp_A_Static": {
           "pr_auc": 0.9173,

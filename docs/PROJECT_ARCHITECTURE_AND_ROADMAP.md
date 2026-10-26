@@ -10,10 +10,10 @@
 > **CRITICAL SCIENTIFIC & EVALUATION SCOPE DISTINCTION:**  
 > This project encompasses two connected but strictly decoupled prediction problems:
 > 1. **Core CSAI Academic Research:** Next-day wildfire spread and burning prediction using the Kaggle Next Day Wildfire Spread (NDWS) dataset. This is the primary academic focus evaluated under **Phase 1 (Machine Learning)** and **Phase 2 (Deep Learning)**.
-> 2. **Downstream Operational Research Extension (CLBI):** Candidate Line Breach Intelligence evaluates containment-line segment breach versus holding risk ($P(\text{Breach})$) at 100-meter resolution using pre-engagement terrain, barrier width, and directional spread interaction features.
+> 2. **Downstream Prototype (CLBI):** Candidate Line Breach Intelligence demonstrates candidate-line scoring on a synthetic dataset. Its named fire profiles are not measured incident data, and its segment features and outcomes are generated rather than observed.
 > 
 > **Evaluation Rules:**
-> - The existing CLBI model is an offline retrospective prototype; it is **NOT** a substitute for the required CSAI Phase 1 ML or Phase 2 DL spread-prediction models.
+> - The existing CLBI model is an offline synthetic-data prototype; it is **NOT** a substitute for the required CSAI Phase 1 ML or Phase 2 DL spread-prediction models and is not validated for real-fire use.
 > - The CLBI input feature `burn_prob` must **NOT** be described or treated as an output from the planned AML or DL models until that integration has been implemented, empirically validated, and tested.
 > - Under no circumstances should spatial Deep Learning be implemented as a workaround for incomplete Phase 1 Machine Learning requirements.
 
@@ -108,14 +108,14 @@ The hybrid approach is classified as an **optional Phase 2 research extension**,
 
 ### 2.4 Downstream CLBI Research Extension Decoupling
 
-The Candidate Line Breach Intelligence (CLBI) decision engine is a completed, validated retrospective prototype. It is preserved as a separate downstream research extension with clear boundaries:
+The Candidate Line Breach Intelligence (CLBI) decision engine is a separate prototype evaluated on generated segment features and labels. Its benchmark validates software and synthetic-rule comparisons only; it does not validate retrospective prediction or field use.
 
 * **Task Distinction:**
   * **Core Problem (AML/DL):** Where will wildfire spread across the landscape over the next 24 hours? Target: binary fire occurrence $Y_{\text{spread}} \in \{0, 1\}$ across spatial grid cells.
-  * **CLBI Extension:** Will a proposed 100-meter cleared fireline hold or be breached when impacted by fire? Target: line breach label $Y_{\text{breach}} \in \{0, 1\}$ for pre-constructed segments.
-* **CLBI Model Stability:** The serialized model artifact (`models/clbi_logistic_regression.joblib`), metadata (`models/clbi_model_metadata.json`), FastAPI service (`src/api/`), and 29 unit tests (`tests/`) remain completely stable and untouched.
+  * **CLBI Extension:** Can a prototype model score generated candidate-line examples against a synthetic held/breached target? This does not currently answer whether a real fireline will hold or be breached.
+* **CLBI Scope:** The serialized model artifact (`models/clbi_logistic_regression.joblib`), metadata (`models/clbi_model_metadata.json`), and FastAPI service (`src/api/`) implement a local prototype. The demo does not use live telemetry or verified incident outcomes.
 * **Semantic Contract for `burn_prob`:**
-  * In the current benchmark, `burn_prob` is a validated pre-engagement tabular feature derived from baseline fire proximity.
+  * In the current CLBI dataset, `burn_prob` is generated from synthetic distance, slope, and attack-alignment values; it is not an output from the NDWS model.
   * Connecting dynamic spread probabilities from Phase 1 or Phase 2 into CLBI requires a formal **Prediction Contract** (Phase 5) specifying spatial buffer aggregation, probability calibration checks, and fallback behavior. It is strictly blocked until Phase 1 and Phase 2 models are validated.
 
 ---
@@ -236,7 +236,7 @@ To achieve top marks during oral examination, every team member must be independ
 flowchart TD
     subgraph DataProvenance ["1. Data & Provenance Layer (Phase 0)"]
         NDWS_RAW[Kaggle NDWS Dataset\nMultispectral Rasters + Weather + Fire Masks]
-        CLBI_DATA[Historical Containment Data\nfireline_segments_v1.parquet]
+        CLBI_DATA[Synthetic CLBI Profiles\nfireline_segments_v1.parquet]
         SPLIT_MANIFEST[Immutable Split Manifest\ndata/splits/split_manifest_v1.json\nEvent-Level & Temporal Separation]
     end
 

@@ -79,11 +79,11 @@
       <header class="overview-hero">
         <div class="hero-content">
           <div class="hero-tag">Wildfire Intelligence & Decision Support</div>
-          <h1 id="overview-heading" class="hero-headline">Next-day wildfire spread forecasting and containment line defense.</h1>
+          <h1 id="overview-heading" class="hero-headline">Wildfire spread benchmark research and a synthetic line-scoring prototype.</h1>
           <p class="hero-description">
-            FireWild connects remote-sensing machine learning with tactical containment engineering.
-            We couple landscape-scale 24-hour spread probability forecasting with physics-parameterized
-            fireline breach vulnerability analysis to protect firefighting personnel and high-risk wildland interfaces.
+            FireWild presents Next Day Wildfire Spread (NDWS) benchmark results alongside a separate
+            Candidate Line Breach Intelligence (CLBI) prototype. The CLBI scenarios and outcomes are
+            generated examples—not observed fireline records, live conditions, or operational guidance.
           </p>
           <div class="hero-actions">
             <a href="#spread-explorer" class="btn btn-primary">
@@ -103,24 +103,24 @@
         <!-- Hero Benchmark Ribbon (4 Audited Scientific Anchors) -->
         <div class="hero-stats-ribbon">
           <div class="stat-anchor">
-            <div class="stat-num" id="hero-stat-val-ap">0.1145</div>
+            <div class="stat-num" id="hero-stat-val-ap">--</div>
             <div class="stat-name">Validation PR-AUC (AP)</div>
-            <div class="stat-detail">+77.8% relative gain over Logistic L2</div>
+            <div class="stat-detail" id="hero-stat-val-detail">Loading benchmark artifacts...</div>
           </div>
           <div class="stat-anchor">
-            <div class="stat-num" id="hero-stat-eval-ap">0.0837</div>
+            <div class="stat-num" id="hero-stat-eval-ap">--</div>
             <div class="stat-name">Held-Out Eval PR-AUC</div>
-            <div class="stat-detail">Official unseen evaluation shard (eval_00)</div>
+            <div class="stat-detail" id="hero-stat-eval-detail">Loading benchmark artifacts...</div>
           </div>
           <div class="stat-anchor">
-            <div class="stat-num highlighted">-73.3%</div>
-            <div class="stat-name">False Alarm Suppression</div>
-            <div class="stat-detail">3,323 vs 12,443 FP on evaluation set</div>
+            <div class="stat-num highlighted" id="hero-stat-eval-f1">--</div>
+            <div class="stat-name">Held-Out Evaluation F1</div>
+            <div class="stat-detail" id="hero-stat-eval-f1-detail">Loading benchmark artifacts...</div>
           </div>
           <div class="stat-anchor">
-            <div class="stat-num">64 / 64</div>
-            <div class="stat-name">Deterministic Tests</div>
-            <div class="stat-detail">100% verified test coverage</div>
+            <div class="stat-num">Synthetic</div>
+            <div class="stat-name">CLBI Benchmark Data</div>
+            <div class="stat-detail">Generated features and outcomes; no field validation</div>
           </div>
         </div>
       </header>
@@ -161,17 +161,17 @@
           <!-- Engine 2: CLBI Line Breach Intelligence -->
           <article class="engine-card">
             <div class="engine-header">
-              <span class="engine-badge engine-badge-line">Engine 2: Tactical Containment</span>
+              <span class="engine-badge engine-badge-line">Engine 2: Candidate-Line Prototype</span>
               <span class="engine-tech">CLBI Pipeline • 100m Polylines</span>
             </div>
             <h3 class="engine-title">Candidate Line Breach Intelligence (CLBI)</h3>
             <p class="engine-text">
-              Estimates the operational holding vs. burn-over probability for constructed and natural fireline segments
-              (handlines, dozer lines, roads). Parameters incorporate acute fire attack angles, head-fire alignment,
-              cleared barrier width, localized terrain slope, and upstream NDWS predicted fire intensity.
+              Scores generated candidate-line examples using a model trained on synthetic features and outcomes.
+              Parameters include attack geometry, barrier width, terrain, and a supplied spread-probability value;
+              they are not connected to live incident conditions.
             </p>
             <div class="engine-features-list">
-              <div class="feature-bullet"><strong>Tactical Action:</strong> Rank segments by vulnerability to guide dozer reinforcement</div>
+              <div class="feature-bullet"><strong>Prototype Output:</strong> Rank generated example segments by model score</div>
               <div class="feature-bullet"><strong>Risk Stratification:</strong> 4 operational tiers (Low, Medium, High, Critical)</div>
               <div class="feature-bullet"><strong>Safety Advisory:</strong> Generates explainable risk drivers for incident commanders</div>
             </div>
@@ -187,7 +187,7 @@
         <div class="section-header">
           <div>
             <h2 id="portals-heading" class="section-title">Platform Workspaces</h2>
-            <p class="section-subtitle">Dedicated operational environments for analysis, modeling, and research.</p>
+            <p class="section-subtitle">Separate workspaces for benchmark analysis, model exploration, and research.</p>
           </div>
         </div>
 
@@ -198,7 +198,7 @@
             </div>
             <div class="portal-body">
               <h3 class="portal-title">Spread Explorer</h3>
-              <p class="portal-desc">Interactive 64×64 spatial matrix visualization with calibrated threshold controls, cell inspection, and simulated sweeps.</p>
+              <p class="portal-desc">Illustrative 64×64 synthetic grid with a reference threshold, cell inspection, and simulated sweeps.</p>
               <span class="portal-tag">Illustrative Spatial Grid</span>
             </div>
           </a>
@@ -220,8 +220,8 @@
             </div>
             <div class="portal-body">
               <h3 class="portal-title">Risk Simulator</h3>
-              <p class="portal-desc">Live fireline breach risk simulation with parameter presets, smooth risk gauge, and segment vulnerability table.</p>
-              <span class="portal-tag">Live REST Inference</span>
+              <p class="portal-desc">Prototype risk scoring with parameter presets and a generated example-segment table.</p>
+              <span class="portal-tag">Local Prototype API</span>
             </div>
           </a>
 
@@ -244,8 +244,11 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
         <div class="disclaimer-text">
-          <strong>Scientific Disclosure & Platform Boundary:</strong>
-          All numerical metrics in the Model Lab and Overview derive from verified retrospective ML benchmark runs on Google Research Next Day Wildfire Spread shards and historical California fireline records. The 64×64 spatial matrix in the Spread Explorer is an illustrative synthetic prototype grid developed to evaluate raster threshold rendering and cell inspection; raw TFRecords lack georeferenced spatial coordinate bounds.
+          <strong>Evidence Boundary:</strong>
+          NDWS benchmark metrics in the Model Lab come from the named Next Day Wildfire Spread benchmark artifacts.
+          CLBI segment features and outcomes are synthetically generated using named fire profiles, not measured
+          historical fireline observations. The 64×64 spread matrix and its cell context are illustrative, synthetic,
+          and non-georeferenced. None of these views use live incident telemetry or provide operational guidance.
         </div>
       </footer>
     </section>
@@ -258,7 +261,7 @@
         <div>
           <span class="workspace-eyebrow">Spatial Probability Visualization</span>
           <h1 id="spread-heading" class="workspace-title">Spread Explorer</h1>
-          <p class="workspace-subtitle">Interactive 64×64 landscape spread matrix inspection with probability threshold calibration.</p>
+          <p class="workspace-subtitle">Inspect how a threshold highlights values in an illustrative synthetic grid.</p>
         </div>
         <div class="workspace-badges">
           <span class="badge badge-subtle">Prototype Workspace</span>
@@ -273,16 +276,16 @@
           <!-- Threshold Adjustment Control -->
           <div class="control-box">
             <div class="control-header">
-              <label for="spread-threshold-slider" class="control-label">Probability Threshold ($\tau$)</label>
+              <label for="spread-threshold-slider" class="control-label">Illustrative Probability Threshold ($\tau$)</label>
               <span class="control-value-readout" id="spread-threshold-val">0.0281</span>
             </div>
             <input type="range" id="spread-threshold-slider" min="0.010" max="0.100" step="0.001" value="0.0281" class="slider">
             <div class="slider-scale">
               <span>0.010 (Permissive)</span>
-              <span class="scale-center" id="spread-optimal-marker" title="Validation Optimal Threshold">τ* = 0.0281</span>
+              <span class="scale-center" id="spread-optimal-marker" title="Reference value from NDWS validation; not calibrated for this synthetic grid">NDWS reference = 0.0281</span>
               <span>0.100 (Conservative)</span>
             </div>
-            <p class="control-help">Cells with $P(\text{spread}) \ge \tau$ are classified as forward spreading fronts.</p>
+            <p class="control-help">Highlights generated cell values at or above the selected threshold. This threshold is not calibrated for the synthetic grid.</p>
           </div>
 
           <!-- Active Spread Surface Stats -->
@@ -291,11 +294,11 @@
             <div class="spread-stats-grid">
               <div class="mini-stat">
                 <span class="mini-stat-num" id="spread-active-cells">0</span>
-                <span class="mini-stat-label">Active Spread Cells</span>
+                <span class="mini-stat-label">Cells Above Threshold</span>
               </div>
               <div class="mini-stat">
                 <span class="mini-stat-num" id="spread-active-pct">0.0%</span>
-                <span class="mini-stat-label">Landscape Fraction</span>
+                <span class="mini-stat-label">Grid Fraction</span>
               </div>
             </div>
             <div class="spread-progress-bar">
@@ -343,8 +346,7 @@
           <div class="canvas-wrapper">
             <div class="canvas-toolbar">
               <div class="canvas-title">
-                <span class="live-dot" aria-hidden="true"></span>
-                <span>$64 \times 64\text{ km}$ Spatial Patch (1 km Nominal Resolution)</span>
+                    <span>64 × 64 illustrative cell matrix (not georeferenced or to scale)</span>
               </div>
               <div class="canvas-actions">
                 <button class="btn btn-ghost btn-xs" id="btn-canvas-center" title="Center View">Re-Center</button>
@@ -353,13 +355,13 @@
             </div>
 
             <div class="canvas-container" id="canvas-container">
-              <canvas id="spread-canvas" width="512" height="512" class="spread-canvas spatial-canvas" role="img" aria-label="64x64 Wildfire Spread Probability Matrix"></canvas>
+              <canvas id="spread-canvas" width="512" height="512" class="spread-canvas spatial-canvas" role="img" aria-label="64 by 64 synthetic illustrative value grid"></canvas>
               <div class="canvas-crosshair" id="canvas-crosshair" style="display:none;" aria-hidden="true"></div>
             </div>
 
             <div class="canvas-footer-info">
-              <span>Grid Size: 64 rows × 64 cols (4,096 pixels)</span>
-              <span>Hover or click any cell to inspect pixel features</span>
+              <span>Grid: 64 rows × 64 columns (4,096 synthetic cells)</span>
+              <span>Hover or click a cell to inspect illustrative values</span>
             </div>
           </div>
         </div>
@@ -378,7 +380,7 @@
                 <span class="insp-val highlight" id="insp-prob">--</span>
               </div>
               <div class="inspector-metric-row">
-                <span class="insp-label">Distance to Fire Perimeter</span>
+                <span class="insp-label">Illustrative Distance Proxy (grid units)</span>
                 <span class="insp-val" id="insp-dist">--</span>
               </div>
               <div class="inspector-metric-row">
@@ -392,7 +394,7 @@
 
               <hr class="subtle-divider">
 
-              <div class="inspector-section-label">Simulated Cell Context</div>
+              <div class="inspector-section-label">Synthetic Cell Context (Not Observed)</div>
               <div class="context-grid">
                 <div class="context-item">
                   <span class="context-label">Relative Elevation</span>
@@ -413,7 +415,7 @@
               </div>
 
               <div class="inspector-note">
-                <strong>Data Provenance:</strong> Derived from deterministic illustrative spatial matrix generated by <code>GET /api/v1/ndws/demo/patch</code>.
+                <strong>Data provenance:</strong> All values are generated for UI demonstration by <code>GET /api/v1/ndws/demo/patch</code>; they do not describe a real location or fire.
               </div>
             </div>
           </div>
@@ -429,20 +431,24 @@
         <div>
           <span class="workspace-eyebrow">Machine Learning Benchmarks</span>
           <h1 id="model-lab-heading" class="workspace-title">Model Lab</h1>
-          <p class="workspace-subtitle">Audited Phase 1 tabular baselines, LightGBM benchmark, feature split gains, and generalization gap analysis.</p>
+          <p class="workspace-subtitle">Phase 1 tabular baselines, feature importance, and evaluation metrics loaded from the benchmark API.</p>
         </div>
         <div class="workspace-badges">
-          <span class="badge badge-success">Audited Artifacts</span>
-          <span class="badge badge-subtle">2,000,000 Evaluated Pixels</span>
+          <span class="badge badge-subtle" id="benchmark-artifact-badge">Loading benchmark artifacts</span>
+          <span class="badge badge-subtle" id="benchmark-row-count">-- evaluated rows</span>
         </div>
       </div>
 
+      <div id="benchmark-data-status" class="sweep-disclaimer-note" role="status" aria-live="polite">
+        Loading NDWS benchmark metrics from the API...
+      </div>
+
       <!-- Comparative Benchmark Leaderboard Table -->
-      <section class="section-block" aria-labelledby="leaderboard-heading">
+      <section class="section-block" aria-labelledby="leaderboard-heading" hidden>
         <div class="section-header">
           <div>
             <h2 id="leaderboard-heading" class="section-title">Model Performance Leaderboard</h2>
-            <p class="section-subtitle">Evaluated on identical shard-level partitions: 1,000,000 train, 500,000 val (`train_14`), 500,000 eval (`eval_00`).</p>
+            <p class="section-subtitle">Validation and held-out evaluation results are shown only when benchmark artifacts are available.</p>
           </div>
         </div>
 
@@ -456,132 +462,21 @@
                 <th scope="col" class="text-right">ROC-AUC</th>
                 <th scope="col" class="text-right">Brier Score</th>
                 <th scope="col" class="text-right">Threshold ($\tau^*$)</th>
-                <th scope="col" class="text-right">Precision</th>
-                <th scope="col" class="text-right">Recall</th>
+                <th scope="col" class="text-right">Precision (%)</th>
+                <th scope="col" class="text-right">Recall (%)</th>
                 <th scope="col" class="text-right">$F_1$-Score</th>
                 <th scope="col" class="text-right">False Positives (FP)</th>
               </tr>
             </thead>
             <tbody id="model-lab-leaderboard-tbody">
-              <!-- Dynamically populated or verified fallback rendered below -->
-              <tr class="row-highlight">
-                <td>
-                  <div class="model-name-group">
-                    <strong>LightGBM (Unweighted, Best)</strong>
-                    <span class="badge badge-best">Top Model</span>
-                  </div>
-                  <span class="model-arch">Gradient Boosted Decision Trees (Early Stopping @ iter 3)</span>
-                </td>
-                <td>Validation (train_14)</td>
-                <td class="text-right font-mono font-bold text-accent">0.114470</td>
-                <td class="text-right font-mono">0.872004</td>
-                <td class="text-right font-mono">0.005689</td>
-                <td class="text-right font-mono">0.028115</td>
-                <td class="text-right font-mono">17.64%</td>
-                <td class="text-right font-mono">30.54%</td>
-                <td class="text-right font-mono">0.223610</td>
-                <td class="text-right font-mono text-muted">4,179</td>
-              </tr>
-              <tr class="row-highlight-eval">
-                <td>
-                  <div class="model-name-group">
-                    <strong>LightGBM (Unweighted)</strong>
-                    <span class="badge badge-eval">Unseen Eval</span>
-                  </div>
-                  <span class="model-arch">Frozen Model & Threshold on official eval_00</span>
-                </td>
-                <td>Held-Out Eval (eval_00)</td>
-                <td class="text-right font-mono font-bold text-forest">0.083720</td>
-                <td class="text-right font-mono">0.767868</td>
-                <td class="text-right font-mono">0.009354</td>
-                <td class="text-right font-mono">0.028115</td>
-                <td class="text-right font-mono">18.81%</td>
-                <td class="text-right font-mono">16.10%</td>
-                <td class="text-right font-mono">0.173521</td>
-                <td class="text-right font-mono font-bold text-forest">3,323 (-73.3%)</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>LightGBM (Weighted, spw=10)</strong>
-                  <span class="model-arch">Class-Weighted Trees (`scale_pos_weight=10.0`)</span>
-                </td>
-                <td>Validation (train_14)</td>
-                <td class="text-right font-mono">0.102776</td>
-                <td class="text-right font-mono">0.877354</td>
-                <td class="text-right font-mono">0.006087</td>
-                <td class="text-right font-mono">0.247552</td>
-                <td class="text-right font-mono">16.43%</td>
-                <td class="text-right font-mono">31.80%</td>
-                <td class="text-right font-mono">0.216618</td>
-                <td class="text-right font-mono text-muted">4,742</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Distance Heuristic (Corrected)</strong>
-                  <span class="model-arch">Nonlinear Spatial Kernel: $p = \exp(-d / 2.0)$ on physical km</span>
-                </td>
-                <td>Validation (train_14)</td>
-                <td class="text-right font-mono">0.072548</td>
-                <td class="text-right font-mono">0.881722</td>
-                <td class="text-right font-mono">0.014795</td>
-                <td class="text-right font-mono">0.369404</td>
-                <td class="text-right font-mono">10.58%</td>
-                <td class="text-right font-mono">31.39%</td>
-                <td class="text-right font-mono">0.158239</td>
-                <td class="text-right font-mono text-muted">7,777</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Logistic Regression (L2)</strong>
-                  <span class="model-arch">Regularized Ridge ($C=1.0$, `lbfgs`) on Standardized $z$-scores</span>
-                </td>
-                <td>Validation (train_14)</td>
-                <td class="text-right font-mono">0.064393</td>
-                <td class="text-right font-mono font-bold">0.886330</td>
-                <td class="text-right font-mono">0.005612</td>
-                <td class="text-right font-mono">0.053061</td>
-                <td class="text-right font-mono">9.38%</td>
-                <td class="text-right font-mono">45.04%</td>
-                <td class="text-right font-mono">0.155221</td>
-                <td class="text-right font-mono text-muted">12,757</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Logistic Regression (L2, Held-Out)</strong>
-                  <span class="model-arch">Linear Baseline on official eval_00</span>
-                </td>
-                <td>Held-Out Eval (eval_00)</td>
-                <td class="text-right font-mono">0.061643</td>
-                <td class="text-right font-mono">0.838461</td>
-                <td class="text-right font-mono">0.009185</td>
-                <td class="text-right font-mono">0.053061</td>
-                <td class="text-right font-mono">10.29%</td>
-                <td class="text-right font-mono">29.84%</td>
-                <td class="text-right font-mono">0.153013</td>
-                <td class="text-right font-mono text-danger">12,443</td>
-              </tr>
-              <tr>
-                <td>
-                  <strong>Dummy Prior Baseline</strong>
-                  <span class="model-arch">Constant Probability $\hat{p} = \text{Train Prevalence} = 0.008851$</span>
-                </td>
-                <td>Validation (train_14)</td>
-                <td class="text-right font-mono">0.005862</td>
-                <td class="text-right font-mono">0.500000</td>
-                <td class="text-right font-mono">0.005837</td>
-                <td class="text-right font-mono">0.008851</td>
-                <td class="text-right font-mono">0.59%</td>
-                <td class="text-right font-mono">100.00%</td>
-                <td class="text-right font-mono">0.011656</td>
-                <td class="text-right font-mono text-muted">497,069</td>
-              </tr>
+              <tr><td colspan="10" class="text-center py-4 text-muted">Waiting for benchmark data...</td></tr>
             </tbody>
           </table>
         </div>
       </section>
 
       <!-- Two-Column Diagnostic & Attribution Section -->
-      <div class="lab-grid-two-col">
+      <div class="lab-grid-two-col" hidden>
 
         <!-- Column 1: Feature Importance (Total Split Gain) -->
         <div class="lab-card">
@@ -604,18 +499,7 @@
                 </tr>
               </thead>
               <tbody id="feature-gain-tbody">
-                <tr><td>1. <code>dist_to_prev_fire_km</code></td><td class="text-right font-mono">139,581.7</td><td class="text-right font-mono font-bold">70.47%</td><td><div class="mini-bar"><div class="mini-fill" style="width:70.47%"></div></div></td></tr>
-                <tr><td>2. <code>th</code> (Wind Direction)</td><td class="text-right font-mono">9,515.5</td><td class="text-right font-mono">4.80%</td><td><div class="mini-bar"><div class="mini-fill" style="width:4.80%"></div></div></td></tr>
-                <tr><td>3. <code>erc</code> (Energy Release Component)</td><td class="text-right font-mono">9,353.6</td><td class="text-right font-mono">4.72%</td><td><div class="mini-bar"><div class="mini-fill" style="width:4.72%"></div></div></td></tr>
-                <tr><td>4. <code>tmmn</code> (Min Temperature)</td><td class="text-right font-mono">7,304.7</td><td class="text-right font-mono">3.69%</td><td><div class="mini-bar"><div class="mini-fill" style="width:3.69%"></div></div></td></tr>
-                <tr><td>5. <code>elevation</code></td><td class="text-right font-mono">6,861.6</td><td class="text-right font-mono">3.46%</td><td><div class="mini-bar"><div class="mini-fill" style="width:3.46%"></div></div></td></tr>
-                <tr><td>6. <code>population</code></td><td class="text-right font-mono">6,429.7</td><td class="text-right font-mono">3.25%</td><td><div class="mini-bar"><div class="mini-fill" style="width:3.25%"></div></div></td></tr>
-                <tr><td>7. <code>vs</code> (Wind Speed)</td><td class="text-right font-mono">6,207.2</td><td class="text-right font-mono">3.13%</td><td><div class="mini-bar"><div class="mini-fill" style="width:3.13%"></div></div></td></tr>
-                <tr><td>8. <code>tmmx</code> (Max Temperature)</td><td class="text-right font-mono">5,469.5</td><td class="text-right font-mono">2.76%</td><td><div class="mini-bar"><div class="mini-fill" style="width:2.76%"></div></div></td></tr>
-                <tr><td>9. <code>pdsi</code> (Drought Index)</td><td class="text-right font-mono">3,518.2</td><td class="text-right font-mono">1.78%</td><td><div class="mini-bar"><div class="mini-fill" style="width:1.78%"></div></div></td></tr>
-                <tr><td>10. <code>sph</code> (Specific Humidity)</td><td class="text-right font-mono">2,539.7</td><td class="text-right font-mono">1.28%</td><td><div class="mini-bar"><div class="mini-fill" style="width:1.28%"></div></div></td></tr>
-                <tr><td>11. <code>NDVI</code></td><td class="text-right font-mono">1,251.0</td><td class="text-right font-mono">0.63%</td><td><div class="mini-bar"><div class="mini-fill" style="width:0.63%"></div></div></td></tr>
-                <tr><td>12. <code>pr</code> (Precipitation)</td><td class="text-right font-mono">460.2</td><td class="text-right font-mono">0.23%</td><td><div class="mini-bar"><div class="mini-fill" style="width:0.23%"></div></div></td></tr>
+                <tr><td colspan="4" class="text-center py-4 text-muted">Waiting for benchmark data...</td></tr>
               </tbody>
             </table>
           </div>
@@ -629,7 +513,7 @@
           <div class="lab-card-header">
             <div>
               <h3 class="lab-card-title">Diagnostic Artifact Viewer</h3>
-              <p class="lab-card-subtitle">Genuine plots generated directly by Phase 1 experiment pipelines.</p>
+              <p class="lab-card-subtitle">Plots are loaded from the static benchmark artifact directory.</p>
             </div>
           </div>
 
@@ -642,6 +526,9 @@
 
           <div class="plot-viewer-box">
             <img id="active-diagnostic-img" src="/static/plots/lightgbm_pr_curves.png" alt="LightGBM Diagnostic Plot" class="diagnostic-img">
+            <p id="diagnostic-plot-unavailable" class="text-muted text-center py-4" role="status" hidden>
+              This diagnostic plot is unavailable because its image artifact is not present.
+            </p>
             <div class="plot-caption-bar">
               <span id="active-diagnostic-desc">LightGBM Precision-Recall Curves on Validation and Held-Out Evaluation partitions.</span>
               <button class="btn btn-ghost btn-xs" id="btn-expand-plot" title="Expand Full Resolution">Zoom Full-Res</button>
@@ -651,11 +538,11 @@
       </div>
 
       <!-- Generalization Gap Analysis Section -->
-      <section class="section-block" aria-labelledby="gap-analysis-heading">
+      <section class="section-block" aria-labelledby="gap-analysis-heading" hidden>
         <div class="section-header">
           <div>
             <h2 id="gap-analysis-heading" class="section-title">Validation-to-Evaluation Generalization Gap Analysis</h2>
-            <p class="section-subtitle">Evaluating performance degradation from internal holdout (`train_14`) to unseen evaluation partition (`eval_00`).</p>
+            <p class="section-subtitle">Comparing validation and held-out evaluation metrics from the loaded benchmark artifacts. Percent changes are relative to validation.</p>
           </div>
         </div>
 
@@ -663,37 +550,37 @@
           <div class="gap-metric-card">
             <div class="gap-header">
               <span class="gap-title">Average Precision (PR-AUC)</span>
-              <span class="gap-delta negative">-26.86%</span>
+              <span class="gap-delta" id="gap-ap-delta">—</span>
             </div>
-            <div class="gap-comparison font-mono">0.1145 (Val) &rarr; 0.0837 (Eval)</div>
-            <p class="gap-explanation">Moderate degradation across regional fire regimes. LightGBM still maintains a +35.8% relative advantage over Logistic Regression on unseen eval patches.</p>
+            <div class="gap-comparison font-mono" id="gap-ap-comparison">—</div>
+            <p class="gap-explanation">Retrospective comparison of the supplied partitions; it does not establish performance in future incidents.</p>
           </div>
 
           <div class="gap-metric-card">
             <div class="gap-header">
               <span class="gap-title">ROC-AUC Discrimination</span>
-              <span class="gap-delta negative">-11.94%</span>
+              <span class="gap-delta" id="gap-roc-delta">—</span>
             </div>
-            <div class="gap-comparison font-mono">0.8720 (Val) &rarr; 0.7679 (Eval)</div>
-            <p class="gap-explanation">Significant discrimination drop reflecting geographic domain shift and terrain variations between training ecoregions and evaluation incidents.</p>
+            <div class="gap-comparison font-mono" id="gap-roc-comparison">—</div>
+            <p class="gap-explanation">This partition comparison does not identify the cause of any metric change.</p>
           </div>
 
           <div class="gap-metric-card">
             <div class="gap-header">
               <span class="gap-title">Detection Recall at $\tau^*$</span>
-              <span class="gap-delta negative">-47.28%</span>
+              <span class="gap-delta" id="gap-recall-delta">—</span>
             </div>
-            <div class="gap-comparison font-mono">30.54% (Val) &rarr; 16.10% (Eval)</div>
-            <p class="gap-explanation">Freezing the validation threshold ($\tau^* = 0.0281$) when prevalence rose from 0.586% to 0.956% caused conservative predictions, missing 4,012 spreading pixels.</p>
+            <div class="gap-comparison font-mono" id="gap-recall-comparison">—</div>
+            <p class="gap-explanation">The evaluation score uses the threshold selected on validation data; results remain specific to these partitions.</p>
           </div>
 
           <div class="gap-metric-card">
             <div class="gap-header">
-              <span class="gap-title">False Positive Alarm Suppression</span>
-              <span class="gap-delta positive">-73.29%</span>
+              <span class="gap-title">Brier Score Change</span>
+              <span class="gap-delta" id="gap-brier-delta">—</span>
             </div>
-            <div class="gap-comparison font-mono">12,443 (Logistic) &rarr; 3,323 (LGBM)</div>
-            <p class="gap-explanation">Major operational achievement: LightGBM suppressed 9,120 false positive alarms on the 500,000-pixel evaluation set, raising precision from 10.29% to 18.81%.</p>
+            <div class="gap-comparison font-mono" id="gap-brier-comparison">—</div>
+            <p class="gap-explanation">Brier score measures probability error; a lower score is better. These results are not field validation.</p>
           </div>
         </div>
       </section>
@@ -705,19 +592,19 @@
     <section id="view-risk-simulator" class="page-view" aria-labelledby="sim-heading">
       <div class="workspace-header">
         <div>
-          <span class="workspace-eyebrow">Tactical Containment Intelligence</span>
+          <span class="workspace-eyebrow">CLBI Prototype Demonstration</span>
           <h1 id="sim-heading" class="workspace-title">Line Risk Simulator</h1>
-          <p class="workspace-subtitle">Predict fireline breach vulnerability from terrain geometry, engagement dynamics, and upstream fire intensity.</p>
+          <p class="workspace-subtitle">Explore how generated scenario inputs affect a CLBI prototype model score.</p>
         </div>
         <div class="workspace-badges">
-          <span class="badge badge-success">Live REST API: POST /api/v1/predict</span>
+          <span class="badge badge-subtle">Local API: POST /api/v1/predict</span>
           <span class="badge badge-subtle">Candidate Line Breach Intelligence (CLBI)</span>
         </div>
       </div>
 
       <!-- Simulator Presets Bar -->
       <div class="presets-bar" role="group" aria-label="Scenario Presets">
-        <span class="presets-label">Tactical Scenarios:</span>
+        <span class="presets-label">Example Scenarios:</span>
         <button class="preset-pill active" id="preset-ridge" data-preset="ridge">
           <strong>Vulnerable Ridge</strong> (Steep 35°, Handline 2m, Close Fire)
         </button>
@@ -730,6 +617,12 @@
       </div>
 
       <!-- Main Simulator Layout -->
+      <div class="sweep-disclaimer-note" role="note">
+        <strong>Prototype notice:</strong> This model was trained on generated segment features and synthetic outcomes.
+        Entered values are scenario inputs, not live conditions; scores and feature associations are not validated
+        incident probabilities or tactical advice. Do not use them for fireground decisions.
+      </div>
+
       <div class="simulator-layout">
 
         <!-- Left: Interactive Parameter Deck -->
@@ -741,7 +634,7 @@
             <div class="param-row">
               <div class="param-label-wrap">
                 <label for="sim-slope" class="param-label">Terrain Slope Angle</label>
-                <span class="param-desc">Steeper slopes accelerate convective pre-heating</span>
+                <span class="param-desc">Generated example input; not an observed terrain measurement</span>
               </div>
               <div class="param-inputs">
                 <input type="range" id="sim-slope-slider" min="0" max="60" step="0.5" value="35.0" class="slider-sm">
@@ -755,7 +648,7 @@
             <div class="param-row">
               <div class="param-label-wrap">
                 <label for="sim-elevation" class="param-label">Surface Elevation</label>
-                <span class="param-desc">Affects fuel composition, atmospheric pressure, and lapse rates</span>
+                <span class="param-desc">Generated example input; not an observed terrain measurement</span>
               </div>
               <div class="param-inputs">
                 <input type="range" id="sim-elevation-slider" min="0" max="3000" step="10" value="1200" class="slider-sm">
@@ -773,7 +666,7 @@
             <div class="param-row">
               <div class="param-label-wrap">
                 <label for="sim-burn-prob" class="param-label">Upstream Spread Intensity ($P_{\text{burn}}$)</label>
-                <span class="param-desc">Local NDWS predicted next-day spread probability</span>
+                <span class="param-desc">User-entered example value; not connected to an NDWS prediction</span>
               </div>
               <div class="param-inputs">
                 <input type="range" id="sim-burn-prob-slider" min="0.0" max="1.0" step="0.01" value="0.85" class="slider-sm">
@@ -787,7 +680,7 @@
             <div class="param-row">
               <div class="param-label-wrap">
                 <label for="sim-dist-fire" class="param-label">Distance to Active Flame Front</label>
-                <span class="param-desc">Linear distance from fireline to active thermal anomaly</span>
+                <span class="param-desc">Generated example input; no live fire-perimeter source</span>
               </div>
               <div class="param-inputs">
                 <input type="range" id="sim-dist-fire-slider" min="10" max="5000" step="10" value="350" class="slider-sm">
@@ -805,7 +698,7 @@
             <div class="param-row">
               <div class="param-label-wrap">
                 <label for="sim-barrier" class="param-label">Cleared Barrier Width</label>
-                <span class="param-desc">Handline (2m), Dozer Line (6.5m), or Road (9m+)</span>
+                <span class="param-desc">Example width input; not a measured line specification</span>
               </div>
               <div class="param-inputs">
                 <input type="range" id="sim-barrier-slider" min="0.5" max="25" step="0.5" value="2.0" class="slider-sm">
@@ -853,28 +746,29 @@
           </div>
         </form>
 
-        <!-- Right: Real-Time Tactical Intelligence Output -->
+        <!-- Right: Prototype Model Output -->
         <div class="sim-output-panel" aria-live="polite">
 
           <div class="tactical-card" id="tactical-result-card">
 
             <div class="tactical-card-header">
               <div class="tactical-heading">
-                <span class="tactical-eyebrow">Production Model Output</span>
-                <h3 class="tactical-title">Containment Line Assessment</h3>
+                <span class="tactical-eyebrow">CLBI Prototype Model Score</span>
+                <h3 class="tactical-title">Scenario Score Output</h3>
               </div>
-              <span class="risk-badge badge-critical" id="sim-risk-badge">CRITICAL</span>
+              <span class="risk-badge badge-subtle" id="sim-risk-badge">WAITING</span>
             </div>
+            <p class="text-muted" id="sim-result-status" role="status">Waiting for the local CLBI API response...</p>
 
             <!-- Risk Gauge & Dual Probability Display -->
             <div class="gauge-display-row">
               <div class="svg-gauge-wrap">
                 <svg viewBox="0 0 120 120" class="svg-gauge" aria-hidden="true">
                   <circle cx="60" cy="60" r="50" class="gauge-track"></circle>
-                  <circle cx="60" cy="60" r="50" class="gauge-fill gauge-fill-critical" id="sim-gauge-circle" style="stroke-dasharray: 314.16; stroke-dashoffset: 6.9;"></circle>
+                  <circle cx="60" cy="60" r="50" class="gauge-fill" id="sim-gauge-circle" style="stroke-dasharray: 314.16; stroke-dashoffset: 314.16;"></circle>
                 </svg>
                 <div class="gauge-center-text">
-                  <span class="gauge-percentage font-mono" id="sim-breach-pct">97.8%</span>
+                  <span class="gauge-percentage font-mono" id="sim-breach-pct">--</span>
                   <span class="gauge-caption">Breach Risk</span>
                 </div>
               </div>
@@ -882,15 +776,15 @@
               <div class="gauge-stats-column">
                 <div class="gauge-stat-box">
                   <span class="stat-box-label">Breach Probability ($P_{\text{breach}}$)</span>
-                  <span class="stat-box-val text-danger font-mono font-bold" id="sim-breach-prob">0.9778</span>
+                  <span class="stat-box-val text-danger font-mono font-bold" id="sim-breach-prob">--</span>
                 </div>
                 <div class="gauge-stat-box">
                   <span class="stat-box-label">Holding Probability ($P_{\text{hold}}$)</span>
-                  <span class="stat-box-val text-success font-mono font-bold" id="sim-hold-prob">0.0222</span>
+                  <span class="stat-box-val text-success font-mono font-bold" id="sim-hold-prob">--</span>
                 </div>
                 <div class="gauge-stat-box">
-                  <span class="stat-box-label">Risk Category Threshold</span>
-                  <span class="stat-box-val font-mono" id="sim-tier-desc">CRITICAL ($\ge 0.80$)</span>
+                  <span class="stat-box-label">Prototype Score Band Threshold</span>
+                  <span class="stat-box-val font-mono" id="sim-tier-desc">--</span>
                 </div>
               </div>
             </div>
@@ -900,31 +794,29 @@
               <div class="factor-column">
                 <div class="factor-header text-danger">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                  <span>Primary Risk Drivers</span>
+                  <span>Features Associated with Higher Score</span>
                 </div>
                 <ul class="factor-list" id="sim-risk-drivers">
-                  <li>Cleared Barrier Width (barrier_width_m=2.0)</li>
-                  <li>Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.95)</li>
-                  <li>Predicted Next-Day Spread Probability Intensity (burn_prob=0.85)</li>
+                  <li>Waiting for model response</li>
                 </ul>
               </div>
 
               <div class="factor-column">
                 <div class="factor-header text-success">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                  <span>Protective Factors</span>
+                  <span>Features Associated with Lower Score</span>
                 </div>
                 <ul class="factor-list" id="sim-protective-factors">
-                  <li class="text-muted">None significant under current head-fire assault geometry</li>
+                  <li class="text-muted">Waiting for model response</li>
                 </ul>
               </div>
             </div>
 
-            <!-- Operational Tactical Advisory Narrative -->
+            <!-- Non-causal model explanation -->
             <div class="tactical-narrative-box">
-              <div class="narrative-label">Operational Advisory for Incident Commanders:</div>
+              <div class="narrative-label">Model Explanation (Association, Not Advice):</div>
               <p class="narrative-body" id="sim-explanation-text">
-                CRITICAL breach vulnerability (97.8% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.95). Immediate dozer widening or aerial retardant support recommended.
+                No score is shown until a response is received from the local CLBI API.
               </p>
             </div>
 
@@ -932,12 +824,12 @@
         </div>
       </div>
 
-      <!-- Historical Incident Segments Audit Table (CZU Lightning Complex) -->
+      <!-- Generated CLBI example segments -->
       <section class="section-block" aria-labelledby="czu-table-heading">
         <div class="section-header">
           <div>
-            <h2 id="czu-table-heading" class="section-title">Operational Fireline Segments Audit</h2>
-            <p class="section-subtitle">Real candidate polyline segments evaluated live by the CLBI engine (CZU Lightning Complex, California).</p>
+            <h2 id="czu-table-heading" class="section-title">Generated CLBI Example Segments</h2>
+            <p class="section-subtitle">Synthetic segment rows tagged with a fire-profile name; not observed incident lines or live predictions.</p>
           </div>
           <div class="table-search-bar">
             <input type="text" id="clbi-search-input" placeholder="Filter by Segment ID, Risk Tier..." class="search-input">
@@ -950,7 +842,7 @@
               <tr>
                 <th scope="col" class="sortable" data-col="vulnerability_rank">Rank <span class="sort-icon">&darr;</span></th>
                 <th scope="col" class="sortable" data-col="segment_id">Segment ID <span class="sort-icon"></span></th>
-                <th scope="col" class="sortable" data-col="fire_name">Incident Name <span class="sort-icon"></span></th>
+                <th scope="col" class="sortable" data-col="fire_name">Profile Label <span class="sort-icon"></span></th>
                 <th scope="col" class="sortable" data-col="risk_tier">Risk Tier <span class="sort-icon"></span></th>
                 <th scope="col" class="sortable text-right" data-col="breach_probability">Breach Prob <span class="sort-icon"></span></th>
                 <th scope="col" class="sortable text-right" data-col="hold_probability">Hold Prob <span class="sort-icon"></span></th>
@@ -963,7 +855,7 @@
             <tbody id="clbi-segments-tbody">
               <!-- Dynamically populated from GET /api/v1/demo -->
               <tr>
-                <td colspan="10" class="text-center py-4 text-muted">Loading live segment data from CLBI service...</td>
+                <td colspan="10" class="text-center py-4 text-muted">Loading generated example segments...</td>
               </tr>
             </tbody>
           </table>
@@ -1128,7 +1020,7 @@
     <div class="drawer-panel">
       <div class="drawer-header">
         <div>
-          <span class="drawer-eyebrow">Segment Tactical Dossier</span>
+          <span class="drawer-eyebrow">Prototype Segment Details</span>
           <h3 id="drawer-title" class="drawer-title">CA-CZU-005205_seg_00118</h3>
         </div>
         <button class="drawer-close-btn" id="btn-close-drawer" aria-label="Close Drawer">&times;</button>

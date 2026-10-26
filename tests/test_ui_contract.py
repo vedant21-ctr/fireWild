@@ -3,6 +3,7 @@ test_ui_contract.py - Unit tests for NDWS UI Integration Contract & Payload Form
 """
 
 import unittest
+from pathlib import Path
 import numpy as np
 from src.api.ndws_contracts import (
     get_sanitized_benchmark_payload,
@@ -128,6 +129,36 @@ class TestNDWSUIContract(unittest.TestCase):
         res_js = client.get("/static/app.js")
         self.assertEqual(res_js.status_code, 200)
         self.assertIn("loadNDWSBenchmarkMetrics", res_js.text)
+
+    def test_9_clbi_dashboard_discloses_synthetic_data_and_clears_failed_scores(self):
+        static_dir = Path(__file__).resolve().parents[1] / "src" / "api" / "static"
+        html = (static_dir / "index.html").read_text(encoding="utf-8")
+        app_js = (static_dir / "app.js").read_text(encoding="utf-8")
+
+        self.assertIn("synthetically generated", html.lower())
+        self.assertIn("not observed incident lines", html.lower())
+        self.assertNotIn("97.8%", html)
+        self.assertNotIn("Immediate dozer widening", html)
+        self.assertIn("setSimulatorUnavailable", app_js)
+        self.assertIn("The previous score has been cleared", app_js)
+
+    def test_10_model_lab_withholds_metrics_when_benchmark_artifacts_are_unavailable(self):
+        static_dir = Path(__file__).resolve().parents[1] / "src" / "api" / "static"
+        html = (static_dir / "index.html").read_text(encoding="utf-8")
+        app_js = (static_dir / "app.js").read_text(encoding="utf-8")
+
+        self.assertIn('id="benchmark-data-status"', html)
+        self.assertIn('id="model-lab-leaderboard-tbody"', html)
+        self.assertIn('id="diagnostic-plot-unavailable"', html)
+        self.assertNotIn("0.114470", html)
+        self.assertNotIn("30.54% (Val)", html)
+        self.assertNotIn("false alarms on the 500,000-pixel", html)
+        self.assertNotIn("2,000,000 Evaluated Pixels", html)
+        self.assertIn("Benchmark data unavailable", app_js)
+        self.assertIn("Model results and diagnostics are hidden", app_js)
+        self.assertIn("renderBenchmarkLeaderboard(data)", app_js)
+        self.assertIn("renderFeatureImportance(data.best_model_details.feature_importance_ranking)", app_js)
+        self.assertIn("updateBenchmarkGap(valPerf, evalPerf)", app_js)
 
 
 if __name__ == "__main__":

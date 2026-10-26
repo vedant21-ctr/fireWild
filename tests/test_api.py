@@ -43,7 +43,11 @@ class TestCLBIAPI(unittest.TestCase):
         self.assertEqual(len(data["feature_list"]), 7)
         self.assertIn("risk_thresholds", data)
         self.assertIn("evaluation", data)
-        self.assertEqual(data["evaluation"]["method"], "5-fold Leave-One-Fire-Out")
+        self.assertEqual(
+            data["evaluation"]["method"],
+            "5-fold leave-one-generated-profile-out (synthetic target)"
+        )
+        self.assertAlmostEqual(data["evaluation"]["mean_pr_auc"], 0.9507)
 
     # 3. Valid single prediction
     def test_valid_single_prediction(self):
@@ -189,6 +193,8 @@ class TestCLBIAPI(unittest.TestCase):
         self.assertIn("segments", data)
         self.assertEqual(data["summary"]["total_segments"], 100)
         self.assertEqual(len(data["segments"]), 100)
+        self.assertTrue(data["metadata"]["synthetic_data"])
+        self.assertIn("Synthetic", data["metadata"]["data_source"])
 
     # 14. Response schema
     def test_response_schema(self):

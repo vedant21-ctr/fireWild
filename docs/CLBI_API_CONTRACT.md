@@ -3,9 +3,15 @@
 **Version:** v1.0.0  
 **Service:** CLBI Decision Engine API  
 **Framework:** FastAPI / Uvicorn  
-**Data Basis:** NDWS-derived historical benchmark dataset  
+**Data Basis:** Synthetically generated CLBI segment dataset
 
-> **Disclaimer:** CLBI is a retrospective decision-support prototype built on historical wildfire benchmark data. It does NOT provide guaranteed fire behavior predictions, exact arrival times, guaranteed containment, or live field operational validation.
+> **Evidence and safety notice:** CLBI is a research prototype trained and evaluated on
+> synthetically generated segment features and labels. Fire IDs/names identify parameter
+> profiles; they do not indicate that the rows or breach outcomes were observed during
+> those incidents. The API does not consume live fire telemetry or provide validated
+> operational advice, fire behavior predictions, arrival times, or containment
+> guarantees. Its algorithmic rankings are demonstrative only; do not use them for
+> fireground decisions.
 
 ---
 
@@ -14,7 +20,7 @@
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/api/v1/health` | System health and service status check |
-| `GET` | `/api/v1/model/info` | Production model provenance, features, and evaluation metrics |
+| `GET` | `/api/v1/model/info` | Prototype model metadata, features, and synthetic-benchmark metrics |
 | `POST` | `/api/v1/predict` | Single-segment breach risk inference (unranked) |
 | `POST` | `/api/v1/predict/batch` | Batch breach risk inference with population vulnerability ranking |
 | `POST` | `/api/v1/prioritize` | Candidate line prioritization by percentage or count cutoff |
@@ -66,8 +72,8 @@
     "CA-SNF-000958"
   ],
   "evaluation": {
-    "method": "5-fold Leave-One-Fire-Out",
-    "mean_pr_auc": 0.9508,
+    "method": "5-fold leave-one-generated-profile-out (synthetic target)",
+    "mean_pr_auc": 0.9507,
     "brier": 0.1199,
     "ece_10": 0.0109,
     "ece_20": 0.0151
@@ -95,6 +101,10 @@
   "attack_dot_product": 0.94
 }
 ```
+
+`fire_id`, `fire_name`, and `date` in examples identify synthetic profile metadata.
+Likewise, the returned probability is a model score against the generated target and is
+not a calibrated probability of a real fireline breach.
 - **Response (200 OK):**
 ```json
 {

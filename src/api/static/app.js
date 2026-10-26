@@ -1,7 +1,7 @@
 /**
  * FireWild Intelligence — Unified Application Logic & Router
  * Implements client-side hash routing, Spread Explorer canvas, Model Lab diagnostics,
- * CLBI Live Scenario Simulator, and segment table audit.
+ * CLBI prototype scenario simulator, and generated-segment table.
  */
 
 // Global Application State
@@ -319,32 +319,31 @@ function updateCellInspector(row, col) {
   const tau = AppState.spatialThreshold;
   const isSpread = p >= tau;
 
-  // Approximate distance to center fire in kilometers
-  const distKm = (Math.sqrt(Math.pow((row - 32) / 1.5, 2) + Math.pow(col - 32, 2))).toFixed(1);
+  const distanceProxy = Math.sqrt(Math.pow((row - 32) / 1.5, 2) + Math.pow(col - 32, 2)).toFixed(1);
 
-  let category = 'Ambient / Unburned';
-  if (p >= 0.080) category = 'Extreme Fire Front';
-  else if (p >= 0.050) category = 'Elevated Spread Risk';
-  else if (p >= 0.025) category = 'Moderate Spread Zone';
-  else if (p >= 0.010) category = 'Low Spread Potential';
+  let category = 'Lowest synthetic value band';
+  if (p >= 0.080) category = 'Highest synthetic value band';
+  else if (p >= 0.050) category = 'Elevated synthetic value band';
+  else if (p >= 0.025) category = 'Moderate synthetic value band';
+  else if (p >= 0.010) category = 'Low synthetic value band';
 
   document.getElementById('insp-cell-coords').textContent = `Row ${row}, Col ${col}`;
   document.getElementById('insp-prob').textContent = p.toFixed(4);
-  document.getElementById('insp-dist').textContent = `${distKm} km`;
+  document.getElementById('insp-dist').textContent = distanceProxy;
   document.getElementById('insp-category').textContent = category;
 
   const statusElem = document.getElementById('insp-status');
   if (isSpread) {
-    statusElem.innerHTML = `<span class="text-danger font-bold">Active Spread (&ge; ${tau.toFixed(4)})</span>`;
+    statusElem.innerHTML = `<span class="text-danger font-bold">Above threshold (&ge; ${tau.toFixed(4)})</span>`;
   } else {
-    statusElem.innerHTML = `<span class="text-muted">Unburned Ambient (&lt; ${tau.toFixed(4)})</span>`;
+    statusElem.innerHTML = `<span class="text-muted">Below threshold (&lt; ${tau.toFixed(4)})</span>`;
   }
 
   // Simulated context metrics
-  document.getElementById('insp-ctx-elevation').textContent = `${Math.round(450 + (row * 6) + (col * 3))} m`;
-  document.getElementById('insp-ctx-wind').textContent = `${Math.round(180 + Math.sin(col) * 45)}° (SW)`;
-  document.getElementById('insp-ctx-erc').textContent = `${(25.4 + p * 35).toFixed(1)}`;
-  document.getElementById('insp-ctx-ndvi').textContent = `${(0.42 - p * 0.15).toFixed(2)}`;
+  document.getElementById('insp-ctx-elevation').textContent = `${Math.round(450 + (row * 6) + (col * 3))} m (synthetic)`;
+  document.getElementById('insp-ctx-wind').textContent = `${Math.round(180 + Math.sin(col) * 45)}° (synthetic)`;
+  document.getElementById('insp-ctx-erc').textContent = `${(25.4 + p * 35).toFixed(1)} (synthetic)`;
+  document.getElementById('insp-ctx-ndvi').textContent = `${(0.42 - p * 0.15).toFixed(2)} (synthetic)`;
 }
 
 // ==========================================================================
@@ -355,6 +354,23 @@ function initModelLab() {
   const activeImg = document.getElementById('active-diagnostic-img');
   const activeDesc = document.getElementById('active-diagnostic-desc');
   const zoomBtn = document.getElementById('btn-expand-plot');
+  const plotUnavailable = document.getElementById('diagnostic-plot-unavailable');
+
+  const showPlotUnavailable = () => {
+    activeImg.hidden = true;
+    plotUnavailable.hidden = false;
+    zoomBtn.disabled = true;
+  };
+
+  const showPlot = () => {
+    activeImg.hidden = false;
+    plotUnavailable.hidden = true;
+    zoomBtn.disabled = false;
+  };
+
+  activeImg.addEventListener('error', showPlotUnavailable);
+  activeImg.addEventListener('load', showPlot);
+  if (activeImg.complete && activeImg.naturalWidth === 0) showPlotUnavailable();
 
   plotButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -364,6 +380,7 @@ function initModelLab() {
       const plotPath = btn.getAttribute('data-plot');
       const plotDesc = btn.getAttribute('data-desc');
 
+      showPlot();
       activeImg.src = plotPath;
       activeDesc.textContent = plotDesc;
     });
@@ -390,27 +407,269 @@ async function loadBenchmarkMetrics() {
     const res = await fetch('/api/v1/ndws/benchmark/metrics');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+    if (!Array.isArray(data.models_comparison) || data.models_comparison.length === 0) {
+      throw new Error('Benchmark response contains no model comparisons');
+    }
+    if (!data.best_model_details) {
+      throw new Error('Benchmark response is missing best-model metrics');
+    }
+
+    renderBenchmarkLeaderboard(data);
+    renderFeatureImportance(data.best_model_details.feature_importance_ranking);
     AppState.ndwsBenchmark = data;
 
-    // Update hero ribbon stats
-    if (data.best_model_details) {
-      const best = data.best_model_details;
-      const valPerf = best.validation_performance || {};
-      const evalPerf = best.held_out_evaluation_performance || {};
-
-      const heroValAp = document.getElementById('hero-stat-val-ap');
-      const heroEvalAp = document.getElementById('hero-stat-eval-ap');
-
-      if (heroValAp && valPerf.average_precision) {
-        heroValAp.textContent = Number(valPerf.average_precision).toFixed(4);
-      }
-      if (heroEvalAp && evalPerf.average_precision) {
-        heroEvalAp.textContent = Number(evalPerf.average_precision).toFixed(4);
-      }
-    }
+    updateBenchmarkSummary(data);
+    setBenchmarkDataAvailable(true);
   } catch (err) {
-    console.warn('Could not load live benchmark metrics; verified fallbacks active:', err);
+    AppState.ndwsBenchmark = null;
+    setBenchmarkDataAvailable(false);
+    console.warn('Could not load NDWS benchmark artifacts:', err);
   }
+}
+
+function renderBenchmarkLeaderboard(data) {
+  const tbody = document.getElementById('model-lab-leaderboard-tbody');
+  tbody.replaceChildren();
+
+  const hasNumericValue = value =>
+    value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value));
+  const formatMetric = (value, digits = 6) =>
+    hasNumericValue(value) ? Number(value).toFixed(digits) : '—';
+  const formatPercent = value =>
+    hasNumericValue(value) ? `${(Number(value) * 100).toFixed(2)}%` : '—';
+  const appendCell = (row, value, className = '') => {
+    const cell = document.createElement('td');
+    cell.textContent = value;
+    if (className) cell.className = className;
+    row.appendChild(cell);
+  };
+  const appendMetricRow = (name, partition, performance, threshold, isBest = false) => {
+    const row = document.createElement('tr');
+    if (isBest) row.classList.add('row-highlight');
+
+    const nameCell = document.createElement('td');
+    const nameGroup = document.createElement('div');
+    nameGroup.className = 'model-name-group';
+    const nameLabel = document.createElement('strong');
+    nameLabel.textContent = name;
+    nameGroup.appendChild(nameLabel);
+    if (isBest) {
+      const badge = document.createElement('span');
+      badge.className = 'badge badge-best';
+      badge.textContent = 'Top Model';
+      nameGroup.appendChild(badge);
+    }
+    nameCell.appendChild(nameGroup);
+    row.appendChild(nameCell);
+
+    appendCell(row, partition);
+    appendCell(row, formatMetric(performance.average_precision), 'text-right font-mono');
+    appendCell(row, formatMetric(performance.roc_auc), 'text-right font-mono');
+    appendCell(row, formatMetric(performance.brier_score), 'text-right font-mono');
+    appendCell(row, formatMetric(threshold), 'text-right font-mono');
+    appendCell(row, formatPercent(performance.precision_at_threshold ?? performance.precision), 'text-right font-mono');
+    appendCell(row, formatPercent(performance.recall_at_threshold ?? performance.recall), 'text-right font-mono');
+    appendCell(row, formatMetric(performance.f1_at_threshold ?? performance.f1_score), 'text-right font-mono');
+    const falsePositives = performance.confusion_matrix?.fp;
+    appendCell(
+      row,
+      hasNumericValue(falsePositives) ? Number(falsePositives).toLocaleString() : '—',
+      'text-right font-mono'
+    );
+    tbody.appendChild(row);
+  };
+
+  data.models_comparison.forEach(model => {
+    appendMetricRow(
+      model.display_name || model.model_id || 'Unnamed model',
+      'Validation',
+      model,
+      model.decision_threshold,
+      Boolean(model.is_best_model)
+    );
+  });
+
+  const best = data.best_model_details;
+  const evaluation = best.held_out_evaluation_performance;
+  if (evaluation) {
+    appendMetricRow(
+      `${best.model_id || 'Best model'} (held-out)`,
+      evaluation.partition_source || 'Held-out evaluation',
+      evaluation,
+      best.optimal_decision_threshold,
+      false
+    );
+  }
+}
+
+function renderFeatureImportance(ranking) {
+  const tbody = document.getElementById('feature-gain-tbody');
+  tbody.replaceChildren();
+
+  if (!Array.isArray(ranking) || ranking.length === 0) {
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.colSpan = 4;
+    cell.className = 'text-center py-4 text-muted';
+    cell.textContent = 'Feature importance is unavailable in the benchmark response.';
+    row.appendChild(cell);
+    tbody.appendChild(row);
+    return;
+  }
+
+  ranking.forEach((feature, index) => {
+    const row = document.createElement('tr');
+    const nameCell = document.createElement('td');
+    nameCell.textContent = `${index + 1}. ${feature.feature_name || 'Unknown feature'}`;
+    row.appendChild(nameCell);
+
+    const gainCell = document.createElement('td');
+    gainCell.className = 'text-right font-mono';
+    gainCell.textContent = feature.gain !== null && feature.gain !== undefined && Number.isFinite(Number(feature.gain))
+      ? Number(feature.gain).toLocaleString(undefined, { maximumFractionDigits: 2 })
+      : '—';
+    row.appendChild(gainCell);
+
+    const share = Number(feature.percentage_share);
+    const shareCell = document.createElement('td');
+    shareCell.className = 'text-right font-mono';
+    shareCell.textContent = feature.percentage_share !== null &&
+      feature.percentage_share !== undefined &&
+      Number.isFinite(share)
+      ? `${share.toFixed(2)}%`
+      : '—';
+    row.appendChild(shareCell);
+
+    const barCell = document.createElement('td');
+    const bar = document.createElement('div');
+    bar.className = 'mini-bar';
+    const fill = document.createElement('div');
+    fill.className = 'mini-fill';
+    fill.style.width = `${feature.percentage_share !== null &&
+      feature.percentage_share !== undefined &&
+      Number.isFinite(share)
+      ? Math.max(0, Math.min(100, share))
+      : 0}%`;
+    bar.appendChild(fill);
+    barCell.appendChild(bar);
+    row.appendChild(barCell);
+    tbody.appendChild(row);
+  });
+}
+
+function updateBenchmarkSummary(data) {
+  const best = data.best_model_details;
+  const valPerf = best.validation_performance || {};
+  const evalPerf = best.held_out_evaluation_performance || {};
+  const setText = (id, value) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  };
+  const metric = (value, digits = 4) =>
+    value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value))
+      ? Number(value).toFixed(digits)
+      : '—';
+
+  setText('hero-stat-val-ap', metric(valPerf.average_precision));
+  setText('hero-stat-val-detail', 'Best model on the validation partition');
+  setText('hero-stat-eval-ap', metric(evalPerf.average_precision));
+  setText('hero-stat-eval-detail', evalPerf.partition_source || 'Held-out evaluation partition');
+  setText('hero-stat-eval-f1', metric(evalPerf.f1_score));
+  setText('hero-stat-eval-f1-detail', 'At the threshold selected on validation data');
+  updateBenchmarkGap(valPerf, evalPerf);
+
+  const sample = data.benchmark_summary?.pilot_sample_size || {};
+  const rowCount = ['training_rows', 'validation_rows', 'evaluation_rows']
+    .map(key => Number(sample[key]))
+    .filter(Number.isFinite)
+    .reduce((total, rows) => total + rows, 0);
+  setText(
+    'benchmark-row-count',
+    rowCount > 0 ? `${rowCount.toLocaleString()} benchmark rows` : 'Benchmark row count unavailable'
+  );
+}
+
+function updateBenchmarkGap(validation, evaluation) {
+  const metric = (value, asPercent = false) => {
+    if (value === null || value === undefined || value === '' || !Number.isFinite(Number(value))) {
+      return null;
+    }
+    const numeric = Number(value);
+    return asPercent ? `${(numeric * 100).toFixed(2)}%` : numeric.toFixed(4);
+  };
+  const comparisons = [
+    { id: 'ap', key: 'average_precision', percent: false, lowerIsBetter: false },
+    { id: 'roc', key: 'roc_auc', percent: false, lowerIsBetter: false },
+    { id: 'recall', key: 'recall', percent: true, lowerIsBetter: false },
+    { id: 'brier', key: 'brier_score', percent: false, lowerIsBetter: true }
+  ];
+
+  comparisons.forEach(({ id, key, percent, lowerIsBetter }) => {
+    const validationValue = Number(validation[key]);
+    const evaluationValue = Number(evaluation[key]);
+    const comparison = document.getElementById(`gap-${id}-comparison`);
+    const deltaElement = document.getElementById(`gap-${id}-delta`);
+    const validationText = metric(validation[key], percent);
+    const evaluationText = metric(evaluation[key], percent);
+
+    comparison.textContent = validationText !== null && evaluationText !== null
+      ? `${validationText} (Val) -> ${evaluationText} (Eval)`
+      : 'Metric unavailable';
+    deltaElement.classList.remove('positive', 'negative');
+
+    if (
+      validationText === null ||
+      evaluationText === null ||
+      validationValue === 0
+    ) {
+      deltaElement.textContent = '—';
+      return;
+    }
+
+    const relativeChange = ((evaluationValue - validationValue) / Math.abs(validationValue)) * 100;
+    const favorable = lowerIsBetter ? relativeChange <= 0 : relativeChange >= 0;
+    deltaElement.textContent = `${relativeChange > 0 ? '+' : ''}${relativeChange.toFixed(2)}%`;
+    deltaElement.classList.add(favorable ? 'positive' : 'negative');
+  });
+}
+
+function setBenchmarkDataAvailable(available) {
+  const status = document.getElementById('benchmark-data-status');
+  const badge = document.getElementById('benchmark-artifact-badge');
+  const content = document.querySelectorAll(
+    '#view-model-lab > .section-block, #view-model-lab > .lab-grid-two-col'
+  );
+
+  content.forEach(section => {
+    section.hidden = !available;
+  });
+
+  if (available) {
+    status.textContent = 'Benchmark metrics loaded from the NDWS API artifacts.';
+    badge.textContent = 'Benchmark artifacts loaded';
+    badge.classList.remove('badge-subtle');
+    badge.classList.add('badge-success');
+    return;
+  }
+
+  status.textContent =
+    'NDWS benchmark artifacts are unavailable. Model results and diagnostics are hidden until the API can load its source files.';
+  badge.textContent = 'Benchmark data unavailable';
+  badge.classList.remove('badge-success');
+  badge.classList.add('badge-subtle');
+
+  [
+    ['hero-stat-val-ap', '--'],
+    ['hero-stat-val-detail', 'Benchmark artifact unavailable'],
+    ['hero-stat-eval-ap', '--'],
+    ['hero-stat-eval-detail', 'Benchmark artifact unavailable'],
+    ['hero-stat-eval-f1', '--'],
+    ['hero-stat-eval-f1-detail', 'Benchmark artifact unavailable'],
+    ['benchmark-row-count', '-- evaluated rows']
+  ].forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  });
 }
 
 // ==========================================================================
@@ -510,7 +769,7 @@ async function runSimulatorInference() {
   const runBtn = document.getElementById('btn-run-simulation');
   if (runBtn) {
     runBtn.disabled = true;
-    runBtn.innerHTML = 'Evaluating Physics Model...';
+    runBtn.textContent = 'Requesting prototype score...';
   }
 
   const payload = {
@@ -536,6 +795,7 @@ async function runSimulatorInference() {
     renderSimulatorResult(data);
   } catch (err) {
     console.error('Simulator inference error:', err);
+    setSimulatorUnavailable();
     showToast('Inference error; check connection to FastAPI server', 'error');
   } finally {
     if (runBtn) {
@@ -545,10 +805,34 @@ async function runSimulatorInference() {
   }
 }
 
+function setSimulatorUnavailable() {
+  document.getElementById('sim-result-status').textContent =
+    'No prototype score is available. Check that the local CLBI API is running, then retry.';
+  const badge = document.getElementById('sim-risk-badge');
+  badge.textContent = 'UNAVAILABLE';
+  badge.className = 'risk-badge badge-subtle';
+
+  for (const id of ['sim-breach-pct', 'sim-breach-prob', 'sim-hold-prob', 'sim-tier-desc']) {
+    document.getElementById(id).textContent = '--';
+  }
+
+  const gaugeCircle = document.getElementById('sim-gauge-circle');
+  gaugeCircle.style.strokeDashoffset = 314.159;
+  gaugeCircle.className = 'gauge-fill';
+  document.getElementById('sim-risk-drivers').innerHTML =
+    '<li class="text-muted">Unavailable until the API responds</li>';
+  document.getElementById('sim-protective-factors').innerHTML =
+    '<li class="text-muted">Unavailable until the API responds</li>';
+  document.getElementById('sim-explanation-text').textContent =
+    'The previous score has been cleared because the latest request failed.';
+}
+
 function renderSimulatorResult(data) {
   const breachProb = Number(data.breach_probability);
   const holdProb = Number(data.hold_probability);
   const tier = data.risk_tier || 'LOW';
+  document.getElementById('sim-result-status').textContent =
+    'Prototype model score returned by the local API; not live incident data or operational guidance.';
 
   // Update Badge
   const badge = document.getElementById('sim-risk-badge');
@@ -623,6 +907,10 @@ async function loadCLBIDemoSegments() {
     sortAndRenderCLBITable();
   } catch (err) {
     console.error('Failed to load CLBI demo segments:', err);
+    const tbody = document.getElementById('clbi-segments-tbody');
+    tbody.innerHTML =
+      '<tr><td colspan="10" class="text-center py-4 text-muted">Generated examples are unavailable. Check the local CLBI API and retry.</td></tr>';
+    showToast('Could not load generated CLBI examples', 'error');
   }
 }
 
@@ -671,7 +959,7 @@ function sortAndRenderCLBITable() {
   });
 
   if (!AppState.clbiFilteredSegments.length) {
-    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-muted">No fireline segments match the current filter.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-4 text-muted">No generated examples match the current filter.</td></tr>';
     return;
   }
 
@@ -759,17 +1047,17 @@ function openSegmentDrawer(seg) {
 
     <div class="tactical-factors-box" style="margin-bottom: 1.25rem;">
       <div class="factor-column">
-        <div class="factor-header text-danger">Primary Risk Drivers</div>
+        <div class="factor-header text-danger">Features Associated with Higher Score</div>
         <ul class="factor-list">${driversHtml}</ul>
       </div>
       <div class="factor-column">
-        <div class="factor-header text-success">Protective Factors</div>
+        <div class="factor-header text-success">Features Associated with Lower Score</div>
         <ul class="factor-list">${protectiveHtml}</ul>
       </div>
     </div>
 
     <div class="tactical-narrative-box">
-      <div class="narrative-label">Tactical Operational Advisory:</div>
+      <div class="narrative-label">Model Explanation (Association, Not Advice):</div>
       <p class="narrative-body">${seg.explanation || 'No operational narrative.'}</p>
     </div>
   `;

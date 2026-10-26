@@ -44,7 +44,7 @@ def get_health() -> HealthResponse:
 
 @router.get("/model/info", response_model=ModelInfoResponse, summary="Model Provenance & Info")
 def get_model_info(engine: CLBIDecisionEngine = Depends(get_engine)) -> ModelInfoResponse:
-    """Returns metadata, feature list, risk thresholds, and evaluation metrics for the production model."""
+    """Returns prototype model metadata, feature list, score bands, and synthetic benchmark metrics."""
     metadata = engine.get_model_metadata()
     return ModelInfoResponse(
         model_type=metadata.get("model_type", "Standardized 7-Feature Logistic Regression Pipeline"),
@@ -57,8 +57,8 @@ def get_model_info(engine: CLBIDecisionEngine = Depends(get_engine)) -> ModelInf
         training_rows=metadata.get("training_rows", 3050),
         training_fires=metadata.get("training_fires", ["CA-MNF-013028", "CA-SHU-007808", "CA-SNF-000958"]),
         evaluation=metadata.get("evaluation", {
-            "method": "5-fold Leave-One-Fire-Out",
-            "mean_pr_auc": 0.9508,
+            "method": "5-fold leave-one-generated-profile-out (synthetic target)",
+            "mean_pr_auc": 0.9507,
             "brier": 0.1199,
             "ece_10": 0.0109,
             "ece_20": 0.0151
@@ -231,9 +231,9 @@ def get_demo_response(engine: CLBIDecisionEngine = Depends(get_engine)) -> Dict[
         "metadata": {
             "product": "Candidate Line Breach Intelligence",
             "version": "1.0.0",
-            "model": "Standardized 7-Feature Logistic Regression Pipeline",
-            "data_source": "NDWS-derived historical benchmark (CZU Lightning Complex)",
-            "retrospective": True
+            "model": "CLBI prototype: Standardized 7-Feature Logistic Regression Pipeline",
+            "data_source": "Synthetic CLBI profile dataset; incident identifiers are profile labels",
+            "synthetic_data": True
         },
         "summary": {
             "total_segments": summary["total_segments"],

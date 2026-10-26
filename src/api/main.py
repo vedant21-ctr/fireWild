@@ -16,8 +16,9 @@ from src.api.ndws_routes import ndws_router
 app = FastAPI(
     title="Candidate Line Breach Intelligence (CLBI) API",
     description=(
-        "CLBI REST API provides predictive wildfire containment line holding & breach intelligence. "
-        "Disclaimer: Prototype decision-support interface based on retrospective historical wildfire benchmark data."
+        "CLBI REST API provides an experimental model score for generated candidate-line examples. "
+        "The model is trained on synthetic features and labels, not verified incident observations; "
+        "it does not consume live telemetry and its rankings are not validated for operational use."
     ),
     version="1.0.0",
     docs_url="/docs",
