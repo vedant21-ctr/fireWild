@@ -694,17 +694,7 @@ function sortAndRenderCLBITable() {
   const col = AppState.clbiSortColumn;
   const dir = AppState.clbiSortDir === 'asc' ? 1 : -1;
 
-  AppState.clbiFilteredSegments.sort((a, b) => {
-    let valA = a[col];
-    let valB = b[col];
-
-    if (typeof valA === 'string') valA = valA.toLowerCase();
-    if (typeof valB === 'string') valB = valB.toLowerCase();
-
-    if (valA < valB) return -1 * dir;
-    if (valA > valB) return 1 * dir;
-    return 0;
-  });
+  AppState.clbiFilteredSegments.sort((a, b) => compareValues(a[col], b[col], dir));
 
   // Update header sort indicators
   document.querySelectorAll('#clbi-segments-table th.sortable').forEach(th => {
@@ -726,19 +716,18 @@ function sortAndRenderCLBITable() {
   AppState.clbiFilteredSegments.forEach(seg => {
     const tr = document.createElement('tr');
     const tier = seg.risk_tier || 'LOW';
-    const breachProb = Number(seg.breach_probability);
-    const holdProb = Number(seg.hold_probability);
+    const breachProb = toFiniteNumber(seg.breach_probability);
 
     tr.innerHTML = `
       <td class="font-mono text-muted">${seg.vulnerability_rank}</td>
       <td class="font-mono"><strong>${seg.segment_id}</strong></td>
       <td>${seg.fire_name || 'CZU Lightning'}</td>
       <td><span class="risk-badge badge-${tier.toLowerCase()}">${tier}</span></td>
-      <td class="text-right font-mono font-bold ${breachProb >= 0.6 ? 'text-danger' : ''}">${(breachProb * 100).toFixed(1)}%</td>
-      <td class="text-right font-mono">${(holdProb * 100).toFixed(1)}%</td>
-      <td class="text-right font-mono">${Number(seg.barrier_width_m).toFixed(1)} m</td>
-      <td class="text-right font-mono">${Number(seg.distance_to_fire).toFixed(0)} m</td>
-      <td class="text-right font-mono">${Number(seg.slope).toFixed(1)}°</td>
+      <td class="text-right font-mono font-bold ${breachProb !== null && breachProb >= 0.6 ? 'text-danger' : ''}">${formatProbability(seg.breach_probability, 1)}</td>
+      <td class="text-right font-mono">${formatProbability(seg.hold_probability, 1)}</td>
+      <td class="text-right font-mono">${formatMeasurement(seg.barrier_width_m, 1, ' m')}</td>
+      <td class="text-right font-mono">${formatMeasurement(seg.distance_to_fire, 0, ' m')}</td>
+      <td class="text-right font-mono">${formatMeasurement(seg.slope, 1, '°')}</td>
       <td class="text-center">
         <button class="btn btn-secondary btn-xs btn-inspect-seg" data-id="${seg.segment_id}">Inspect</button>
       </td>
@@ -783,25 +772,25 @@ function openSegmentDrawer(seg) {
     <div class="gauge-stats-column" style="margin-bottom: 1.25rem;">
       <div class="gauge-stat-box">
         <span class="stat-box-label">Breach Probability</span>
-        <span class="stat-box-val font-mono font-bold text-danger">${(seg.breach_probability * 100).toFixed(2)}%</span>
+        <span class="stat-box-val font-mono font-bold text-danger">${formatProbability(seg.breach_probability, 2)}</span>
       </div>
       <div class="gauge-stat-box">
         <span class="stat-box-label">Holding Probability</span>
-        <span class="stat-box-val font-mono font-bold text-success">${(seg.hold_probability * 100).toFixed(2)}%</span>
+        <span class="stat-box-val font-mono font-bold text-success">${formatProbability(seg.hold_probability, 2)}</span>
       </div>
       <div class="gauge-stat-box">
         <span class="stat-box-label">Priority Percentile</span>
-        <span class="stat-box-val font-mono">${(seg.priority_percentile || 0).toFixed(1)}%</span>
+        <span class="stat-box-val font-mono">${formatMeasurement(seg.priority_percentile, 1, '%')}</span>
       </div>
     </div>
 
     <div class="context-grid" style="margin-bottom: 1.25rem;">
-      <div class="context-item"><span class="context-label">Cleared Barrier Width</span><span class="context-val">${seg.barrier_width_m} m</span></div>
-      <div class="context-item"><span class="context-label">Distance to Active Flame</span><span class="context-val">${seg.distance_to_fire} m</span></div>
-      <div class="context-item"><span class="context-label">Terrain Slope Angle</span><span class="context-val">${seg.slope}°</span></div>
-      <div class="context-item"><span class="context-label">Elevation</span><span class="context-val">${seg.elevation} m</span></div>
-      <div class="context-item"><span class="context-label">Acute Attack Angle</span><span class="context-val">${seg.attack_angle}°</span></div>
-      <div class="context-item"><span class="context-label">Head-Fire Alignment (cos θ)</span><span class="context-val">${seg.attack_dot_product}</span></div>
+      <div class="context-item"><span class="context-label">Cleared Barrier Width</span><span class="context-val">${formatMeasurement(seg.barrier_width_m, 1, ' m')}</span></div>
+      <div class="context-item"><span class="context-label">Distance to Active Flame</span><span class="context-val">${formatMeasurement(seg.distance_to_fire, 0, ' m')}</span></div>
+      <div class="context-item"><span class="context-label">Terrain Slope Angle</span><span class="context-val">${formatMeasurement(seg.slope, 1, '°')}</span></div>
+      <div class="context-item"><span class="context-label">Elevation</span><span class="context-val">${formatMeasurement(seg.elevation, 0, ' m')}</span></div>
+      <div class="context-item"><span class="context-label">Acute Attack Angle</span><span class="context-val">${formatMeasurement(seg.attack_angle, 1, '°')}</span></div>
+      <div class="context-item"><span class="context-label">Head-Fire Alignment (cos θ)</span><span class="context-val">${formatMeasurement(seg.attack_dot_product, 3, '')}</span></div>
     </div>
 
     <div class="tactical-factors-box" style="margin-bottom: 1.25rem;">

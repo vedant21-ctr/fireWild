@@ -221,6 +221,11 @@
 ### 6. `GET /api/v1/demo`
 - **Purpose:** Retrieve pre-computed 100-segment demonstration predictions response.
 - **Response (200 OK):** Returns product JSON matching `experiments/results/clbi_demo_response.json`.
+- **Segment measurements:** each segment also carries the input measurements shown in the dashboard's
+  segment audit table and inspect drawer: `barrier_width_m`, `distance_to_fire`, `slope`, `elevation`,
+  `attack_angle`, `attack_dot_product`. Each is a number, or `null` when the source value is missing,
+  non-numeric, non-finite or outside the range the model accepts. Missing values are never sent as `0`.
+  These fields are additive; all earlier fields are unchanged.
 
 ---
 

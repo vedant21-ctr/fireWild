@@ -128,6 +128,8 @@ button, input, select {
 .text-right { text-align: right; }
 .text-center { text-align: center; }
 .text-muted { color: var(--text-muted); }
+/* Missing / invalid measurement placeholder (src/api/static/format.js) */
+.value-unavailable { color: var(--text-muted); font-family: var(--font-ui); font-style: italic; font-weight: 400; font-size: 0.85em; }
 .text-forest { color: var(--color-forest); }
 .text-accent { color: var(--color-ember); }
 .text-danger { color: var(--tier-critical-text); }

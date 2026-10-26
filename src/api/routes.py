@@ -3,8 +3,9 @@ routes.py - API Route Handlers for Candidate Line Breach Intelligence (CLBI)
 """
 
 import os
+import math
 import pandas as pd
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from fastapi import APIRouter, HTTPException, Depends
 
 from src.model.clbi_model import CLBIDecisionEngine
@@ -21,6 +22,37 @@ from src.api.schemas import (
 )
 
 router = APIRouter(prefix="/api/v1", tags=["CLBI API"])
+
+# Segment measurements shown in the dashboard's segment audit table and inspect drawer, with
+# the lower bound CLBIDecisionEngine input validation enforces: (bound, bound itself allowed).
+DEMO_MEASUREMENT_BOUNDS = {
+    "barrier_width_m": (0.0, False),
+    "distance_to_fire": (0.0, True),
+    "slope": (0.0, True),
+    "elevation": (None, True),
+    "attack_angle": (0.0, True),
+    "attack_dot_product": (-1.0, True),
+}
+
+
+def optional_measurement(value: Any, lower: Optional[float] = None, inclusive: bool = True) -> Optional[float]:
+    """Return a finite float within bounds, else None (JSON null).
+
+    Missing, null, non-numeric, NaN, infinite and out-of-range values all become None so
+    clients can show them as unavailable; they are never coerced to 0. JSON cannot encode
+    NaN or Infinity, so non-finite values must not reach the response as numbers anyway.
+    """
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    if not math.isfinite(number):
+        return None
+    if lower is not None and (number < lower or (not inclusive and number == lower)):
+        return None
+    return number
 
 # Global singleton or dependency for decision engine
 _ENGINE_INSTANCE: float = None
@@ -224,7 +256,8 @@ def get_demo_response(engine: CLBIDecisionEngine = Depends(get_engine)) -> Dict[
             "priority_recommended": bool(row["priority_recommended"]),
             "top_risk_factors": row["top_risk_factors"] if isinstance(row["top_risk_factors"], list) else [],
             "protective_factors": row["protective_factors"] if isinstance(row["protective_factors"], list) else [],
-            "explanation": str(row["explanation"])
+            "explanation": str(row["explanation"]),
+            **{name: optional_measurement(row.get(name), *bounds) for name, bounds in DEMO_MEASUREMENT_BOUNDS.items()},
         })
 
     return {
