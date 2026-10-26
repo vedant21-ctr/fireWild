@@ -1,0 +1,10 @@
+<section id="overlap" data-transition="fade" style="background:#F7F5F0;color:#1F2A33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-direction:column;gap:16px">
+<p style="font-size:24px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#B0432C">Does the overlap inflate the benchmark?</p>
+<h2 style="font-family:'EB Garamond', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1">Raw PR-AUC halves, but only because fires are rarer</h2>
+</div>
+<img src="/_blob/1504ae2789086ec7c519c63e1f42b157" alt="Two bar charts: raw PR-AUC is lower on the spatial test for every model, but lift over chance is similar or higher" style="width:1664px;height:420px;object-fit:contain;background:#FFFFFF;border-radius:12px">
+<p style="font-size:30px;line-height:1.4;color:#3E4A54">Spatial test prevalence 0.48% vs 1.25%. Lift over chance 28.6× vs 20.9×, ROC-AUC 0.896 vs 0.905, same model ranking: <b>no measurable inflation</b>.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6A7178">13 · Aaryan Krishna · results/protocol_gap.png</p>
+<aside>Presenter: Aaryan. Key viva point: PR-AUC’s chance level is the positive rate, so compare across test sets with lift and ROC-AUC. Held-out location groups are smaller, isolated fires because the two giant recurring-fire regions must stay in training. Hint of memorisation only: elevation and population get more SHAP weight on the official split.</aside>
+</section>

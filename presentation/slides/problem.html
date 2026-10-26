@@ -1,0 +1,23 @@
+<section id="problem" data-transition="fade" style="display:flex; flex-direction:column; gap:64px; padding:128px 128px 160px; background:#f7f5f0">
+  <div style="display:flex; flex-direction:column; gap:16px">
+    <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#b0432c">The task</p>
+    <h2 style="font-family:'EB Garamond', Georgia, serif; font-size:72px; font-weight:600; line-height:1.1; color:#1f2a33">For every 1 km pixel near an active fire, predict whether it burns tomorrow</h2>
+  </div>
+  <div style="display:flex; flex-direction:row; gap:32px">
+    <div style="display:flex; flex-direction:column; gap:12px; flex:1; padding:40px; background:#ece8df; border-radius:16px">
+      <p style="font-family:'EB Garamond', Georgia, serif; font-size:96px; font-weight:600; line-height:1; color:#b0432c">18,545</p>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:28px; line-height:1.4; color:#3e4a54">patches of 64 × 64 km, US 2012–2020 (Kaggle NDWS, Huot et al. 2022)</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px; flex:1; padding:40px; background:#ece8df; border-radius:16px">
+      <p style="font-family:'EB Garamond', Georgia, serif; font-size:96px; font-weight:600; line-height:1; color:#b0432c">12</p>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:28px; line-height:1.4; color:#3e4a54">input layers: terrain, weather, drought, vegetation, population, fire at day t</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px; flex:1; padding:40px; background:#ece8df; border-radius:16px">
+      <p style="font-family:'EB Garamond', Georgia, serif; font-size:96px; font-weight:600; line-height:1; color:#b0432c">1.1%</p>
+      <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:28px; line-height:1.4; color:#3e4a54">of pixels are positive, so accuracy is useless: we report PR-AUC</p>
+    </div>
+  </div>
+  <p style="font-family:'IBM Plex Sans', Arial, sans-serif; font-size:32px; line-height:1.4; color:#3e4a54">Phase 1 = tabular ML: XGBoost / LightGBM on engineered features. Phase 2 = spatial deep learning on the same splits.</p>
+  <p style="position:absolute; bottom:64px; left:128px; width:1664px; font-family:'IBM Plex Sans', Arial, sans-serif; font-size:24px; color:#6a7178">2 · Aaryan Krishna</p>
+  <aside>Presenter: Aaryan. Explain the framing: binary classification per pixel. Stress the imbalance: predicting “no fire” everywhere is 99% accurate, which is why PR-AUC (chance level = prevalence) is the headline metric.</aside>
+</section>
