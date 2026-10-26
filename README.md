@@ -1,191 +1,356 @@
+
 # Candidate Line Breach Intelligence (CLBI)
 
-**Research Focus:** Predictive Wildfire Containment Line Holding & Breach Intelligence  
-**Core Question:** *Can predicted next-day wildfire spread provide useful directional information for identifying vulnerable segments of a proposed containment line?*  
-**Benchmark Version:** `fireline_segments_v1`  
+**Predictive Wildfire Containment Line Holding & Breach Intelligence**
+
+CLBI is a machine-learning-based decision-support system designed to help wildfire managers assess candidate containment line segments and prioritize inspection resources based on historical patterns associated with containment breach risk.
+
+The system combines terrain characteristics, fire proximity, barrier dimensions, and predicted next-day wildfire spread to estimate breach probabilities for individual 100-meter candidate fireline segments.
+
+> **Disclaimer:** CLBI is a research prototype evaluated on retrospective historical wildfire data. Its predictions are not a substitute for professional wildfire assessment, real-time field intelligence, or incident command decisions.
 
 ---
 
-## Candidate Line Breach Intelligence (CLBI) Decision Engine
+## Table of Contents
 
-### **Problem Statement**
-Fire managers evaluating candidate containment lines need to identify which 100-meter segments historically exhibit conditions associated with higher breach risk. The CLBI Decision Engine processes candidate firelines to stratify risk and prioritize inspection resources.
-
-### **Input Features (7 Validated Features)**
-1. `slope`: Terrain slope angle (degrees)
-2. `elevation`: Surface elevation (meters)
-3. `distance_to_fire`: Distance to active flame front at day $t$ (meters)
-4. `barrier_width_m`: Physical cleared width of barrier (meters)
-5. `burn_prob`: Deep learning predicted next-day burn probability $[0, 1]$
-6. `attack_angle`: Acute interaction angle between line normal and spread heading (degrees)
-7. `attack_dot_product`: Direct head-fire attack alignment ratio ($\cos\theta_{\text{attack}}$)
-
-### **Output Schema**
-- `breach_probability`: Predicted probability of breach $P(\text{Breach}) \in [0, 1]$
-- `hold_probability`: Predicted probability of holding $1 - P(\text{Breach})$
-- `risk_tier`: Operational risk category (`LOW` $<0.30$, `MEDIUM` $0.30\text{--}0.60$, `HIGH` $0.60\text{--}0.80$, `CRITICAL` $\ge 0.80$)
-- `vulnerability_rank`: Ordinal ranking (1 = highest breach risk)
-- `priority_percentile`: Percentile rank across candidate fireline
-- `priority_recommended`: Boolean indicator for top 10% inspection set
-- `top_risk_factors` & `protective_factors`: Structured feature attributions
-- `explanation`: Non-causal association summary
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Research Question](#research-question)
+- [System Architecture](#system-architecture)
+- [Input Features](#input-features)
+- [Output Schema](#output-schema)
+- [Benchmark Results](#benchmark-results)
+- [Project Structure](#project-structure)
+- [Technology Stack](#technology-stack)
+- [Installation](#installation)
+- [Usage](#usage)
+- [REST API](#rest-api)
+- [Testing](#testing)
+- [Research Methodology](#research-methodology)
+- [Limitations](#limitations)
+- [Future Improvements](#future-improvements)
+- [License](#license)
 
 ---
 
-## Validated Benchmark Evidence
+## Overview
 
-Evaluated via 5-fold Leave-One-Fire-Out (LOFO) cross-validation across 4,600 held-out segments:
+Wildfire containment planning requires evaluating potential firelines under changing terrain, weather, and fire-spread conditions. Inspecting every candidate segment with equal priority can make resource allocation difficult.
 
-| Metric | Measured Benchmark Result |
-| :--- | :--- |
-| **Mean LOFO PR-AUC** | **0.9508 ± 0.0076** |
-| **Global Brier Score** | **0.1199** |
-| **ECE (10 Equal-Width Bins)** | **0.0109** (1.09 percentage points) |
-| **ECE (20 Equal-Width Bins)** | **0.0151** (1.51 percentage points) |
-| **Top-10% Inspection Precision** | **89.6% mean** (84.0% to 95.8% across fires) |
-| **Top-20% Breach Recall** | **53.8% mean** (48.8% to 57.2% across fires) |
-| **Offline Breach-Yield Enrichment**| **2.92× versus random selection** |
+CLBI addresses this problem by estimating breach risk at the individual segment level and ranking candidate segments for further inspection.
 
----
+The system provides:
 
-## CLBI Production Architecture
+- Segment-level breach probability estimates.
+- Corresponding containment-holding probability estimates.
+- Four operational risk categories.
+- Ranked inspection priorities.
+- Structured risk and protective factor summaries.
+- REST API endpoints for model inference and candidate-line prioritization.
+- Reproducible research evaluation and automated tests.
 
+CLBI is designed as a decision-support tool rather than an autonomous fireline selection or deployment system.
+
+## Key Features
+
+- **Predictive risk scoring:** Estimates breach probability using seven input features.
+- **Risk stratification:** Categorizes segments into LOW, MEDIUM, HIGH, and CRITICAL risk tiers.
+- **Inspection prioritization:** Ranks candidate segments to support targeted inspection.
+- **Model explainability:** Provides structured feature-attribution summaries.
+- **Fast inference:** Loads a pre-trained Logistic Regression artifact for production predictions.
+- **REST API:** Exposes model functionality through FastAPI endpoints.
+- **Research reproducibility:** Separates held-out wildfire evaluation from production model training.
+- **Automated testing:** Includes unit tests for the inference engine and API.
+
+## Research Question
+
+**Can predicted next-day wildfire spread provide useful directional information for identifying vulnerable segments of a proposed containment line?**
+
+The project investigates whether predicted burn probability, combined with terrain, barrier geometry, and fireline interaction features, can help distinguish segments with historically observed breach outcomes.
+
+The research focuses on predictive performance, probability calibration, generalization across wildfire incidents, and inspection prioritization.
+
+## System Architecture
+
+```text
+Historical Wildfire Data
+          |
+          v
+Dataset Preparation and Feature Validation
+          |
+          v
+Feature Engineering and Quality Checks
+          |
+          v
+Leave-One-Fire-Out Evaluation
+          |
+          v
+Production Model Training
+          |
+          v
+Serialized Logistic Regression Model
+          |
+          v
+CLBI Decision Engine
+          |
+          v
+Breach Probability and Risk Classification
+          |
+          v
+Candidate-Line Inspection Prioritization
+          |
+          v
+FastAPI REST Interface
 ```
-Research Evaluation (LOFO 5-Fold)
-            ↓
-    LOFO Validation (Mean PR-AUC = 0.9508)
-            ↓
-Production Model Training (`train_clbi_model.py`)
-            ↓
-Saved Model Artifact (`models/clbi_logistic_regression.joblib`)
-            ↓
-CLBI Inference Engine (`CLBIDecisionEngine`)
-            ↓
-   Risk Stratification (`LOW` / `MEDIUM` / `HIGH` / `CRITICAL`)
-            ↓
-Candidate-Line Prioritization (Top-K / Resource Selection)
-            ↓
-Future REST API (`docs/CLBI_API_CONTRACT.md`) & Frontend
-```
 
-### **Methodological Separation: Research vs Production**
-- **LOFO Research Evaluation:** Evaluates model generalization across 5 held-out wildfire incidents where each fire is excluded from training before evaluation. Used solely for unbiased metric reporting.
-- **Production Model:** Fitted on all historical training data (`split == 'train'`) and serialized to `models/clbi_logistic_regression.joblib`. The production `CLBIDecisionEngine` strictly loads this artifact for deterministic, fast inference without retraining.
+### Research and Production Separation
 
----
+**Research Evaluation**
+- Uses five-fold Leave-One-Fire-Out (LOFO) cross-validation.
+- Holds out wildfire incidents during evaluation to assess generalization across fires.
+- Generates benchmark metrics and evaluation reports.
+
+**Production Inference**
+- Trains a final model using the designated historical training data.
+- Serializes the trained model to `models/clbi_logistic_regression.joblib`.
+- Loads the saved artifact through `CLBIDecisionEngine`.
+- Performs predictions without retraining during ordinary inference requests.
+
+## Input Features
+
+The model uses seven input features.
+
+| Feature | Description | Unit |
+|---|---|---|
+| `slope` | Terrain slope angle | Degrees |
+| `elevation` | Surface elevation | Meters |
+| `distance_to_fire` | Distance to the active flame front at time *t* | Meters |
+| `barrier_width_m` | Physical cleared width of the proposed barrier | Meters |
+| `burn_prob` | Predicted next-day burn probability | 0–1 |
+| `attack_angle` | Acute interaction angle between line normal and spread heading | Degrees |
+| `attack_dot_product` | Head-fire attack alignment ratio, represented by cosine of the attack angle | 0–1 under the stated acute-angle convention |
+
+Prediction quality depends on the validity, consistency, and availability of these input features.
+
+## Output Schema
+
+For each candidate fireline segment, CLBI is designed to provide the following outputs.
+
+| Output | Description |
+|---|---|
+| `breach_probability` | Estimated probability of a breach, between 0 and 1 |
+| `hold_probability` | Complement of breach probability |
+| `risk_tier` | Operational risk category |
+| `vulnerability_rank` | Ordinal rank, where 1 represents the highest predicted risk |
+| `priority_percentile` | Relative risk percentile among evaluated candidate segments |
+| `priority_recommended` | Indicates whether a segment belongs to the top 10% inspection-priority set |
+| `top_risk_factors` | Structured summary of features associated with increased predicted risk |
+| `protective_factors` | Structured summary of features associated with decreased predicted risk |
+| `explanation` | Non-causal summary of the model's prediction |
+
+### Risk Classification
+
+| Risk Tier | Breach Probability |
+|---|---|
+| LOW | Below 0.30 |
+| MEDIUM | 0.30 to below 0.60 |
+| HIGH | 0.60 to below 0.80 |
+| CRITICAL | 0.80 or above |
+
+These categories are configurable decision-support thresholds, not universal physical definitions of wildfire containment failure.
+
+## Benchmark Results
+
+The reported benchmark uses five-fold Leave-One-Fire-Out evaluation across 4,600 held-out segments from five historical California wildfire incidents.
+
+| Metric | Reported Result |
+|---|---:|
+| Mean LOFO PR-AUC | 0.9508 ± 0.0076 |
+| Global Brier Score | 0.1199 |
+| ECE — 10 equal-width bins | 0.0109 |
+| ECE — 20 equal-width bins | 0.0151 |
+| Mean top-10% inspection precision | 89.6% |
+| Top-10% precision across fires | 84.0%–95.8% |
+| Mean top-20% breach recall | 53.8% |
+| Top-20% recall across fires | 48.8%–57.2% |
+| Offline breach-yield enrichment | 2.92× versus random selection |
+
+*These are reported retrospective benchmark results, not independently verified live operational performance.*
+
+### Metric Definitions
+
+- **PR-AUC:** Measures precision-recall performance across classification thresholds.
+- **Brier Score:** Measures the mean squared difference between predicted probabilities and binary outcomes; lower is better.
+- **Expected Calibration Error (ECE):** Summarizes the difference between predicted confidence and observed event frequency across probability bins.
+- **Inspection precision:** Measures the proportion of selected inspection segments associated with the target breach outcome under the evaluation definition.
+- **Breach recall:** Measures the proportion of all observed breaches captured by the selected inspection set.
+- **Breach-yield enrichment:** Compares the breach yield of a selected group with that expected under random selection.
+
+For additional definitions and methodology, see [`docs/CLBI_METRICS.md`](docs/CLBI_METRICS.md).
 
 ## Project Structure
 
-```
+```text
 WILDFIRE/
 ├── data/
 │   ├── demo/
-│   │   └── clbi_demo_segments.csv         # 100 deterministic demo segments (CZU fire)
+│   │   └── clbi_demo_segments.csv
 │   └── final/
-│       ├── fireline_segments_v1.parquet   # Production tabular dataset (187 KB)
-│       ├── fireline_segments_v1.csv       # Inspection CSV dataset (749 KB)
-│       └── fireline_segments_v1.json      # JSON schema representation
-│
+│       ├── fireline_segments_v1.parquet
+│       ├── fireline_segments_v1.csv
+│       └── fireline_segments_v1.json
 ├── docs/
-│   ├── CLBI_API_CONTRACT.md               # REST API specification & contract
-│   └── CLBI_METRICS.md                    # Benchmark metric definitions & terms
-│
+│   ├── CLBI_API_CONTRACT.md
+│   └── CLBI_METRICS.md
 ├── models/
-│   ├── clbi_logistic_regression.joblib    # Serialized production Logistic Regression model
-│   └── clbi_model_metadata.json          # Production model metadata & provenance
-│
+│   ├── clbi_logistic_regression.joblib
+│   └── clbi_model_metadata.json
 ├── src/
 │   ├── api/
 │   │   ├── __init__.py
-│   │   ├── main.py                        # FastAPI application entry point & CORS
-│   │   ├── routes.py                      # REST API endpoint route handlers
-│   │   └── schemas.py                     # Pydantic request/response validation schemas
+│   │   ├── main.py
+│   │   ├── routes.py
+│   │   └── schemas.py
 │   ├── data/
-│   │   └── build_dataset.py               # Standardized dataset builder pipeline
+│   │   └── build_dataset.py
 │   ├── features/
-│   │   └── generate_data_quality_report.py# Audit & visualization generator
-│   ├── evaluation/                        # Reproducible benchmark experiments
+│   │   └── generate_data_quality_report.py
+│   ├── evaluation/
 │   └── model/
-│       ├── train_clbi_model.py            # Reproducible model training script
-│       ├── clbi_model.py                  # Core CLBIDecisionEngine inference class
-│       └── clbi_demo.py                   # CLI demonstration script
-│
+│       ├── train_clbi_model.py
+│       ├── clbi_model.py
+│       └── clbi_demo.py
 ├── tests/
-│   ├── test_clbi_model.py                 # Unit tests for CLBIDecisionEngine (14 tests)
-│   └── test_api.py                        # Unit tests for CLBI REST API (15 tests)
-│
-├── experiments/                           # Research reports and results
+│   ├── test_clbi_model.py
+│   └── test_api.py
+├── experiments/
 │   ├── BASELINE_REPORT.md
 │   ├── ROBUSTNESS_REPORT.md
 │   ├── NONLINEAR_BASELINE_REPORT.md
 │   ├── SPATIAL_ABLATION_REPORT.md
 │   ├── RISK_STRATIFICATION_REPORT.md
 │   └── results/
-│       ├── clbi_segment_predictions.csv   # Model inference output for 4,600 segments
-│       ├── clbi_demo_predictions.csv      # 100-segment demo predictions
-│       ├── clbi_demo_response.json        # Product-ready JSON demo payload
-│       ├── calibration_audit_results.json # Calibration audit & risk tier statistics
-│       └── clbi_model_metadata.json       # Research metadata and benchmark metrics
-│
-├── requirements.txt                       # Minimal workspace dependencies
-└── README.md                              # Project overview
+├── requirements.txt
+└── README.md
 ```
 
----
+## Technology Stack
 
-## Quickstart & Usage
+| Technology | Purpose |
+|---|---|
+| Python | Core implementation |
+| pandas | Tabular data processing |
+| NumPy | Numerical operations |
+| scikit-learn | Model training and evaluation |
+| Joblib | Model artifact serialization |
+| FastAPI | REST API framework |
+| Uvicorn | ASGI server |
+| Pydantic | Request and response validation |
+| unittest | Automated testing |
+| Parquet, CSV, JSON | Dataset storage and exchange |
 
-### 1. Train Production Model Artifact
+The exact installed dependencies are defined in `requirements.txt`.
+
+## Installation
+
+### Prerequisites
+
+- Python 3.10 or a compatible version supported by project dependencies.
+- Git.
+- pip.
+
+### 1. Clone the Repository
+
+```bash
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd WILDFIRE
+```
+
+Replace the repository URL and directory name with the actual values for your project.
+
+### 2. Create a Virtual Environment
+
+macOS/Linux:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Windows:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+## Usage
+
+### Train the Production Model
+
 ```bash
 python -m src.model.train_clbi_model
 ```
 
-### 2. Run Unit Tests (29 Tests)
-```bash
-python -m unittest discover -s tests -p "test_*.py"
-```
+This command trains the production model using the designated training data and saves the model artifact according to the training script's configuration.
 
-### 3. Run CLBI Demo & Generate Product JSON
+### Run the Command-Line Demonstration
+
 ```bash
 python -m src.model.clbi_demo
 ```
 
----
+The demo demonstrates the inference workflow using the project's demonstration data.
 
-## Running the CLBI REST API
+### Run the Automated Test Suite
 
-### 1. Install API Dependencies
 ```bash
-python -m pip install -r requirements.txt
+python -m unittest discover -s tests -p "test_*.py"
 ```
 
-### 2. Start API Server
+The repository documents 29 unit tests covering the model and API. Confirm the actual test count and results by running the suite.
+
+## REST API
+
+CLBI provides a FastAPI interface for health checks, model information, individual segment predictions, candidate-line prioritization, and demonstration predictions.
+
+### Start the Server
+
 ```bash
 python -m uvicorn src.api.main:app --reload
 ```
 
-### 3. Open the Dashboard
-- **Dashboard:** `http://localhost:8000/`
-- **Demo route:** `http://localhost:8000/demo`
+Assuming the corresponding routes are implemented, the local interface is available at:
 
-### 4. Interactive API Documentation
-- **Swagger / OpenAPI UI:** `http://localhost:8000/docs`
-- **ReDoc UI:** `http://localhost:8000/redoc`
-- **OpenAPI Schema:** `http://localhost:8000/openapi.json`
+| Resource | URL |
+|---|---|
+| Dashboard | http://localhost:8000/ |
+| Demo page | http://localhost:8000/demo |
+| Swagger UI | http://localhost:8000/docs |
+| ReDoc | http://localhost:8000/redoc |
+| OpenAPI schema | http://localhost:8000/openapi.json |
 
-### 5. Example Curl Requests
+### Health Check
 
-- **Health Check:**
 ```bash
 curl http://localhost:8000/api/v1/health
 ```
 
-- **Model Info & Provenance:**
+### Retrieve Model Information
+
 ```bash
 curl http://localhost:8000/api/v1/model/info
 ```
 
-- **Single Segment Risk Prediction:**
+### Predict Breach Risk for One Segment
+
 ```bash
 curl -X POST http://localhost:8000/api/v1/predict \
   -H "Content-Type: application/json" \
@@ -201,7 +366,10 @@ curl -X POST http://localhost:8000/api/v1/predict \
   }'
 ```
 
-- **Candidate Line Prioritization (Top 10% Cutoff):**
+The response schema is defined by the API implementation and is intended to include the predicted breach probability and associated risk information.
+
+### Prioritize Candidate Segments
+
 ```bash
 curl -X POST http://localhost:8000/api/v1/prioritize \
   -H "Content-Type: application/json" \
@@ -225,19 +393,88 @@ curl -X POST http://localhost:8000/api/v1/prioritize \
   }'
 ```
 
-- **100-Segment Benchmark Demo:**
+This example illustrates the intended request format for selecting a percentage of candidate segments. Meaningful top-10% ranking requires a sufficiently sized candidate set.
+
+### Retrieve Demonstration Predictions
+
 ```bash
 curl http://localhost:8000/api/v1/demo
 ```
 
-> **Disclaimer:** The CLBI REST API is a prototype decision-support interface based on retrospective historical wildfire data. It does NOT provide live field validation or guaranteed fire behavior containment.
+For authoritative request fields, response definitions, and validation requirements, consult [`docs/CLBI_API_CONTRACT.md`](docs/CLBI_API_CONTRACT.md).
+
+## Testing
+
+Run the full test suite with:
+
+```bash
+python -m unittest discover -s tests -p "test_*.py"
+```
+
+The tests are intended to cover model inference behavior, API responses, request validation, and related functionality implemented in the repository.
+
+## Research Methodology
+
+### 1. Dataset Preparation
+
+The project uses standardized historical wildfire segment data with a defined feature schema and target outcome.
+
+Dataset preparation and quality checks are handled through scripts in `src/data/` and `src/features/`.
+
+### 2. Leave-One-Fire-Out Evaluation
+
+LOFO evaluation excludes one wildfire incident from training in each fold and evaluates the model on that held-out incident.
+
+This approach is intended to assess generalization across distinct fires rather than relying exclusively on randomly partitioned segments from the same incidents.
+
+### 3. Production Model Training
+
+Following research evaluation, a separate production model is trained on the designated historical training data and serialized for inference.
+
+The production model is not retrained during ordinary API prediction requests.
+
+### 4. Risk Prioritization
+
+Predicted probabilities are mapped to risk tiers and used to rank candidate segments for inspection.
+
+The prioritization process is intended to help allocate inspection resources, not to autonomously determine where fire crews should operate.
+
+### 5. Interpretation
+
+Feature attributions are interpreted as statistical associations within the fitted model. They do not establish that an individual feature physically causes containment failure.
+
+## Limitations
+
+1. **Limited incident diversity:** The benchmark covers five historical California wildfire incidents. Broader validation is needed before generalizing to different regions and fire regimes.
+2. **Retrospective evaluation:** The reported results come from historical data and do not establish performance during live incidents.
+3. **Daily spread resolution:** Daily next-day burn-probability layers do not support claims about sub-hourly fire behavior.
+4. **No field operational trial:** Inspection precision, recall, and enrichment are offline evaluation results, not evidence of improved field outcomes.
+5. **Non-causal interpretation:** Model coefficients and feature attributions represent statistical associations, not verified physical causal mechanisms.
+6. **Data dependence:** Model reliability depends on feature quality, target-label accuracy, and consistency between training and deployment data.
+7. **Probability calibration limits:** Calibration measured on historical evaluation data may not persist when environmental conditions or incident characteristics change.
+8. **Human oversight required:** Outputs must be interpreted alongside current weather, fuel conditions, topography, field observations, and qualified incident-command judgment.
+
+## Future Improvements
+
+Potential directions for further development include:
+
+- Validation across additional geographic regions and wildfire incidents.
+- Temporal and spatial robustness analysis.
+- Monitoring for changes in feature distributions and calibration.
+- Integration of updated weather and fuel-condition information.
+- Interactive maps for visualizing candidate fireline segments and risk tiers.
+- Improved reporting of model explanations and uncertainty.
+- Deployment monitoring, versioned model artifacts, and reproducible evaluation pipelines.
+- Prospective field evaluation under appropriate operational and safety oversight.
+
+These items represent potential extensions and should not be interpreted as already implemented features.
+
+## License
+
+A license has not been specified in this README. Add a `LICENSE` file before distributing the project under an open-source license.
 
 ---
 
-## Explicit Project Limitations
-
-1. **Five Wildfire Complexes:** Benchmark evaluated on 5 historical California incidents ($N=5$).
-2. **Offline Retrospective Evaluation:** Demonstrates retrospective predictive accuracy on historical data; not live field validation during active incidents.
-3. **Daily NDWS Resolution:** Input spread predictions use daily NDWS layers; cannot support sub-hourly tactical fire behavior claims.
-4. **Decision Support Simulation:** Resource prioritization metrics represent offline mathematical simulations, not field operational trials.
-5. **Non-Causal Associations:** Model coefficients represent multivariate statistical associations, not physical causal mechanisms.
+**Project:** Candidate Line Breach Intelligence (CLBI)  
+**Benchmark:** `fireline_segments_v1`  
+**Primary objective:** Predictive risk stratification and inspection prioritization for candidate wildfire containment line segments.
