@@ -164,12 +164,16 @@ python -m pip install -r requirements.txt
 python -m uvicorn src.api.main:app --reload
 ```
 
-### 3. Interactive API Documentation
+### 3. Open the Dashboard
+- **Dashboard:** `http://localhost:8000/`
+- **Demo route:** `http://localhost:8000/demo`
+
+### 4. Interactive API Documentation
 - **Swagger / OpenAPI UI:** `http://localhost:8000/docs`
 - **ReDoc UI:** `http://localhost:8000/redoc`
 - **OpenAPI Schema:** `http://localhost:8000/openapi.json`
 
-### 4. Example Curl Requests
+### 5. Example Curl Requests
 
 - **Health Check:**
 ```bash
