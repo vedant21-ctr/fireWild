@@ -38,6 +38,13 @@ CLEAN_FEATURES = [
     "attack_dot_product"
 ]
 
+# Exclusive upper P(Breach) bound of the LOW, MEDIUM and HIGH tiers; CRITICAL is P(Breach) >= RISK_THRESHOLDS["high"]
+RISK_THRESHOLDS = {
+    "low": 0.30,
+    "medium": 0.60,
+    "high": 0.80
+}
+
 FEATURE_LABELS = {
     "attack_dot_product": "Direct Head-Fire Attack Alignment (cos theta)",
     "burn_prob": "Predicted Next-Day Spread Probability Intensity",
@@ -134,11 +141,11 @@ class CLBIDecisionEngine:
         # Assign Risk Tiers
         risk_tiers = []
         for p in p_breach:
-            if p < 0.30:
+            if p < RISK_THRESHOLDS["low"]:
                 risk_tiers.append("LOW")
-            elif p < 0.60:
+            elif p < RISK_THRESHOLDS["medium"]:
                 risk_tiers.append("MEDIUM")
-            elif p < 0.80:
+            elif p < RISK_THRESHOLDS["high"]:
                 risk_tiers.append("HIGH")
             else:
                 risk_tiers.append("CRITICAL")

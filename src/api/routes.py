@@ -7,7 +7,7 @@ import pandas as pd
 from typing import Dict, Any, List
 from fastapi import APIRouter, HTTPException, Depends
 
-from src.model.clbi_model import CLBIDecisionEngine
+from src.model.clbi_model import CLBIDecisionEngine, RISK_THRESHOLDS
 from src.api.schemas import (
     SegmentInput,
     SingleSegmentPredictionResponse,
@@ -71,11 +71,7 @@ def get_model_info(engine: CLBIDecisionEngine = Depends(get_engine)) -> ModelInf
     return ModelInfoResponse(
         model_type=metadata.get("model_type", "Standardized 7-Feature Logistic Regression Pipeline"),
         feature_list=engine.features,
-        risk_thresholds={
-            "low": 0.30,
-            "medium": 0.60,
-            "high": 0.80
-        },
+        risk_thresholds=dict(RISK_THRESHOLDS),
         training_rows=metadata.get("training_rows", 3050),
         training_fires=metadata.get("training_fires", ["CA-MNF-013028", "CA-SHU-007808", "CA-SNF-000958"]),
         evaluation=metadata.get("evaluation", {

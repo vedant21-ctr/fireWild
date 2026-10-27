@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import patch
 from fastapi.testclient import TestClient
 from src.api.main import app
+from src.model.clbi_model import RISK_THRESHOLDS
 
 class TestCLBIAPI(unittest.TestCase):
     @classmethod
@@ -43,6 +44,8 @@ class TestCLBIAPI(unittest.TestCase):
         self.assertIn("feature_list", data)
         self.assertEqual(len(data["feature_list"]), 7)
         self.assertIn("risk_thresholds", data)
+        self.assertEqual(data["risk_thresholds"], {"low": 0.30, "medium": 0.60, "high": 0.80})
+        self.assertEqual(data["risk_thresholds"], RISK_THRESHOLDS)
         self.assertIn("evaluation", data)
         self.assertEqual(data["evaluation"]["method"], "5-fold Leave-One-Fire-Out")
 
