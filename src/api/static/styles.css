@@ -2006,6 +2006,553 @@ button, input, select {
   animation: toastFadeIn 0.2s ease;
 }
 
+/* ==========================================================================
+   UI/UX OVERHAUL ENHANCEMENTS (Linear / Kepler.gl / NASA FIRMS Design System)
+   ========================================================================== */
+
+/* Backend Live Status Pulsing Indicator */
+.status-pill.live {
+  background-color: var(--color-forest-tint);
+  border-color: var(--color-forest-border);
+  color: var(--color-forest-medium);
+}
+
+.status-pill.offline {
+  background-color: var(--tier-med-bg);
+  border-color: var(--tier-med-border);
+  color: var(--tier-med-text);
+}
+
+.status-pulse.live {
+  background-color: #1F824E;
+  box-shadow: 0 0 0 2px rgba(31, 130, 78, 0.25);
+  animation: pulseLiveGreen 2s infinite ease-in-out;
+}
+
+.status-pulse.offline {
+  background-color: #D97706;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.25);
+  animation: none;
+}
+
+@keyframes pulseLiveGreen {
+  0% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(31, 130, 78, 0.6); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(31, 130, 78, 0); }
+  100% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(31, 130, 78, 0); }
+}
+
+/* Spread Explorer: Threshold Quick Preset Chips */
+.threshold-chips {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-top: 0.65rem;
+}
+
+.preset-chip {
+  padding: 0.25rem 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.preset-chip:hover {
+  border-color: var(--color-forest);
+  color: var(--color-forest);
+  background-color: var(--color-forest-tint);
+}
+
+.preset-chip.active {
+  background-color: var(--color-forest-dark);
+  color: #FFFFFF;
+  border-color: var(--color-forest-dark);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Spread Explorer: Threshold-Sweep Real-Time Analytics Card */
+.sweep-analytics-card {
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.95rem;
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.sweep-metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+}
+
+.sweep-metric-label {
+  color: var(--text-muted);
+}
+
+.sweep-metric-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-forest-dark);
+}
+
+/* Spread Explorer: Non-Georeferenced Prototype Banner */
+.proto-disclaimer-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-orange);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.15rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.proto-disclaimer-banner strong {
+  color: var(--color-ember-dark);
+}
+
+/* Spread Explorer: Canvas Grid Toggle Button */
+.btn-toggle-grid.active {
+  background-color: var(--color-forest-tint);
+  border-color: var(--color-forest-border);
+  color: var(--color-forest);
+  font-weight: 600;
+}
+
+/* Spread Explorer: Cell Inspector Pinned Status Pill */
+.insp-pin-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.insp-pin-state.pinned {
+  background-color: var(--color-forest-tint);
+  border-color: var(--color-forest-border);
+  color: var(--color-forest-dark);
+  font-weight: 700;
+}
+
+/* Honest Unavailable Measurement Indicators */
+.val-unavailable {
+  color: var(--text-tertiary);
+  font-style: normal;
+  border-bottom: 1px dashed var(--border-strong);
+  cursor: help;
+  display: inline-block;
+  padding: 0 0.15rem;
+}
+
+/* CLBI Segment Table: Risk Tier Filter Pills */
+.tier-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tier-pill {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tier-pill:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.tier-pill.active {
+  background-color: var(--color-forest-dark);
+  color: #FFFFFF;
+  border-color: var(--color-forest-dark);
+}
+
+.tier-pill.pill-critical.active {
+  background-color: var(--tier-critical-bg);
+  color: var(--tier-critical-text);
+  border-color: var(--tier-critical-border);
+}
+
+.tier-pill.pill-high.active {
+  background-color: var(--tier-high-bg);
+  color: var(--tier-high-text);
+  border-color: var(--tier-high-border);
+}
+
+.tier-pill.pill-medium.active {
+  background-color: var(--tier-med-bg);
+  color: var(--tier-med-text);
+  border-color: var(--tier-med-border);
+}
+
+.tier-pill.pill-low.active {
+  background-color: var(--tier-low-bg);
+  color: var(--tier-low-text);
+  border-color: var(--tier-low-border);
+}
+
+/* Overview: Architectural Comparison Table */
+.arch-compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.25rem;
+  font-size: 0.84rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.arch-compare-table th, .arch-compare-table td {
+  padding: 0.85rem 1.15rem;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  line-height: 1.45;
+}
+
+.arch-compare-table th {
+  background-color: var(--bg-subtle);
+  font-weight: 700;
+  color: var(--color-forest-dark);
+  border-bottom: 2px solid var(--border-medium);
+}
+
+.arch-compare-table tr:last-child td {
+  border-bottom: none;
+}
+
+.arch-compare-table tr:hover td {
+  background-color: var(--bg-subtle);
+}
+
+/* Technical Math Typography */
+.math-display {
+  display: block;
+  text-align: center;
+  font-family: 'Cambria Math', 'Times New Roman', Georgia, serif;
+  font-size: 1.05rem;
+  padding: 0.85rem 1rem;
+  background-color: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  margin: 0.85rem 0;
+  overflow-x: auto;
+  color: var(--color-forest-dark);
+}
+
+.math-inline {
+  font-family: 'Cambria Math', 'Times New Roman', Georgia, serif;
+  font-style: italic;
+  font-size: 1.02em;
+}
+
+/* Guided Evaluation Pathway Card */
+.guided-journey-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1.75rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.journey-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.journey-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-forest-tint);
+  border: 1px solid var(--color-forest-border);
+  color: var(--color-forest-medium);
+}
+
+.journey-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.journey-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.journey-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+.journey-step:hover {
+  border-color: var(--color-forest-medium);
+  background-color: var(--bg-surface);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-forest);
+  line-height: 1;
+  background-color: var(--color-forest-tint);
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.step-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.step-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Canvas Layer Mode Selector Strip */
+.canvas-layer-strip {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.layer-strip-label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: 0.25rem;
+}
+
+.layer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.layer-pill:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  background-color: var(--bg-subtle);
+}
+
+.layer-pill.active {
+  background-color: var(--color-forest-dark);
+  color: #FFFFFF;
+  border-color: var(--color-forest-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Landscape Scenario Presets */
+.scenario-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.scenario-chip {
+  text-align: left;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.78rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.35;
+}
+
+.scenario-chip strong {
+  color: var(--text-primary);
+}
+
+.scenario-chip:hover {
+  border-color: var(--color-forest);
+  background-color: var(--color-forest-tint);
+}
+
+.scenario-chip.active {
+  background-color: var(--color-forest-tint);
+  border-color: var(--color-forest);
+  color: var(--color-forest-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.scenario-chip.active strong {
+  color: var(--color-forest-dark);
+}
+
+/* Dynamic Feature Attribution Bars (Cell Inspector) */
+.attribution-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+
+.attr-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.attr-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.74rem;
+}
+
+.attr-name {
+  color: var(--text-muted);
+}
+
+.attr-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-forest-dark);
+}
+
+.attr-bar-bg {
+  width: 100%;
+  height: 5px;
+  background-color: var(--bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.attr-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.2s ease;
+}
+
+.attr-bar-primary { background-color: var(--color-forest); }
+.attr-bar-secondary { background-color: var(--color-ember); }
+.attr-bar-tertiary { background-color: var(--accent-orange); }
+.attr-bar-quaternary { background-color: #64748B; }
+
+/* Metric Interpretation Guide Banner (Model Lab) */
+.metrics-guide-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--color-forest);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.guide-icon {
+  color: var(--color-forest);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.guide-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 0.35rem;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.guide-grid div {
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.85rem;
+}
+
 /* Animations */
 @keyframes slideInRight {
   from { transform: translateX(100%); }
@@ -2032,6 +2579,193 @@ button, input, select {
   }
 }
 
+/* ==========================================================================
+   Page Orientation Guide & Information Architecture Components
+   ========================================================================== */
+.page-orientation-guide {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.35rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s ease;
+}
+
+.page-orientation-guide:hover {
+  border-color: var(--border-medium);
+}
+
+.guide-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.guide-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.guide-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: var(--color-forest-tint);
+  color: var(--color-forest);
+  border: 1px solid var(--color-forest-border);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.guide-tagline {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.guide-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.85rem;
+}
+
+.guide-step-card {
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.guide-step-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-forest);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.guide-step-text {
+  font-size: 0.83rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+/* Verified Best Architecture Callout (Model Lab) */
+.best-model-callout {
+  background: linear-gradient(135deg, rgba(28, 59, 46, 0.04) 0%, rgba(217, 90, 43, 0.04) 100%);
+  border: 1px solid var(--color-forest-border);
+  border-left: 4px solid var(--color-forest);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.35rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.callout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.callout-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.callout-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-forest-dark);
+}
+
+.callout-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.callout-stat-item {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.9rem;
+}
+
+.callout-stat-num {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-forest);
+  line-height: 1.2;
+}
+
+.callout-stat-num.highlight {
+  color: var(--color-ember);
+}
+
+.callout-stat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.callout-stat-sub {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: 0.15rem;
+}
+
+/* Auxiliary Prototype Banner (Risk Simulator) */
+.aux-proto-banner {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--tier-med-text);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.aux-proto-icon {
+  flex-shrink: 0;
+  color: var(--tier-med-text);
+  margin-top: 0.1rem;
+}
+
+.aux-proto-body {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.aux-proto-title {
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
 /* Responsive Breakpoints */
 @media (max-width: 1100px) {
   .explorer-layout {
@@ -2048,6 +2782,12 @@ button, input, select {
   }
   .simulator-layout, .engine-cards-grid, .lab-grid-two-col, .research-grid {
     grid-template-columns: 1fr;
+  }
+  .journey-steps, .guide-grid {
+    grid-template-columns: 1fr;
+  }
+  .guide-grid-4, .callout-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -2073,6 +2813,16 @@ button, input, select {
     width: 100%;
   }
   .tactical-factors-box {
+    grid-template-columns: 1fr;
+  }
+  .canvas-layer-strip {
+    justify-content: flex-start;
+  }
+  .layer-pill {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
+  .guide-grid-4, .callout-stats-grid {
     grid-template-columns: 1fr;
   }
 }

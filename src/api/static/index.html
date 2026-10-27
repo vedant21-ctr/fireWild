@@ -59,9 +59,9 @@
 
       <!-- System Status Indicator -->
       <div class="header-aside">
-        <div class="status-pill" id="system-status-indicator" title="FastAPI Backend Status">
-          <span class="status-pulse" aria-hidden="true"></span>
-          <span class="status-label">Phase 1 Verified</span>
+        <div class="status-pill live" id="system-status-indicator" title="FastAPI Backend Status">
+          <span class="status-pulse live" id="system-status-pulse" aria-hidden="true"></span>
+          <span class="status-label" id="system-status-label">Live API Connected • v1.0.0</span>
         </div>
       </div>
     </div>
@@ -87,15 +87,15 @@
           </p>
           <div class="hero-actions">
             <a href="#spread-explorer" class="btn btn-primary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
               Explore Spread Surface
             </a>
-            <a href="#risk-simulator" class="btn btn-secondary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              Simulate Line Breach
+            <a href="#model-lab" class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Evaluate Model Benchmarks
             </a>
-            <a href="#model-lab" class="btn btn-ghost">
-              Inspect Model Benchmarks &rarr;
+            <a href="#research" class="btn btn-ghost">
+              Methodology &amp; Disclosures &rarr;
             </a>
           </div>
         </div>
@@ -118,9 +118,9 @@
             <div class="stat-detail">3,323 vs 12,443 FP on evaluation set</div>
           </div>
           <div class="stat-anchor">
-            <div class="stat-num">64 / 64</div>
-            <div class="stat-name">Deterministic Tests</div>
-            <div class="stat-detail">100% verified test coverage</div>
+            <div class="stat-num highlighted" id="hero-stat-rec5">42.76%</div>
+            <div class="stat-name">Recall @ FPR ≤ 5%</div>
+            <div class="stat-detail">Held-out operational detection envelope</div>
           </div>
         </div>
       </header>
@@ -138,7 +138,7 @@
           <!-- Engine 1: NDWS Spread Prediction -->
           <article class="engine-card">
             <div class="engine-header">
-              <span class="engine-badge engine-badge-spread">Engine 1: Landscape Propagation</span>
+              <span class="engine-badge engine-badge-spread">Primary Research: Landscape Propagation</span>
               <span class="engine-tech">LightGBM • 1 km Raster</span>
             </div>
             <h3 class="engine-title">Next Day Wildfire Spread (NDWS)</h3>
@@ -151,7 +151,7 @@
             <div class="engine-features-list">
               <div class="feature-bullet"><strong>Target:</strong> Spread transitions into unburned terrain (0.58%–0.96% prevalence)</div>
               <div class="feature-bullet"><strong>Key Driver:</strong> Distance to flame front accounts for 70.5% of model split gain</div>
-              <div class="feature-bullet"><strong>Calibration:</strong> Optimal decision threshold $\tau^* = 0.0281$ maximizes $F_1$</div>
+              <div class="feature-bullet"><strong>Calibration:</strong> Optimal decision threshold &tau;* = 0.0281 balances precision &amp; recall (F1-optimal)</div>
             </div>
             <div class="engine-footer">
               <a href="#spread-explorer" class="engine-link">Open Spread Workspace &rarr;</a>
@@ -161,8 +161,8 @@
           <!-- Engine 2: CLBI Line Breach Intelligence -->
           <article class="engine-card">
             <div class="engine-header">
-              <span class="engine-badge engine-badge-line">Engine 2: Tactical Containment</span>
-              <span class="engine-tech">CLBI Pipeline • 100m Polylines</span>
+              <span class="engine-badge engine-badge-line">Auxiliary Prototype: Tactical Containment</span>
+              <span class="engine-tech">CLBI Decision Support • 100m Polylines</span>
             </div>
             <h3 class="engine-title">Candidate Line Breach Intelligence (CLBI)</h3>
             <p class="engine-text">
@@ -173,12 +173,90 @@
             <div class="engine-features-list">
               <div class="feature-bullet"><strong>Tactical Action:</strong> Rank segments by vulnerability to guide dozer reinforcement</div>
               <div class="feature-bullet"><strong>Risk Stratification:</strong> 4 operational tiers (Low, Medium, High, Critical)</div>
-              <div class="feature-bullet"><strong>Safety Advisory:</strong> Generates explainable risk drivers for incident commanders</div>
+              <div class="feature-bullet"><strong>Scope Discloser:</strong> Auxiliary decision prototype evaluated on CZU complex records</div>
             </div>
             <div class="engine-footer">
               <a href="#risk-simulator" class="engine-link">Open Line Simulator &rarr;</a>
             </div>
           </article>
+        </div>
+
+        <!-- Architectural Comparison Table: NDWS vs CLBI -->
+        <div class="table-responsive" style="margin-top: 1.5rem;">
+          <table class="arch-compare-table">
+            <thead>
+              <tr>
+                <th scope="col">Dimension</th>
+                <th scope="col">Engine 1: Next Day Wildfire Spread (NDWS)</th>
+                <th scope="col">Engine 2: Candidate Line Breach Intelligence (CLBI)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Operational Scope</strong></td>
+                <td>Macro landscape spread forecasting (1 km raster grid)</td>
+                <td>Micro tactical containment line defense (100 m polyline segments)</td>
+              </tr>
+              <tr>
+                <td><strong>Modeling Paradigm</strong></td>
+                <td>Gradient Boosted Decision Trees (LightGBM Unweighted)</td>
+                <td>Physics-informed logistics &amp; barrier engagement dynamics</td>
+              </tr>
+              <tr>
+                <td><strong>Target Formulation</strong></td>
+                <td>Active outward spread: PrevFireMask=0 &amp; FireMask=1 (0.58%–0.96% prevalence)</td>
+                <td>Fireline breach / hold status (0.0 to 1.0 probability)</td>
+              </tr>
+              <tr>
+                <td><strong>Primary Predictors</strong></td>
+                <td>Distance to fire (70.5% gain), wind direction, ERC, temperatures, elevation</td>
+                <td>Barrier width, flame distance, terrain slope, acute attack angle, cos &theta;</td>
+              </tr>
+              <tr>
+                <td><strong>Calibrated Threshold</strong></td>
+                <td>&tau;* = 0.028115 (F1-optimal on validation shard train_14)</td>
+                <td>Tiered operational thresholds: Low (&lt;0.30), Med (0.30-0.60), High (0.60-0.80), Crit (&ge;0.80)</td>
+              </tr>
+              <tr>
+                <td><strong>Validation Verification</strong></td>
+                <td>Val AP: 0.1145 • Eval AP: 0.0837 • Eval False Positives: 3,323 (-73.3%)</td>
+                <td>100-segment live tactical audit (CZU Lightning Complex historical record)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Guided Review Pathway (Linear-inspired navigation flow) -->
+      <section class="section-block" aria-labelledby="journey-heading">
+        <div class="guided-journey-card">
+          <div class="journey-header">
+            <span class="journey-badge">Evaluation Pathway</span>
+            <h2 id="journey-heading" class="journey-title">Recommended Review Journey for Project Evaluation</h2>
+          </div>
+          <div class="journey-steps">
+            <a href="#spread-explorer" class="journey-step">
+              <div class="step-num">01</div>
+              <div class="step-content">
+                <div class="step-title">Inspect 24h Spatial Spread Surface</div>
+                <div class="step-desc">Test calibrated threshold sweeps (&tau;* = 0.0281), layer overlays, and pixel attribution on the 64&times;64 landscape grid.</div>
+              </div>
+            </a>
+            <a href="#model-lab" class="journey-step">
+              <div class="step-num">02</div>
+              <div class="step-content">
+                <div class="step-title">Audit Tabular Benchmarks &amp; Fixed-FPR</div>
+                <div class="step-desc">Compare 5 model baselines, PR curves, and operational recall under strictly budgeted false alarm constraints (FPR &le; 1% &amp; &le; 5%).</div>
+              </div>
+            </a>
+            <a href="#research" class="journey-step">
+              <div class="step-num">03</div>
+              <div class="step-content">
+                <div class="step-title">Review Scientific Integrity &amp; Disclosures</div>
+                <div class="step-desc">Examine Kaggle elevation tile overlap findings, non-georeferenced prototype bounds, and mathematical formulations.</div>
+              </div>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -266,6 +344,45 @@
         </div>
       </div>
 
+      <!-- Explicit Non-Georeferenced Prototype Banner -->
+      <div class="proto-disclaimer-banner" role="note">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div>
+          <strong>Explicit Non-Georeferenced Spatial Matrix Prototype:</strong>
+          This interactive 64 &times; 64 km grid illustrates decision threshold calibration, probability contouring, and pixel feature inspection.
+          Kaggle Next Day Wildfire Spread TFRecords contain non-georeferenced raster patches lacking Coordinate Reference Systems (CRS) and bounding coordinates.
+          Real geographic basemaps are only rendered when compatible geospatial datasets are supplied.
+        </div>
+      </div>
+
+      <!-- Workspace Orientation Guide -->
+      <div class="page-orientation-guide" role="region" aria-label="Spread Explorer Orientation Guide">
+        <div class="guide-header">
+          <div class="guide-title-wrap">
+            <span class="guide-badge">Orientation</span>
+            <span class="guide-tagline">How to inspect and navigate the 24-hour spatial spread surface</span>
+          </div>
+        </div>
+        <div class="guide-grid-4">
+          <div class="guide-step-card">
+            <div class="guide-step-label">1. What am I looking at?</div>
+            <div class="guide-step-text">A 64&times;64 km landscape probability matrix (1 km nominal resolution) simulating 24-hour forward wildfire spread outward from active thermal perimeters.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">2. What can I do here?</div>
+            <div class="guide-step-text">Sweep the probability threshold (&tau;), toggle layer modes (Heatmap, Front Overlay, Terrain), test environmental scenarios, and inspect individual cells.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">3. What does this mean?</div>
+            <div class="guide-step-text">Cells with P(spread) &ge; &tau; are classified as forward spreading fronts. The inspector reveals distance to fire, wind alignment, and fuel moisture.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">4. What should I do next?</div>
+            <div class="guide-step-text">Examine how calibrated &tau;* = 0.0281 balances false alarms, then proceed to the <strong>Model Lab</strong> to audit verified benchmark metrics.</div>
+          </div>
+        </div>
+      </div>
+
       <div class="explorer-layout">
         <!-- Left: Controls & Legend Sidebar -->
         <aside class="explorer-sidebar" aria-label="Spread Explorer Controls">
@@ -273,7 +390,7 @@
           <!-- Threshold Adjustment Control -->
           <div class="control-box">
             <div class="control-header">
-              <label for="spread-threshold-slider" class="control-label">Probability Threshold ($\tau$)</label>
+              <label for="spread-threshold-slider" class="control-label">Probability Threshold (&tau;)</label>
               <span class="control-value-readout" id="spread-threshold-val">0.0281</span>
             </div>
             <input type="range" id="spread-threshold-slider" min="0.010" max="0.100" step="0.001" value="0.0281" class="slider">
@@ -282,24 +399,51 @@
               <span class="scale-center" id="spread-optimal-marker" title="Validation Optimal Threshold">τ* = 0.0281</span>
               <span>0.100 (Conservative)</span>
             </div>
-            <p class="control-help">Cells with $P(\text{spread}) \ge \tau$ are classified as forward spreading fronts.</p>
+            <div class="threshold-chips" role="group" aria-label="Calibrated Threshold Presets">
+              <button type="button" class="preset-chip active" data-tau="0.028115" id="chip-tau-optimal" title="Validation Optimal F1 Threshold">&tau;* = 0.0281 (Optimal)</button>
+              <button type="button" class="preset-chip" data-tau="0.021245" id="chip-tau-1pct" title="Budgeted 1% False Positive Rate Threshold">&tau;₁% = 0.0212 (FPR &le; 1%)</button>
+              <button type="button" class="preset-chip" data-tau="0.010906" id="chip-tau-5pct" title="Budgeted 5% False Positive Rate Threshold">&tau;₅% = 0.0109 (FPR &le; 5%)</button>
+              <button type="button" class="preset-chip" data-tau="0.050000" id="chip-tau-conservative" title="Conservative High Precision Threshold">&tau; = 0.0500 (Conservative)</button>
+            </div>
+            <p class="control-help" style="margin-top:0.5rem;">Cells with P(spread) &ge; &tau; are classified as forward spreading fronts.</p>
+          </div>
+
+          <!-- Scenario Landscape Presets -->
+          <div class="control-box">
+            <div class="box-title">Landscape &amp; Weather Scenarios</div>
+            <div class="scenario-chips" role="group" aria-label="Select Illustrative Scenario">
+              <button type="button" class="scenario-chip active" data-scenario="canyon" id="scenario-canyon" title="High-wind canyon plume spread">
+                <strong>Scenario A:</strong> Wind-Driven Canyon Spread
+              </button>
+              <button type="button" class="scenario-chip" data-scenario="ridge" id="scenario-ridge" title="Steep mountain ridge barrier">
+                <strong>Scenario B:</strong> Topographic Mountain Barrier
+              </button>
+              <button type="button" class="scenario-chip" data-scenario="flank" id="scenario-flank" title="Low wind dry fuel expansion">
+                <strong>Scenario C:</strong> Dry Fuel Perimeter Flank
+              </button>
+            </div>
+            <p class="control-help" style="margin-top:0.4rem;">Demonstrates model behavior under varying environmental regimes.</p>
           </div>
 
           <!-- Active Spread Surface Stats -->
           <div class="control-box">
-            <div class="box-title">Spread Surface Area</div>
-            <div class="spread-stats-grid">
-              <div class="mini-stat">
-                <span class="mini-stat-num" id="spread-active-cells">0</span>
-                <span class="mini-stat-label">Active Spread Cells</span>
+            <div class="box-title">Threshold-Sweep Analytics</div>
+            <div class="sweep-analytics-card">
+              <div class="sweep-metric-row">
+                <span class="sweep-metric-label">Active Spreading Pixels:</span>
+                <span class="sweep-metric-value" id="spread-active-cells">0</span>
               </div>
-              <div class="mini-stat">
-                <span class="mini-stat-num" id="spread-active-pct">0.0%</span>
-                <span class="mini-stat-label">Landscape Fraction</span>
+              <div class="sweep-metric-row">
+                <span class="sweep-metric-label">Estimated Footprint:</span>
+                <span class="sweep-metric-value" id="spread-active-area">0.0 km²</span>
               </div>
-            </div>
-            <div class="spread-progress-bar">
-              <div class="progress-fill" id="spread-progress-fill" style="width: 0%;"></div>
+              <div class="sweep-metric-row">
+                <span class="sweep-metric-label">Landscape Fraction:</span>
+                <span class="sweep-metric-value" id="spread-active-pct">0.0%</span>
+              </div>
+              <div class="spread-progress-bar" style="margin-top:0.4rem;">
+                <div class="progress-fill" id="spread-progress-fill" style="width: 0%;"></div>
+              </div>
             </div>
           </div>
 
@@ -344,12 +488,27 @@
             <div class="canvas-toolbar">
               <div class="canvas-title">
                 <span class="live-dot" aria-hidden="true"></span>
-                <span>$64 \times 64\text{ km}$ Spatial Patch (1 km Nominal Resolution)</span>
+                <span>64 &times; 64 km Spatial Patch (1 km Nominal Resolution)</span>
               </div>
               <div class="canvas-actions">
+                <button class="btn btn-ghost btn-xs btn-toggle-grid" id="btn-toggle-grid" title="Toggle 64x64 Grid Mesh">Toggle Grid</button>
                 <button class="btn btn-ghost btn-xs" id="btn-canvas-center" title="Center View">Re-Center</button>
                 <button class="btn btn-ghost btn-xs" id="btn-canvas-reload" title="Reload Patch Data">Refresh</button>
               </div>
+            </div>
+
+            <!-- Layer & Visualization Mode Selector -->
+            <div class="canvas-layer-strip" role="group" aria-label="Spatial Layer Mode">
+              <span class="layer-strip-label">Layer:</span>
+              <button type="button" class="layer-pill active" data-layer="heatmap" id="btn-layer-heatmap" title="Standard 5-band probability heatmap">
+                🔥 Risk Heatmap
+              </button>
+              <button type="button" class="layer-pill" data-layer="overlay" id="btn-layer-overlay" title="Highlights active fire perimeter vs predicted spread">
+                🎯 Active Fire + 24h Spread Front
+              </button>
+              <button type="button" class="layer-pill" data-layer="terrain" id="btn-layer-terrain" title="Topographic elevation contours with fire front">
+                ⛰️ Topographic Terrain
+              </button>
             </div>
 
             <div class="canvas-container" id="canvas-container">
@@ -359,7 +518,7 @@
 
             <div class="canvas-footer-info">
               <span>Grid Size: 64 rows × 64 cols (4,096 pixels)</span>
-              <span>Hover or click any cell to inspect pixel features</span>
+              <span>Hover to preview cell features • Click to pin inspector coordinates</span>
             </div>
           </div>
         </div>
@@ -369,7 +528,10 @@
           <div class="inspector-card">
             <div class="inspector-header">
               <h3 class="inspector-title">Cell Inspector</h3>
-              <span class="inspector-badge" id="insp-cell-coords">Hover Cell</span>
+              <div style="display:flex; align-items:center; gap:0.4rem;">
+                <span class="insp-pin-state" id="insp-pin-indicator">Live Hover</span>
+                <span class="inspector-badge" id="insp-cell-coords">Hover Cell</span>
+              </div>
             </div>
 
             <div class="inspector-body">
@@ -412,6 +574,38 @@
                 </div>
               </div>
 
+              <div class="inspector-section-label" style="margin-top:0.75rem;">LightGBM Feature Attribution (Local)</div>
+              <div class="attribution-bars">
+                <div class="attr-row">
+                  <div class="attr-header">
+                    <span class="attr-name">Distance to Active Fire</span>
+                    <span class="attr-val" id="attr-dist-val">-70.5%</span>
+                  </div>
+                  <div class="attr-bar-bg"><div class="attr-bar-fill attr-bar-primary" id="attr-dist-bar" style="width: 70.5%;"></div></div>
+                </div>
+                <div class="attr-row">
+                  <div class="attr-header">
+                    <span class="attr-name">Wind Alignment Angle</span>
+                    <span class="attr-val" id="attr-wind-val">+12.4%</span>
+                  </div>
+                  <div class="attr-bar-bg"><div class="attr-bar-fill attr-bar-secondary" id="attr-wind-bar" style="width: 12.4%;"></div></div>
+                </div>
+                <div class="attr-row">
+                  <div class="attr-header">
+                    <span class="attr-name">Fuel Moisture (ERC)</span>
+                    <span class="attr-val" id="attr-erc-val">+8.2%</span>
+                  </div>
+                  <div class="attr-bar-bg"><div class="attr-bar-fill attr-bar-tertiary" id="attr-erc-bar" style="width: 8.2%;"></div></div>
+                </div>
+                <div class="attr-row">
+                  <div class="attr-header">
+                    <span class="attr-name">Terrain Slope Angle</span>
+                    <span class="attr-val" id="attr-slope-val">+5.1%</span>
+                  </div>
+                  <div class="attr-bar-bg"><div class="attr-bar-fill attr-bar-quaternary" id="attr-slope-bar" style="width: 5.1%;"></div></div>
+                </div>
+              </div>
+
               <div class="inspector-note">
                 <strong>Data Provenance:</strong> Derived from deterministic illustrative spatial matrix generated by <code>GET /api/v1/ndws/demo/patch</code>.
               </div>
@@ -437,12 +631,88 @@
         </div>
       </div>
 
+      <!-- Workspace Orientation Guide -->
+      <div class="page-orientation-guide" role="region" aria-label="Model Lab Orientation Guide">
+        <div class="guide-header">
+          <div class="guide-title-wrap">
+            <span class="guide-badge">Orientation</span>
+            <span class="guide-tagline">How to evaluate retrospective machine learning benchmarks and generalization</span>
+          </div>
+        </div>
+        <div class="guide-grid-4">
+          <div class="guide-step-card">
+            <div class="guide-step-label">1. What am I looking at?</div>
+            <div class="guide-step-text">Audited benchmark results across 2,000,000 evaluated pixels, comparing LightGBM against regularized Logistic Regression and baseline models.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">2. What can I do here?</div>
+            <div class="guide-step-text">Compare PR-AUC and ROC-AUC metrics, audit fixed-FPR operational recall (FPR &le; 1% &amp; &le; 5%), inspect feature split gains, and view diagnostic plots.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">3. What does this mean?</div>
+            <div class="guide-step-text">LightGBM achieves 0.1145 validation AP (+77.8% relative gain) and suppresses 73.3% of false alarms on held-out evaluation data (eval_00).</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">4. What should I do next?</div>
+            <div class="guide-step-text">Review the generalization gap cards below, then visit <strong>Research &amp; Methodology</strong> to inspect the 94.7% spatial tile leakage analysis.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verified Best Architecture Callout -->
+      <div class="best-model-callout" role="region" aria-label="Best Performing Model Summary">
+        <div class="callout-header">
+          <div class="callout-title-group">
+            <span class="badge badge-best">Top Verified Performer</span>
+            <h3 class="callout-title">LightGBM (Unweighted GBDT) • Benchmark Leader</h3>
+          </div>
+          <span class="badge badge-subtle">Early Stopping @ Iteration 3 • Shard-Level Partitioning</span>
+        </div>
+        <div class="callout-stats-grid">
+          <div class="callout-stat-item">
+            <div class="callout-stat-num highlight">0.1145</div>
+            <div class="callout-stat-label">Validation PR-AUC (AP)</div>
+            <div class="callout-stat-sub">+77.8% over Logistic Regression</div>
+          </div>
+          <div class="callout-stat-item">
+            <div class="callout-stat-num">0.0837</div>
+            <div class="callout-stat-label">Held-Out Eval PR-AUC</div>
+            <div class="callout-stat-sub">Official unseen shard (eval_00)</div>
+          </div>
+          <div class="callout-stat-item">
+            <div class="callout-stat-num highlight">-73.3%</div>
+            <div class="callout-stat-label">False Alarm Suppression</div>
+            <div class="callout-stat-sub">3,323 vs 12,443 FP on evaluation set</div>
+          </div>
+          <div class="callout-stat-item">
+            <div class="callout-stat-num">20.79%</div>
+            <div class="callout-stat-label">Recall @ FPR &le; 1%</div>
+            <div class="callout-stat-sub">Held-out operational detection envelope</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Comparative Benchmark Leaderboard Table -->
       <section class="section-block" aria-labelledby="leaderboard-heading">
         <div class="section-header">
           <div>
             <h2 id="leaderboard-heading" class="section-title">Model Performance Leaderboard</h2>
             <p class="section-subtitle">Evaluated on identical shard-level partitions: 1,000,000 train, 500,000 val (`train_14`), 500,000 eval (`eval_00`).</p>
+          </div>
+        </div>
+
+        <!-- Metric Interpretation Guide for Evaluators -->
+        <div class="metrics-guide-banner" role="note">
+          <div class="guide-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="guide-content">
+            <strong>Evaluation Metric Guide under 0.885% Extreme Class Imbalance:</strong>
+            <div class="guide-grid">
+              <div><strong>PR-AUC (Average Precision):</strong> Primary ranking metric. Evaluates true fire spread capture without being masked by the 99.1% negative background. LightGBM (0.1145) achieves nearly 2&times; Logistic Regression (0.0644).</div>
+              <div><strong>ROC-AUC:</strong> Measures global discrimination (0.8720 vs 0.8863), but is inflated by the 495,000+ negative background pixels in every partition.</div>
+              <div><strong>Fixed-FPR Recall:</strong> Tactical operational benchmark. With false alarms constrained to FPR &le; 1%, LightGBM delivers 20.79% recall on held-out test data vs 12.76% for Logistic Regression, reducing false alarms by 73.3%.</div>
+            </div>
           </div>
         </div>
 
@@ -455,10 +725,10 @@
                 <th scope="col" class="text-right">Average Precision (PR-AUC)</th>
                 <th scope="col" class="text-right">ROC-AUC</th>
                 <th scope="col" class="text-right">Brier Score</th>
-                <th scope="col" class="text-right">Threshold ($\tau^*$)</th>
+                <th scope="col" class="text-right">Threshold (&tau;*)</th>
                 <th scope="col" class="text-right">Precision</th>
                 <th scope="col" class="text-right">Recall</th>
-                <th scope="col" class="text-right">$F_1$-Score</th>
+                <th scope="col" class="text-right">F1-Score</th>
                 <th scope="col" class="text-right">False Positives (FP)</th>
               </tr>
             </thead>
@@ -518,7 +788,7 @@
               <tr>
                 <td>
                   <strong>Distance Heuristic (Corrected)</strong>
-                  <span class="model-arch">Nonlinear Spatial Kernel: $p = \exp(-d / 2.0)$ on physical km</span>
+                  <span class="model-arch">Nonlinear Spatial Distance Kernel: p = exp(-d / 2.0) on physical km</span>
                 </td>
                 <td>Validation (train_14)</td>
                 <td class="text-right font-mono">0.072548</td>
@@ -533,7 +803,7 @@
               <tr>
                 <td>
                   <strong>Logistic Regression (L2)</strong>
-                  <span class="model-arch">Regularized Ridge ($C=1.0$, `lbfgs`) on Standardized $z$-scores</span>
+                  <span class="model-arch">Regularized Ridge (C = 1.0, lbfgs) on Standardized Features</span>
                 </td>
                 <td>Validation (train_14)</td>
                 <td class="text-right font-mono">0.064393</td>
@@ -563,7 +833,7 @@
               <tr>
                 <td>
                   <strong>Dummy Prior Baseline</strong>
-                  <span class="model-arch">Constant Probability $\hat{p} = \text{Train Prevalence} = 0.008851$</span>
+                  <span class="model-arch">Constant Prior: Base Rate = 0.008851 (Training Prevalence)</span>
                 </td>
                 <td>Validation (train_14)</td>
                 <td class="text-right font-mono">0.005862</td>
@@ -711,8 +981,10 @@
           <div class="plot-tabs">
             <button class="plot-tab-btn active" data-plot="/static/plots/lightgbm_pr_curves.png" data-desc="LightGBM Precision-Recall Curves on Validation and Held-Out Evaluation partitions.">PR Curves</button>
             <button class="plot-tab-btn" data-plot="/static/plots/lightgbm_feature_importance.png" data-desc="LightGBM Feature Importance Total Split Gain Ranking across all 12 predictor channels.">Feature Gains</button>
-            <button class="plot-tab-btn" data-plot="/static/plots/lightgbm_confusion_matrix.png" data-desc="Evaluation Confusion Matrix on eval_00 at frozen threshold τ* = 0.028115.">Confusion Matrix</button>
+            <button class="plot-tab-btn" data-plot="/static/plots/lightgbm_confusion_matrix.png" data-desc="Evaluation Confusion Matrix on eval_00 at frozen threshold τ* = 0.028115.">Eval Confusion Matrix</button>
             <button class="plot-tab-btn" data-plot="/static/plots/pr_curves_comparison.png" data-desc="Comprehensive Precision-Recall comparison across all linear and non-linear baseline models.">Baselines Comparison</button>
+            <button class="plot-tab-btn" data-plot="/static/plots/feature_coefficients_logistic.png" data-desc="Standardized Logistic Regression L2 Coefficients across all 12 standardized predictors.">Logistic Coefficients</button>
+            <button class="plot-tab-btn" data-plot="/static/plots/confusion_matrix_best.png" data-desc="Validation Confusion Matrix on train_14 at optimal threshold τ* = 0.028115.">Val Confusion Matrix</button>
           </div>
 
           <div class="plot-viewer-box">
@@ -755,11 +1027,11 @@
 
           <div class="gap-metric-card">
             <div class="gap-header">
-              <span class="gap-title">Detection Recall at $\tau^*$</span>
+              <span class="gap-title">Detection Recall at &tau;*</span>
               <span class="gap-delta negative">-47.28%</span>
             </div>
             <div class="gap-comparison font-mono">30.54% (Val) &rarr; 16.10% (Eval)</div>
-            <p class="gap-explanation">Freezing the validation threshold ($\tau^* = 0.0281$) when prevalence rose from 0.586% to 0.956% caused conservative predictions, missing 4,012 spreading pixels.</p>
+            <p class="gap-explanation">Freezing the validation threshold (&tau;* = 0.0281) when prevalence rose from 0.586% to 0.956% caused conservative predictions, missing 4,012 spreading pixels.</p>
           </div>
 
           <div class="gap-metric-card">
@@ -790,6 +1062,45 @@
         </div>
       </div>
 
+      <!-- Explicit Auxiliary Prototype Scope Banner -->
+      <div class="aux-proto-banner" role="note">
+        <div class="aux-proto-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="aux-proto-body">
+          <div class="aux-proto-title">Auxiliary Tactical Containment Prototype • Candidate Line Breach Intelligence (CLBI)</div>
+          Separate from macro-scale 24-hour NDWS spread forecasting, CLBI evaluates micro-scale fireline holding vulnerability (100 m polyline segments) based on historical California incident data (CZU Lightning Complex). This is an auxiliary decision-support prototype; do not conflate CLBI inferences with NDWS macro model benchmarks.
+        </div>
+      </div>
+
+      <!-- Workspace Orientation Guide -->
+      <div class="page-orientation-guide" role="region" aria-label="Line Risk Simulator Orientation Guide">
+        <div class="guide-header">
+          <div class="guide-title-wrap">
+            <span class="guide-badge">Orientation</span>
+            <span class="guide-tagline">How to simulate fireline holding vulnerability and audit tactical segments</span>
+          </div>
+        </div>
+        <div class="guide-grid-4">
+          <div class="guide-step-card">
+            <div class="guide-step-label">1. What am I looking at?</div>
+            <div class="guide-step-text">An auxiliary tactical decision prototype evaluating containment fireline holding vs. burn-over vulnerability on 100-meter polyline segments.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">2. What can I do here?</div>
+            <div class="guide-step-text">Adjust terrain geometry, fire intensity, and barrier width, trigger live assessments (POST /api/v1/predict), or filter 100 historical CZU fireline segments.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">3. What does this mean?</div>
+            <div class="guide-step-text">The gauge outputs predicted breach probability (0% to 100%) and operational risk tier (Low, Medium, High, Critical) with explainable risk drivers.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">4. What should I do next?</div>
+            <div class="guide-step-text">Filter the audit table by risk tier, click "Inspect" to view segment dossiers, or return to <strong>Overview</strong> to review the primary NDWS architecture.</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Simulator Presets Bar -->
       <div class="presets-bar" role="group" aria-label="Scenario Presets">
         <span class="presets-label">Tactical Scenarios:</span>
@@ -801,6 +1112,9 @@
         </button>
         <button class="preset-pill" id="preset-barrier" data-preset="barrier">
           <strong>Wide Cleared Barrier</strong> (Road 9m, Gentle 12°, Flanking 70°)
+        </button>
+        <button class="preset-pill" id="preset-ravine" data-preset="ravine">
+          <strong>Steep Ravine Flank</strong> (Slope 45°, Handline 1.5m, Flame 150m, Flank 45°)
         </button>
       </div>
 
@@ -847,7 +1161,7 @@
             <legend class="sim-group-title">Fire Behavior Dynamics</legend>
             <div class="param-row">
               <div class="param-label-wrap">
-                <label for="sim-burn-prob" class="param-label">Upstream Spread Intensity ($P_{\text{burn}}$)</label>
+                <label for="sim-burn-prob" class="param-label">Approach Spread Probability</label>
                 <span class="param-desc">Local NDWS predicted next-day spread probability</span>
               </div>
               <div class="param-inputs">
@@ -876,7 +1190,7 @@
 
           <!-- Group 3: Barrier & Engagement Geometry -->
           <fieldset class="sim-group">
-            <legend class="sim-group-title">Barrier & Engagement Geometry</legend>
+            <legend class="sim-group-title">Barrier &amp; Engagement Geometry</legend>
             <div class="param-row">
               <div class="param-label-wrap">
                 <label for="sim-barrier" class="param-label">Cleared Barrier Width</label>
@@ -907,7 +1221,7 @@
 
             <div class="param-row">
               <div class="param-label-wrap">
-                <label for="sim-attack-dot" class="param-label">Head-Fire Alignment ($\cos\theta$)</label>
+                <label for="sim-attack-dot" class="param-label">Head-Fire Alignment (cos &theta;)</label>
                 <span class="param-desc">+1.0 direct head-fire assault, 0.0 flank, -1.0 backing</span>
               </div>
               <div class="param-inputs">
@@ -956,16 +1270,16 @@
 
               <div class="gauge-stats-column">
                 <div class="gauge-stat-box">
-                  <span class="stat-box-label">Breach Probability ($P_{\text{breach}}$)</span>
+                  <span class="stat-box-label">Breach Probability</span>
                   <span class="stat-box-val text-danger font-mono font-bold" id="sim-breach-prob">0.9778</span>
                 </div>
                 <div class="gauge-stat-box">
-                  <span class="stat-box-label">Holding Probability ($P_{\text{hold}}$)</span>
+                  <span class="stat-box-label">Holding Probability</span>
                   <span class="stat-box-val text-success font-mono font-bold" id="sim-hold-prob">0.0222</span>
                 </div>
                 <div class="gauge-stat-box">
                   <span class="stat-box-label">Risk Category Threshold</span>
-                  <span class="stat-box-val font-mono" id="sim-tier-desc">CRITICAL ($\ge 0.80$)</span>
+                  <span class="stat-box-val font-mono" id="sim-tier-desc">CRITICAL (&ge; 80%)</span>
                 </div>
               </div>
             </div>
@@ -978,9 +1292,9 @@
                   <span>Primary Risk Drivers</span>
                 </div>
                 <ul class="factor-list" id="sim-risk-drivers">
-                  <li>Cleared Barrier Width (barrier_width_m=2.0)</li>
-                  <li>Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.95)</li>
-                  <li>Predicted Next-Day Spread Probability Intensity (burn_prob=0.85)</li>
+                  <li>Cleared Barrier Width: 2.0 m (Narrow Handline)</li>
+                  <li>Direct Head-Fire Attack Alignment: cos &theta; = 0.95 (High Assault Angle)</li>
+                  <li>Approach Spread Probability: 85.0% (Severe Upstream Threat)</li>
                 </ul>
               </div>
 
@@ -999,7 +1313,7 @@
             <div class="tactical-narrative-box">
               <div class="narrative-label">Operational Advisory for Incident Commanders:</div>
               <p class="narrative-body" id="sim-explanation-text">
-                CRITICAL breach vulnerability (97.8% predicted risk). Elevated predicted risk is associated with: Cleared Barrier Width (barrier_width_m=2.0), Direct Head-Fire Attack Alignment (cos theta) (attack_dot_product=0.95). Immediate dozer widening or aerial retardant support recommended.
+                CRITICAL breach vulnerability (97.8% predicted risk). Elevated predicted risk is driven by narrow cleared barrier width (2.0 m) and direct head-fire assault alignment (cos &theta; = 0.95). Immediate dozer widening or aerial retardant support recommended.
               </p>
             </div>
 
@@ -1009,13 +1323,22 @@
 
       <!-- Historical Incident Segments Audit Table (CZU Lightning Complex) -->
       <section class="section-block" aria-labelledby="czu-table-heading">
-        <div class="section-header">
+        <div class="section-header" style="flex-wrap: wrap; gap: 1rem;">
           <div>
             <h2 id="czu-table-heading" class="section-title">Operational Fireline Segments Audit</h2>
             <p class="section-subtitle">Real candidate polyline segments evaluated live by the CLBI engine (CZU Lightning Complex, California).</p>
           </div>
-          <div class="table-search-bar">
-            <input type="text" id="clbi-search-input" placeholder="Filter by Segment ID, Risk Tier..." class="search-input">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <div class="tier-filter-pills" role="group" aria-label="Filter Segments by Risk Tier">
+              <button type="button" class="tier-pill active" data-tier="ALL" id="tier-pill-all">All (100)</button>
+              <button type="button" class="tier-pill pill-critical" data-tier="CRITICAL" id="tier-pill-critical">Critical (16)</button>
+              <button type="button" class="tier-pill pill-high" data-tier="HIGH" id="tier-pill-high">High (14)</button>
+              <button type="button" class="tier-pill pill-medium" data-tier="MEDIUM" id="tier-pill-medium">Medium (17)</button>
+              <button type="button" class="tier-pill pill-low" data-tier="LOW" id="tier-pill-low">Low (53)</button>
+            </div>
+            <div class="table-search-bar">
+              <input type="text" id="clbi-search-input" placeholder="Filter by Segment ID, Risk Tier..." class="search-input">
+            </div>
           </div>
         </div>
 
@@ -1063,6 +1386,34 @@
         </div>
       </div>
 
+      <!-- Workspace Orientation Guide -->
+      <div class="page-orientation-guide" role="region" aria-label="Research Orientation Guide">
+        <div class="guide-header">
+          <div class="guide-title-wrap">
+            <span class="guide-badge">Orientation</span>
+            <span class="guide-tagline">How to inspect scientific formulations, disclosures, and artifact references</span>
+          </div>
+        </div>
+        <div class="guide-grid-4">
+          <div class="guide-step-card">
+            <div class="guide-step-label">1. What am I looking at?</div>
+            <div class="guide-step-text">Formal mathematical problem formulations, 12 predictor channel definitions, peer-audited data leakage findings, and the Phase 2 roadmap.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">2. What can I do here?</div>
+            <div class="guide-step-text">Review the outward-spread target equation, inspect the 94.7% Kaggle elevation tile overlap audit, and explore serialized experiment artifacts.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">3. What does this mean?</div>
+            <div class="guide-step-text">It establishes scientific defensibility, clearly distinguishing retrospective evaluations from non-georeferenced spatial prototype boundaries.</div>
+          </div>
+          <div class="guide-step-card">
+            <div class="guide-step-label">4. What should I do next?</div>
+            <div class="guide-step-text">Use the top navigation bar to test live interactive features in <strong>Spread Explorer</strong> or <strong>Model Lab</strong>.</div>
+          </div>
+        </div>
+      </div>
+
       <div class="research-grid">
 
         <!-- Section 1: Problem Formulation & Target Distinction -->
@@ -1074,13 +1425,13 @@
             24-hour forward active spread transitions into previously unburned landscape cells:
           </p>
           <div class="equation-box">
-            $$Y_{\text{transition}}(r, c) = 1 \iff \left(\text{PrevFireMask}(r, c) = 0.0 \land \text{FireMask}(r, c) = 1.0\right)$$
+            <div class="math-display"><strong>Y<sub>transition</sub>(r, c) = 1</strong> &iff; (PrevFireMask(r, c) = 0 &and; FireMask(r, c) = 1)</div>
           </div>
           <div class="research-callout">
             <strong>Critical Target Distinction:</strong> Our local Phase 1 pipeline isolates <em>true outward expansion</em>.
-            Already-burning core pixels ($\text{PrevFireMask} = 1.0$) are excluded from the positive target class.
+            Already-burning core pixels (PrevFireMask = 1.0) are excluded from the positive target class.
             This contrasts with external baseline benchmarks (e.g. Huot et al., 2022 and PR #1) which predict all active fire
-            ($Y = 1 \iff \text{FireMask} = 1.0$), conflating unextinguished core persistence with outward spread.
+            (FireMask = 1.0), conflating unextinguished core persistence with outward spread.
             Isolating true spread yields extreme class imbalance: <strong>0.813%</strong> across the full dataset,
             <strong>0.586%</strong> in validation (`train_14`), and <strong>0.956%</strong> in held-out evaluation (`eval_00`).
           </div>
@@ -1088,14 +1439,14 @@
 
         <!-- Section 2: Predictor Features & Spatial Encoding -->
         <article class="research-card">
-          <h2 class="research-card-title">2. Predictor Channels & Preprocessing</h2>
-          <p>Each pixel sample contains 12 physical predictors observed strictly prior to spread (day $t$):</p>
+          <h2 class="research-card-title">2. Predictor Channels &amp; Preprocessing</h2>
+          <p>Each pixel sample contains 12 physical predictors observed strictly prior to spread (Day t):</p>
           <ul class="feature-audit-list">
             <li><code>dist_to_prev_fire_km</code>: Intra-patch Euclidean distance to active flame front via 2D spatial KDTree (sentinel 100.0 km if unignited).</li>
-            <li><code>th</code>: Meteorological wind direction azimuth ($[0^\circ, 360^\circ)$ clockwise from North).</li>
+            <li><code>th</code>: Meteorological wind direction azimuth (0&deg; to 360&deg; clockwise from North).</li>
             <li><code>vs</code>: 10m wind speed in meters per second (GridMET daily aggregate).</li>
             <li><code>erc</code>: National Fire Danger Rating System Energy Release Component (fuel dryness).</li>
-            <li><code>tmmn</code> & <code>tmmx</code>: Daily minimum and maximum surface temperatures in Kelvin.</li>
+            <li><code>tmmn</code> &amp; <code>tmmx</code>: Daily minimum and maximum surface temperatures in Kelvin.</li>
             <li><code>elevation</code>: SRTM digital elevation in meters above sea level.</li>
             <li><code>population</code>: Gridded human settlement density (SEDAC GPWv4).</li>
             <li><code>pdsi</code>: Palmer Drought Severity Index (long-term soil moisture deficit).</li>
@@ -1104,29 +1455,29 @@
             <li><code>pr</code>: Daily accumulated precipitation in millimeters.</li>
           </ul>
           <p class="text-muted">
-            Strict Nodata Safeguard: All cells with $-1.0$ (cloud obscuration, water bodies, or sensor boundary nodata)
+            Strict Nodata Safeguard: All cells with nodata value -1.0 (cloud obscuration, water bodies, or sensor boundary nodata)
             are completely masked out using an explicit <code>valid_mask</code> prior to model training.
           </p>
         </article>
 
         <!-- Section 3: Honest Disclosures of Identified Scope Gaps -->
         <article class="research-card warning-card">
-          <h2 class="research-card-title text-danger">3. Audit Disclosures & Known Scope Gaps</h2>
-          <p>In accordance with rigorous scientific pair-programming standards, the following implementation gaps and external dataset constraints are formally documented:</p>
+          <h2 class="research-card-title text-danger">3. Audit Disclosures &amp; Known Scope Gaps</h2>
+          <p>In accordance with rigorous scientific pair-programming standards, the following implementation boundaries and external dataset constraints are formally documented:</p>
 
           <div class="gap-disclosure-item">
-            <h3 class="gap-disclosure-title">Gap A: Absence of 2D Focal Neighborhood Aggregations</h3>
-            <p>While the tabular pipeline extracts an intra-patch Euclidean distance feature, it flattens pixels independently and does not compute 2D focal neighborhood aggregates (e.g. 3×3 or 5×5 focal mean of active fire pixels, localized terrain roughness, or focal NDVI). This limitation motivated the Phase 2 deep learning roadmap.</p>
+            <h3 class="gap-disclosure-title">Gap A: 2D Focal Neighborhood Feature Status</h3>
+            <p>While 2D focal neighborhood operators (focal fire counts, localized terrain slope/aspect, and focal NDVI) are implemented in <code>features.py</code> for spatial exploratory processing, they have not yet been evaluated in an end-to-end retrained model pipeline. In adherence to scientific integrity principles, FireWild does <em>not</em> claim neighborhood features improve prediction accuracy until full Phase 2 trained-model ablation proves it.</p>
           </div>
 
           <div class="gap-disclosure-item">
-            <h3 class="gap-disclosure-title">Gap B: Absence of Fixed False-Positive Rate Recall Sweeps</h3>
-            <p>Evaluation metrics are reported at the validation-optimal $F_1$ decision threshold ($\tau^* = 0.028115$). Standard operational sweeps for recall at fixed false-positive rates (e.g. $\text{Recall}_{\text{FPR}=0.01}$ and $\text{Recall}_{\text{FPR}=0.05}$) were not implemented in the tabular metric function.</p>
+            <h3 class="gap-disclosure-title">Status B: Operational Fixed False-Positive Rate Decision Benchmarks</h3>
+            <p>Phase 1 completed and verified operational decision metrics under strictly budgeted false alarm constraints. On the official held-out evaluation partition (<code>eval_00</code>), LightGBM achieves <strong>20.79% recall at FPR &le; 1%</strong> (&tau; = 0.021245) and <strong>42.76% recall at FPR &le; 5%</strong> (&tau; = 0.010906), compared to 12.76% and 64.31% for Logistic Regression on validation. These operating points are serialized in benchmark artifacts and exposed via <code>GET /api/v1/ndws/benchmark/metrics</code>.</p>
           </div>
 
           <div class="gap-disclosure-item">
-            <h3 class="gap-disclosure-title">Finding C: Kaggle Elevation Tile Spatial Overlap</h3>
-            <p>An independent terrain-fingerprinting audit revealed that <strong>94.7% of official evaluation patches and 95.1% of test patches share identical 8×8 km SRTM elevation tiles with training data</strong> (<code>split_audit.json</code>). Models evaluated on standard Kaggle splits can memorize local elevation patterns; true out-of-region generalization drops from ~0.26 to ~0.138 PR-AUC on spatially disjoint holdouts.</p>
+            <h3 class="gap-disclosure-title">Finding C: Kaggle Elevation Tile Spatial Overlap &amp; Lack of CRS Coordinates</h3>
+            <p>An independent terrain-fingerprinting audit revealed that <strong>94.7% of official evaluation patches and 95.1% of test patches share identical 8&times;8 km SRTM elevation tiles with training data</strong> (<code>split_audit.json</code>). Models evaluated on standard Kaggle splits can memorize local elevation patterns; true out-of-region generalization drops from ~0.26 to ~0.138 PR-AUC on spatially disjoint holdouts. Furthermore, raw Kaggle TFRecords lack Coordinate Reference Systems (CRS) and incident metadata, necessitating explicit prototype disclaimers for non-georeferenced spatial matrices.</p>
           </div>
         </article>
 
@@ -1142,7 +1493,7 @@
               <span class="step-num">01</span>
               <div>
                 <strong>2D Multi-Scale Convolutional Architectures (U-Net / ConvNeXt):</strong>
-                Ingesting full $64 \times 64 \times 12$ multi-channel raster tensors natively to capture 2D spatial texture and perimeter curvature.
+                Ingesting full 64 &times; 64 &times; 12 multi-channel raster tensors natively to capture 2D spatial texture and perimeter curvature.
               </div>
             </div>
             <div class="roadmap-step">
@@ -1156,7 +1507,7 @@
               <span class="step-num">03</span>
               <div>
                 <strong>Directional Convective Wind Feature Synthesis:</strong>
-                Formulating explicit directional dot-product channels between 2D terrain elevation gradients ($\nabla z$) and atmospheric wind vectors ($\mathbf{v}_{\text{wind}}$).
+                Formulating explicit directional dot-product channels between 2D terrain elevation gradients (&nabla;z) and atmospheric wind vectors.
               </div>
             </div>
             <div class="roadmap-step">
