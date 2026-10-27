@@ -22,10 +22,8 @@ from src.api.schemas import (
 
 router = APIRouter(prefix="/api/v1", tags=["CLBI API"])
 
-# Global singleton or dependency for decision engine
-_ENGINE_INSTANCE: float = None
-
 def get_engine() -> CLBIDecisionEngine:
+    """Loads the decision engine per request so a retrained artifact is picked up without a restart."""
     try:
         return CLBIDecisionEngine()
     except FileNotFoundError as e:
