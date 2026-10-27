@@ -26,6 +26,7 @@ The system combines terrain characteristics, fire proximity, barrier dimensions,
 - [Usage](#usage)
 - [REST API](#rest-api)
 - [Testing](#testing)
+- [Troubleshooting](#troubleshooting)
 - [Research Methodology](#research-methodology)
 - [Limitations](#limitations)
 - [Future Improvements](#future-improvements)
@@ -191,7 +192,7 @@ For additional definitions and methodology, see [`docs/CLBI_METRICS.md`](docs/CL
 ## Project Structure
 
 ```text
-WILDFIRE/
+fireWild/
 ├── data/
 │   ├── demo/
 │   │   └── clbi_demo_segments.csv
@@ -199,6 +200,8 @@ WILDFIRE/
 │       ├── fireline_segments_v1.parquet
 │       ├── fireline_segments_v1.csv
 │       └── fireline_segments_v1.json
+├── deployment/
+│   └── ndws/                      # Packaged NDWS benchmark artifacts served by the API
 ├── docs/
 │   ├── CLBI_API_CONTRACT.md
 │   └── CLBI_METRICS.md
@@ -210,19 +213,24 @@ WILDFIRE/
 │   │   ├── __init__.py
 │   │   ├── main.py
 │   │   ├── routes.py
-│   │   └── schemas.py
+│   │   ├── schemas.py
+│   │   ├── ndws_routes.py         # NDWS benchmark endpoints
+│   │   ├── ndws_contracts.py      # NDWS artifact loading and payload sanitization
+│   │   └── static/                # Dashboard frontend served at /
 │   ├── data/
 │   │   └── build_dataset.py
 │   ├── features/
-│   │   └── generate_data_quality_report.py
+│   │   ├── generate_data_quality_report.py
+│   │   └── extract_tabular_ndws.py
+│   ├── models/
+│   │   ├── train_tabular_baselines.py
+│   │   └── train_lightgbm_ndws.py
 │   ├── evaluation/
 │   └── model/
 │       ├── train_clbi_model.py
 │       ├── clbi_model.py
 │       └── clbi_demo.py
-├── tests/
-│   ├── test_clbi_model.py
-│   └── test_api.py
+├── tests/                         # unittest suite (CLBI engine, API, NDWS pipeline)
 ├── experiments/
 │   ├── BASELINE_REPORT.md
 │   ├── ROBUSTNESS_REPORT.md
@@ -241,7 +249,8 @@ WILDFIRE/
 | Python | Core implementation |
 | pandas | Tabular data processing |
 | NumPy | Numerical operations |
-| scikit-learn | Model training and evaluation |
+| scikit-learn | Model training and evaluation (pinned to the version used to serialize the production model) |
+| LightGBM | NDWS gradient-boosted benchmark model |
 | Joblib | Model artifact serialization |
 | FastAPI | REST API framework |
 | Uvicorn | ASGI server |
@@ -262,11 +271,11 @@ The exact installed dependencies are defined in `requirements.txt`.
 ### 1. Clone the Repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd WILDFIRE
+git clone https://github.com/vedant21-ctr/fireWild.git
+cd fireWild
 ```
 
-Replace the repository URL and directory name with the actual values for your project.
+Run all commands below from the repository root so that the `src` package can be imported.
 
 ### 2. Create a Virtual Environment
 
@@ -299,7 +308,9 @@ python -m pip install -r requirements.txt
 python -m src.model.train_clbi_model
 ```
 
-This command trains the production model using the designated training data and saves the model artifact according to the training script's configuration.
+This command trains the production model on the `train` split of `data/final/fireline_segments_v1.parquet` and writes `models/clbi_logistic_regression.joblib` and `models/clbi_model_metadata.json`.
+
+A pre-trained artifact is already committed, so this step is optional. Running it overwrites the committed files (at minimum the `creation_timestamp` in the metadata changes), so avoid committing the result unless you intend to update the production model.
 
 ### Run the Command-Line Demonstration
 
@@ -315,7 +326,7 @@ The demo demonstrates the inference workflow using the project's demonstration d
 python -m unittest discover -s tests -p "test_*.py"
 ```
 
-The repository documents 29 unit tests covering the model and API. Confirm the actual test count and results by running the suite.
+The suite covers the CLBI engine, REST API, UI contract and NDWS pipeline.
 
 ## REST API
 
@@ -327,7 +338,7 @@ CLBI provides a FastAPI interface for health checks, model information, individu
 python -m uvicorn src.api.main:app --reload
 ```
 
-Assuming the corresponding routes are implemented, the local interface is available at:
+The local interface is available at:
 
 | Resource | URL |
 |---|---|
@@ -403,6 +414,21 @@ curl http://localhost:8000/api/v1/demo
 
 For authoritative request fields, response definitions, and validation requirements, consult [`docs/CLBI_API_CONTRACT.md`](docs/CLBI_API_CONTRACT.md).
 
+### NDWS Benchmark Endpoints
+
+```bash
+curl http://localhost:8000/api/v1/ndws/benchmark/metrics
+curl http://localhost:8000/api/v1/ndws/demo/patch
+```
+
+`/benchmark/metrics` serves sanitized LightGBM and baseline metrics. Artifacts are resolved in this order:
+
+1. `NDWS_RESULTS_PATH` / `NDWS_METADATA_PATH` environment variables, if set.
+2. Locally generated `experiments/results_ndws/lightgbm_results.json` and `models/ndws/lightgbm_metadata.json` (gitignored).
+3. Packaged copies in `deployment/ndws/`.
+
+`/demo/patch` returns an illustrative 64×64 grid for UI previews, not real spread predictions. See [`docs/PHASE1_UI_INTEGRATION_CONTRACT.md`](docs/PHASE1_UI_INTEGRATION_CONTRACT.md).
+
 ## Testing
 
 Run the full test suite with:
@@ -412,6 +438,16 @@ python -m unittest discover -s tests -p "test_*.py"
 ```
 
 The tests are intended to cover model inference behavior, API responses, request validation, and related functionality implemented in the repository.
+
+## Troubleshooting
+
+| Symptom | Cause and fix |
+|---|---|
+| `ModuleNotFoundError: No module named 'src'` | Run commands from the repository root using `python -m ...`, not by file path. |
+| `ModuleNotFoundError` for `lightgbm` or `tfrecord` | Reinstall with `python -m pip install -r requirements.txt`; both are required by the NDWS pipeline and its tests. |
+| API returns `503` with `model_artifact_missing` | `models/clbi_logistic_regression.joblib` is missing. Restore it from Git or run `python -m src.model.train_clbi_model`. |
+| `InconsistentVersionWarning` or errors when loading the model | The artifact was serialized with scikit-learn 1.9.1. Install the pinned version from `requirements.txt`. |
+| NDWS endpoint returns `503` with `artifact_missing` | No NDWS artifacts were found. Check that `deployment/ndws/` exists, or that `NDWS_RESULTS_PATH` / `NDWS_METADATA_PATH` point to existing files. |
 
 ## Research Methodology
 
