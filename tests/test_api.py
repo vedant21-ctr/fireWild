@@ -3,6 +3,7 @@ test_api.py - Unit Tests for CLBI REST API Endpoints
 """
 
 import unittest
+from unittest.mock import patch
 from fastapi.testclient import TestClient
 from src.api.main import app
 
@@ -210,6 +211,13 @@ class TestCLBIAPI(unittest.TestCase):
         self.assertEqual(resp1["breach_probability"], resp2["breach_probability"])
         self.assertEqual(resp1["risk_tier"], resp2["risk_tier"])
         self.assertEqual(resp1["explanation"], resp2["explanation"])
+
+    # 16. Missing model artifact returns a structured 503
+    def test_missing_model_artifact_returns_503(self):
+        with patch("src.api.routes.CLBIDecisionEngine", side_effect=FileNotFoundError("model missing")):
+            response = self.client.get("/api/v1/model/info")
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json(), {"error": "model_artifact_missing", "message": "model missing"})
 
 
 if __name__ == "__main__":
