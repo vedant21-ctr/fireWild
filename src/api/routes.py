@@ -37,6 +37,30 @@ def get_engine() -> CLBIDecisionEngine:
             }
         )
 
+def _segment_response_fields(row: pd.Series) -> Dict[str, Any]:
+    """Maps a predicted segment row to the response fields shared by every prediction endpoint."""
+    return {
+        "segment_id": row["segment_id"],
+        "fire_id": row.get("fire_id"),
+        "fire_name": row.get("fire_name"),
+        "date": str(row["date"]) if pd.notnull(row.get("date")) else None,
+        "breach_probability": float(row["breach_probability"]),
+        "hold_probability": float(row["hold_probability"]),
+        "risk_tier": row["risk_tier"],
+        "top_risk_factors": row["top_risk_factors"],
+        "protective_factors": row["protective_factors"],
+        "explanation": row["explanation"]
+    }
+
+def _ranked_segment_response(row: pd.Series) -> BatchSegmentPredictionResponse:
+    """Builds a segment response including population rank fields (batch and prioritization endpoints)."""
+    return BatchSegmentPredictionResponse(
+        **_segment_response_fields(row),
+        vulnerability_rank=int(row["vulnerability_rank"]),
+        priority_percentile=float(row["priority_percentile"]),
+        priority_recommended=bool(row["priority_recommended"])
+    )
+
 @router.get("/health", response_model=HealthResponse, summary="System Health Check")
 def get_health() -> HealthResponse:
     """Returns service health status and API version."""
@@ -82,19 +106,10 @@ def predict_single_segment(
 
     row = predicted_df.iloc[0]
     return SingleSegmentPredictionResponse(
-        segment_id=row["segment_id"],
-        fire_id=row.get("fire_id"),
-        fire_name=row.get("fire_name"),
-        date=str(row["date"]) if pd.notnull(row.get("date")) else None,
-        breach_probability=float(row["breach_probability"]),
-        hold_probability=float(row["hold_probability"]),
-        risk_tier=row["risk_tier"],
+        **_segment_response_fields(row),
         vulnerability_rank=None,
         priority_percentile=None,
-        priority_recommended=None,
-        top_risk_factors=row["top_risk_factors"],
-        protective_factors=row["protective_factors"],
-        explanation=row["explanation"]
+        priority_recommended=None
     )
 
 @router.post("/predict/batch", response_model=BatchPredictResponse, summary="Batch Segments Risk Prediction")
@@ -112,25 +127,7 @@ def predict_batch_segments(
     except ValueError as val_err:
         raise HTTPException(status_code=400, detail={"error": "validation_error", "message": str(val_err)})
 
-    response_segments = []
-    for idx, row in predicted_df.iterrows():
-        response_segments.append(
-            BatchSegmentPredictionResponse(
-                segment_id=row["segment_id"],
-                fire_id=row.get("fire_id"),
-                fire_name=row.get("fire_name"),
-                date=str(row["date"]) if pd.notnull(row.get("date")) else None,
-                breach_probability=float(row["breach_probability"]),
-                hold_probability=float(row["hold_probability"]),
-                risk_tier=row["risk_tier"],
-                vulnerability_rank=int(row["vulnerability_rank"]),
-                priority_percentile=float(row["priority_percentile"]),
-                priority_recommended=bool(row["priority_recommended"]),
-                top_risk_factors=row["top_risk_factors"],
-                protective_factors=row["protective_factors"],
-                explanation=row["explanation"]
-            )
-        )
+    response_segments = [_ranked_segment_response(row) for _, row in predicted_df.iterrows()]
 
     return BatchPredictResponse(
         total_segments=len(response_segments),
@@ -163,25 +160,7 @@ def prioritize_segments(
     selected_df = res["selected_segments"]
     selected_count = res["total_selected_segments"]
 
-    response_segments = []
-    for idx, row in selected_df.iterrows():
-        response_segments.append(
-            BatchSegmentPredictionResponse(
-                segment_id=row["segment_id"],
-                fire_id=row.get("fire_id"),
-                fire_name=row.get("fire_name"),
-                date=str(row["date"]) if pd.notnull(row.get("date")) else None,
-                breach_probability=float(row["breach_probability"]),
-                hold_probability=float(row["hold_probability"]),
-                risk_tier=row["risk_tier"],
-                vulnerability_rank=int(row["vulnerability_rank"]),
-                priority_percentile=float(row["priority_percentile"]),
-                priority_recommended=bool(row["priority_recommended"]),
-                top_risk_factors=row["top_risk_factors"],
-                protective_factors=row["protective_factors"],
-                explanation=row["explanation"]
-            )
-        )
+    response_segments = [_ranked_segment_response(row) for _, row in selected_df.iterrows()]
 
     return PrioritizationResponse(
         total_segments=len(request.segments),
