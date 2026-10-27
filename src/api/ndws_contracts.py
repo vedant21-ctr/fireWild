@@ -28,6 +28,54 @@ DEPLOYMENT_METADATA_PATH = "deployment/ndws/lightgbm_metadata.json"
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 
+def _existing_path(path: str) -> Optional[str]:
+    """Returns the path if it exists relative to the working directory or repository root, else None."""
+    if os.path.exists(path):
+        return path
+    repo_relative = os.path.join(REPO_ROOT, path)
+    if os.path.exists(repo_relative):
+        return repo_relative
+    return None
+
+
+def _resolve_artifact_path(
+    explicit_path: Optional[str],
+    env_var: str,
+    default_path: str,
+    deployment_path: str,
+    artifact_label: str,
+) -> str:
+    """
+    Shared resolution logic for NDWS artifacts, in priority order:
+    explicit path, environment variable, default local path, packaged deployment fallback.
+    """
+    if explicit_path is not None:
+        resolved = _existing_path(explicit_path)
+        if resolved:
+            return resolved
+        raise FileNotFoundError(f"{artifact_label} artifact not found at: {explicit_path}")
+
+    env_path = os.environ.get(env_var)
+    if env_path:
+        resolved = _existing_path(env_path)
+        if resolved:
+            return resolved
+        raise FileNotFoundError(
+            f"{artifact_label} artifact specified in {env_var} environment variable "
+            f"not found at: {env_path}"
+        )
+
+    for candidate in (default_path, deployment_path):
+        resolved = _existing_path(candidate)
+        if resolved:
+            return resolved
+
+    raise FileNotFoundError(
+        f"{artifact_label} artifact not found. Checked default path '{default_path}', "
+        f"packaged deployment fallback '{deployment_path}', and {env_var} environment variable."
+    )
+
+
 def resolve_results_path(results_path: Optional[str] = None) -> str:
     """
     Resolves the benchmark results file path in priority order:
@@ -39,41 +87,8 @@ def resolve_results_path(results_path: Optional[str] = None) -> str:
     Resolves against current working directory and repository root.
     Raises FileNotFoundError with actionable guidance if the artifact is missing.
     """
-    if results_path is not None:
-        if os.path.exists(results_path):
-            return results_path
-        repo_relative = os.path.join(REPO_ROOT, results_path)
-        if os.path.exists(repo_relative):
-            return repo_relative
-        raise FileNotFoundError(f"Benchmark results artifact not found at: {results_path}")
-
-    env_path = os.environ.get("NDWS_RESULTS_PATH")
-    if env_path:
-        if os.path.exists(env_path):
-            return env_path
-        repo_relative = os.path.join(REPO_ROOT, env_path)
-        if os.path.exists(repo_relative):
-            return repo_relative
-        raise FileNotFoundError(
-            f"Benchmark results artifact specified in NDWS_RESULTS_PATH environment variable "
-            f"not found at: {env_path}"
-        )
-
-    if os.path.exists(DEFAULT_RESULTS_PATH):
-        return DEFAULT_RESULTS_PATH
-    repo_relative = os.path.join(REPO_ROOT, DEFAULT_RESULTS_PATH)
-    if os.path.exists(repo_relative):
-        return repo_relative
-
-    if os.path.exists(DEPLOYMENT_RESULTS_PATH):
-        return DEPLOYMENT_RESULTS_PATH
-    repo_relative = os.path.join(REPO_ROOT, DEPLOYMENT_RESULTS_PATH)
-    if os.path.exists(repo_relative):
-        return repo_relative
-
-    raise FileNotFoundError(
-        f"Benchmark results artifact not found. Checked default path '{DEFAULT_RESULTS_PATH}', "
-        f"packaged deployment fallback '{DEPLOYMENT_RESULTS_PATH}', and NDWS_RESULTS_PATH environment variable."
+    return _resolve_artifact_path(
+        results_path, "NDWS_RESULTS_PATH", DEFAULT_RESULTS_PATH, DEPLOYMENT_RESULTS_PATH, "Benchmark results"
     )
 
 
@@ -88,41 +103,8 @@ def resolve_metadata_path(metadata_path: Optional[str] = None) -> str:
     Resolves against current working directory and repository root.
     Raises FileNotFoundError with actionable guidance if the artifact is missing.
     """
-    if metadata_path is not None:
-        if os.path.exists(metadata_path):
-            return metadata_path
-        repo_relative = os.path.join(REPO_ROOT, metadata_path)
-        if os.path.exists(repo_relative):
-            return repo_relative
-        raise FileNotFoundError(f"Model metadata artifact not found at: {metadata_path}")
-
-    env_path = os.environ.get("NDWS_METADATA_PATH")
-    if env_path:
-        if os.path.exists(env_path):
-            return env_path
-        repo_relative = os.path.join(REPO_ROOT, env_path)
-        if os.path.exists(repo_relative):
-            return repo_relative
-        raise FileNotFoundError(
-            f"Model metadata artifact specified in NDWS_METADATA_PATH environment variable "
-            f"not found at: {env_path}"
-        )
-
-    if os.path.exists(DEFAULT_METADATA_PATH):
-        return DEFAULT_METADATA_PATH
-    repo_relative = os.path.join(REPO_ROOT, DEFAULT_METADATA_PATH)
-    if os.path.exists(repo_relative):
-        return repo_relative
-
-    if os.path.exists(DEPLOYMENT_METADATA_PATH):
-        return DEPLOYMENT_METADATA_PATH
-    repo_relative = os.path.join(REPO_ROOT, DEPLOYMENT_METADATA_PATH)
-    if os.path.exists(repo_relative):
-        return repo_relative
-
-    raise FileNotFoundError(
-        f"Model metadata artifact not found. Checked default path '{DEFAULT_METADATA_PATH}', "
-        f"packaged deployment fallback '{DEPLOYMENT_METADATA_PATH}', and NDWS_METADATA_PATH environment variable."
+    return _resolve_artifact_path(
+        metadata_path, "NDWS_METADATA_PATH", DEFAULT_METADATA_PATH, DEPLOYMENT_METADATA_PATH, "Model metadata"
     )
 
 
