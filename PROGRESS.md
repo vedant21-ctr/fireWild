@@ -1,6 +1,6 @@
 # Progress
 
-Short status of the final submission. Branch: `phase2/final-submission`, pull request #21. Last updated 8 November 2026.
+Short status of the final submission. Merged into `main` through pull request #21; final cleanup follows on `phase2/final-submission`. Last updated 8 November 2026.
 
 ## Done
 
@@ -12,6 +12,6 @@ Short status of the final submission. Branch: `phase2/final-submission`, pull re
 
 ## Left, for the team
 
-- Vedant reviews and merges pull request #21 into `main`
+- Review and merge the final cleanup pull request into `main`
 - Each member adds work git cannot show to `CONTRIBUTIONS.md`, and takes a suggested task
 - Agree who presents which slides, and prepare for the viva with `docs/THEORY_AND_VIVA_PREP.md`
