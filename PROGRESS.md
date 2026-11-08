@@ -6,7 +6,8 @@ Short status of the final submission. Branch: `phase2/final-submission`. Last up
 
 - CLBI moved to `archive/clbi-prototype`; simulated data removed from this branch
 - `main`'s October fixes merged into the working branch
-- Old NDWS pipeline, stale reports and tracked model weights removed
+- Old NDWS pipeline, stale reports, old slide sources and tracked model weights removed
+- Graded Phase 1 report, slides and metrics grouped in `phase1_submission/`
 - NDWS downloaded; split manifest regenerated and matches Phase 1 on every row
 - Strict and tuning splits added, with programmatic checks
 - Position-leak test, Compact CNN, loss and regularisation sweep, late fusion and unified comparison written

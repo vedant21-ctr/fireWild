@@ -12,11 +12,11 @@ day *t*+1. The project compares engineered tabular models, spatial deep learning
 
 | Topic | File |
 |---|---|
-| Dataset, splits and limits | [DATASET_CARD.md](DATASET_CARD.md) |
+| Dataset, splits and limits | [docs/DATASET_CARD.md](docs/DATASET_CARD.md) |
 | Methodology | [docs/METHODOLOGY.md](docs/METHODOLOGY.md) |
 | Architecture | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | Literature review | [docs/LITERATURE_REVIEW.md](docs/LITERATURE_REVIEW.md) |
-| Graded Phase 1 report and slides (frozen) | [report/phase1_submission.pdf](report/phase1_submission.pdf), [presentation/phase1_submission.pdf](presentation/phase1_submission.pdf) |
+| Graded Phase 1 report and slides (frozen) | [phase1_submission/](phase1_submission/) |
 
 ## Reproducing
 

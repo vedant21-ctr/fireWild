@@ -1,8 +1,7 @@
 # Project Plan
 
 **Project 17: Next Day Wildfire Spread Prediction via Tabular AML and Spatial Deep Learning.**
-Phase 1 (ML) was graded and is frozen; its submitted PDFs are kept as `report/phase1_submission.pdf` and
-`presentation/phase1_submission.pdf`. This plan covers the final submission, which includes Phase 2 (DL).
+Phase 1 (ML) was graded and is frozen; its submission is kept in `phase1_submission/`. This plan covers the final submission, which includes Phase 2 (DL).
 
 ## Research question
 
@@ -14,7 +13,7 @@ controlled in space, in time and through patch position?
 | # | Milestone | Main output |
 |---|---|---|
 | 0 | Consolidate the repository | CLBI archived, one branch, configs, this plan |
-| 1-3 | Data, EDA, validated splits | `src/aml/ndws.py`, `eda.py`, `splits.py`, `DATASET_CARD.md` |
+| 1-3 | Data, EDA, validated splits | `src/aml/ndws.py`, `eda.py`, `splits.py`, `docs/DATASET_CARD.md` |
 | 4-5 | Features and tabular models | `features.py`, `train.py`, `evaluate.py` |
 | 6 | Phase 1 fixes for the final report | `strict` split and `leak_test.py` |
 | 7-10 | Spatial models and tuning | `src/dl/`, `experiments/ndws/dl/dev/` |
