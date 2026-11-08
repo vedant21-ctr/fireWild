@@ -312,6 +312,35 @@ def map_figure(protocol, y, patch, pix, scores, thresholds, n=4):
     plt.close(fig)
 
 
+def example_map(protocol, y, patch, pix, scores, thresholds):
+    """One large, plainly labelled example for the slides and the main text of the report."""
+    refs = patch_refs(protocol, "test")
+    i = np.argsort(-np.bincount(patch, weights=(y == 1), minlength=len(refs)))[2]
+    split, idx = refs[i]
+    raw = np.asarray(load_split(split)[idx])
+    sel = patch == i
+    pred, truth = scores["hybrid"][sel] >= thresholds["hybrid"], y[sel] == 1
+    panels = [("Today's fire", raw[CH["PrevFireMask"]], "mask"), ("Real fire tomorrow", raw[CH["FireMask"]], "mask"),
+              *[(LABELS[m], pixels_to_map(pix[sel], scores[m][sel]), "prob") for m in ("xgboost", "cnn", "unet")],
+              ("Hybrid", pixels_to_map(pix[sel], scores["hybrid"][sel]), "prob"),
+              ("False alarms (hybrid)", pixels_to_map(pix[sel], pred & ~truth, 0.0), "error"),
+              ("Missed fire (hybrid)", pixels_to_map(pix[sel], ~pred & truth, 0.0), "error")]
+    styles = {"mask": {"cmap": matplotlib.colors.ListedColormap(["black", "#e9ecef", "#d1495b"]), "vmin": -1, "vmax": 1},
+              "prob": {"cmap": "inferno", "vmin": 0, "vmax": 1},
+              "error": {"cmap": matplotlib.colors.ListedColormap(["#ffffff", "#e63946"]), "vmin": 0, "vmax": 1}}
+    fig, axes = plt.subplots(2, 4, figsize=(12, 6.4), constrained_layout=True)
+    for ax, (title, image, style) in zip(axes.flat, panels, strict=True):
+        shown = ax.imshow(image, origin="lower", interpolation="nearest", **styles[style])
+        if style == "prob":
+            colour = shown
+        ax.set_title(title, fontsize=16)
+        ax.set_xticks([])
+        ax.set_yticks([])
+    fig.colorbar(colour, ax=axes, shrink=0.7, label="Predicted chance of fire")
+    fig.savefig(os.path.join(OUT_DIR, protocol, "prediction_map_example.png"), dpi=200, bbox_inches="tight")
+    plt.close(fig)
+
+
 def by_bin(y, mask_bins, p, threshold):
     """Precision and recall inside each boolean bin."""
     out = {}
@@ -467,6 +496,8 @@ def main():
         threshold_figure(protocol, y, scores, thresholds)
         training_curves(protocol)
         map_figure(protocol, y, patch, pix, scores, thresholds)
+        if protocol == "strict":
+            example_map(protocol, y, patch, pix, scores, thresholds)
         error_analysis(protocol, y, patch, scores, thresholds)
         del scores
 

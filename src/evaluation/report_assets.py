@@ -90,6 +90,13 @@ def result_tables(table):
                 [[LABELS[m], *[num(wide.loc[m, p]) for p in REPORTED_PROTOCOLS]] for m in RESULT_MODELS], "lccc")
 
 
+def summary_table(table):
+    """Test PR-AUC [95% CI] for every model on the three protocols, for the main body of the report."""
+    full = table[(table.regime == "full") & (table.target == "active")].set_index(["model", "protocol"])
+    write_table("results_summary", ["Model", "New weeks (official)", "New places (spatial)", "New weeks and places (strict)"],
+                [[LABELS[m], *[with_ci(full.loc[(m, p)]) for p in REPORTED_PROTOCOLS]] for m in RESULT_MODELS], "lccc")
+
+
 def seed_table(seeds):
     write_table("seed_stability", ["Protocol", "Model", "Mean", "SD", "Min", "Max"],
                 [[r["protocol"], LABELS[r["model"]], *[num(r[f"{s}_test_pr_auc"]) for s in ("mean", "std", "min", "max")]]
@@ -321,6 +328,7 @@ def main():
     seeds = pd.read_csv(os.path.join(OUT_DIR, "seed_stability.csv"))
     fusions = {p: read_json(EXP_DIR, "hybrid", p, "fusion.json") for p in REPORTED_PROTOCOLS}
     result_tables(table)
+    summary_table(table)
     seed_table(seeds)
     sigs = read_json(OUT_DIR, "significance.json")
     significance_table(sigs)
