@@ -5,7 +5,8 @@ No number in report/main.tex or the slides is typed by hand: tables are \\input 
 text are macros from report/generated_results.tex.
 
 Reads experiments/ndws/ and phase1_submission/metrics/. Writes experiments/ndws/final/numbers.json,
-experiments/ndws/final/{sweep,dl_ablations}.png, report/tables/*.tex and report/generated_results.tex.
+experiments/ndws/final/{sweep,dl_ablations}.png, report/tables/*.tex, report/generated_results.tex and the results
+block in README.md.
 
 Usage:
     python -m src.evaluation.report_assets
@@ -200,6 +201,28 @@ def phase1_change_table():
     return out
 
 
+def readme_results(table, sigs):
+    """Replace the generated results block in README.md."""
+    full = table[(table.regime == "full") & (table.target == "active")].set_index(["model", "protocol"])
+    lines = ["| Model | " + " | ".join(p.title() for p in REPORTED_PROTOCOLS) + " |", "|---|---|---|---|"]
+    for m in RESULT_MODELS:
+        lines.append(f"| {LABELS[m]} | " + " | ".join(with_ci(full.loc[(m, p)]) for p in REPORTED_PROTOCOLS) + " |")
+    delta = {p: sigs[p]["full"]["active"]["hybrid - xgboost"] for p in REPORTED_PROTOCOLS}
+    leak = {p: sigs[p]["full"]["active"]["unet_fullpatch - unet"]["delta"] for p in REPORTED_PROTOCOLS}
+    lines += ["", "Test PR-AUC with 95% patch-bootstrap intervals, active target, full patches. Network rows use the first of three seeds.", "",
+              "- No network or hybrid exceeds the best tree on any split.",
+              "- Hybrid minus XGBoost: "
+              + ", ".join(f"{p} {delta[p]['delta']:+.3f} [{delta[p]['ci_low']:+.3f}, {delta[p]['ci_high']:+.3f}]" for p in REPORTED_PROTOCOLS) + ".",
+              "- Training the U-Net on full patches adds " + ", ".join(f"{leak[p]:+.3f} ({p})" for p in REPORTED_PROTOCOLS) +
+              " to PR-AUC, which is the patch-centre position leak. Those runs are diagnostics only."]
+    path = os.path.join(BASE_DIR, "README.md")
+    with open(path) as f:
+        text = f.read()
+    block = "<!-- RESULTS:START -->\n" + "\n".join(lines) + "\n<!-- RESULTS:END -->"
+    with open(path, "w") as f:
+        f.write(re.sub(r"<!-- RESULTS:START -->.*<!-- RESULTS:END -->", lambda _: block, text, flags=re.S))
+
+
 def macro_name(*parts):
     return "r" + "".join(re.sub(r"[^A-Za-z]", "", p.title()) for p in parts)
 
@@ -309,6 +332,7 @@ def main():
     leak = leak_table()
     phase1 = phase1_change_table()
     numbers = numbers_and_macros(table, fusions, leak, seeds, ablations, sigs, tabular)
+    readme_results(table, sigs)
     numbers["phase1_changes"] = phase1
     with open(os.path.join(OUT_DIR, "numbers.json"), "w") as f:
         json.dump(numbers, f, indent=2)

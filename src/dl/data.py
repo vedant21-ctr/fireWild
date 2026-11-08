@@ -212,10 +212,10 @@ def augment(x, y, generator=None, vector_pairs=((U, V),)):
 def random_crop(x, y, size, generator=None):
     """Independent random size x size crop of every sample in the batch.
 
-    NDWS patches are centred on fire events, and the centre is more strongly tied to the day t+1 fire than to the
-    day t fire (see docs/METHODOLOGY.md). A network trained on full patches can learn "the patch centre burns" from
-    its distance to the zero-padded border, which leaks the target. With size = 32 the patch centre can fall anywhere
-    in the crop, so position inside the input carries no information.
+    NDWS patches are centred on fire events, so a pixel's position predicts its label (see docs/METHODOLOGY.md).
+    A network trained on full patches can learn "the patch centre burns" from its distance to the zero-padded border,
+    which leaks the target. With size = 32 the patch centre can fall anywhere in the crop, so position inside the
+    input carries no information.
     """
     b, _, h, w = x.shape
     rows = torch.randint(0, h - size + 1, (b,), generator=generator).tolist()

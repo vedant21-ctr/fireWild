@@ -19,6 +19,18 @@ Learn the reasoning, not the wording. Results to quote are in `experiments/ndws/
 4. We test on three splits, because a random split can flatter a model by reusing the same places and weeks.
 5. We also check whether models are cheating by learning that the middle of a patch usually burns.
 
+## Final results in words
+
+The table of numbers is in the [README](../README.md). You should be able to say:
+
+- No network or hybrid beat the best tree on any split.
+- U-Net and CNN were significantly below XGBoost on all three splits, in paired tests using the first training seed.
+- The hybrid was significantly below XGBoost on the official split and statistically indistinguishable on spatial and strict. It improved significantly on the U-Net on spatial and strict.
+- Training the U-Net on full patches raised its score on every split. That gain comes from learning the patch centre, so those runs are diagnostics only.
+- On fixed windows where position gives almost no information, the U-Net and hybrid match or beat the window-trained tree on official, are level on spatial, and remain behind on strict.
+- Removing today's fire map collapses the U-Net. Other single ablations changed the score only a little.
+- The feature-assisted U-Net looks better on strict but varies a lot between seeds, so treat that as suggestive.
+
 ---
 
 ## Basic questions

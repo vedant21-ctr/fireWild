@@ -22,7 +22,7 @@ This is a statistical association task, so predictions should not be read as pro
 
 ## 3. The patch-centre position leak
 
-NDWS samples are centred on fires, and the centre tracks the next-day fire more closely than the day-*t* fire. A network
+NDWS samples are centred on fires, so a pixel's position within the patch predicts its label. A network
 given full patches can work out its distance from the padded border and learn that "the middle burns tomorrow"
 (Kayhan & van Gemert, 2020). That signal would not exist in a real forecast region. Controls:
 
