@@ -4,7 +4,7 @@ report_assets.py - Turn the results files into the tables, figures and numbers u
 No number in report/main.tex or the slides is typed by hand: tables are \\input from report/tables/, and values in the
 text are macros from report/generated_results.tex.
 
-Reads experiments/ndws/ and phase1_submission/metrics/. Writes experiments/ndws/final/numbers.json,
+Reads experiments/ndws/, including the Phase 1 scores in experiments/ndws/phase1/. Writes experiments/ndws/final/numbers.json,
 experiments/ndws/final/{sweep,dl_ablations}.png, report/tables/*.tex, report/generated_results.tex and the results
 block in README.md.
 
@@ -29,7 +29,7 @@ from .compare import EXP_DIR, LABELS, OUT_DIR, read_json
 
 REPORT_DIR = os.path.join(BASE_DIR, "report")
 TABLE_DIR = os.path.join(REPORT_DIR, "tables")
-PHASE1_DIR = os.path.join(BASE_DIR, "phase1_submission", "metrics")
+PHASE1_DIR = os.path.join(EXP_DIR, "phase1")
 DEV_DIR = os.path.join(EXP_DIR, "dl", "dev")
 RESULT_MODELS = ["dummy", "persistence", "logistic_regression", "random_forest", "xgboost", "lightgbm", "cnn", "unet", "unet_features", "hybrid"]
 CROP_RESULT_MODELS = ["position_prior", "lightgbm_full", "lightgbm_crop", "cnn", "unet", "unet_features", "hybrid"]

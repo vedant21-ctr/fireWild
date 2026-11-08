@@ -17,7 +17,7 @@ CLBI prototype and API (`archive/clbi-prototype`). Its data was simulated, so it
 
 **Team decisions.** Phase 1 is frozen. Add the strict split and leak test to Phase 2, and state what changed. Work on a new branch with a pull request into `main`, reviewed and merged by Vedant. Move CLBI to an archive branch. Report three splits, stay on NDWS, and skip WildfireSpreadTS and ConvLSTM.
 
-**Cleanup.** Removed CLBI code, simulated data, the superseded NDWS pipeline, stale reports, duplicate scripts and tracked weights. The graded Phase 1 report, slides and metrics moved to `phase1_submission/`.
+**Cleanup.** Removed CLBI code, simulated data, the superseded NDWS pipeline, stale reports, duplicate scripts and tracked weights. The graded Phase 1 report and slides stay on `phase1-final-submission`, and the two score tables used for the Phase 1 comparison are in `experiments/ndws/phase1/`.
 
 **Repairs.**
 - A crash from OpenMP loading order on macOS was fixed by importing PyTorch first (`tests/conftest.py`).

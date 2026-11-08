@@ -235,7 +235,7 @@ The table of numbers is in the [README](../README.md). You should be able to say
 ### A9. What changed between Phase 1 and this final submission, and why?
 
 - **Simple:** We kept the Phase 1 results but added a stricter split, a test for the position leak, the deep models and a hybrid.
-- **Technical:** The graded Phase 1 materials are frozen in `phase1_submission/`. The official and spatial tabular results reproduce them to three decimals after a full re-run. New work: the strict protocol, the leak tests, the Dummy baseline, the CNN, the tuned U-Net and late fusion.
+- **Technical:** The graded Phase 1 materials stay unchanged on the `phase1-final-submission` branch. The official and spatial tabular results reproduce them to three decimals after a full re-run. New work: the strict protocol, the leak tests, the Dummy baseline, the CNN, the tuned U-Net and late fusion.
 - **Maths:** The strict split removes both sources of dependence at once, so it costs training data and test size in exchange for a harder test.
 - **Code:** `src/evaluation/report_assets.py::phase1_change_table`, `report/tables/phase1_changes.tex`.
 

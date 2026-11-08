@@ -1,7 +1,7 @@
 # Project Plan
 
 **Project 17: Next Day Wildfire Spread Prediction via Tabular AML and Spatial Deep Learning.**
-Phase 1 (ML) was graded and is frozen; its submission is kept in `phase1_submission/`. This plan covers the final submission, which includes Phase 2 (DL).
+Phase 1 (ML) was graded and is frozen; its submission stays on the `phase1-final-submission` branch. This plan covers the final submission, which includes Phase 2 (DL).
 
 ## Research question
 
