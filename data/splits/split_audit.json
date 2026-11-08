@@ -15,6 +15,17 @@
     "test": 1868,
     "val": 1855
   },
+  "strict_split_sizes": {
+    "train": 12050,
+    "excluded": 5701,
+    "test": 405,
+    "val": 389
+  },
+  "dev_split_sizes": {
+    "train": 12050,
+    "excluded": 5029,
+    "val": 1466
+  },
   "overlap": {
     "eval": {
       "n_patches": 1877,
@@ -31,6 +42,18 @@
     "spatial_test": {
       "n_patches": 1868,
       "share_terrain_with_train": 0
+    },
+    "strict_val": {
+      "n_patches": 389,
+      "n_location_groups": 124,
+      "share_terrain_with_train": 0,
+      "from_official_train_weeks": 0
+    },
+    "strict_test": {
+      "n_patches": 405,
+      "n_location_groups": 79,
+      "share_terrain_with_train": 0,
+      "from_official_train_weeks": 0
     }
   }
 }

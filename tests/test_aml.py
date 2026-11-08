@@ -1,5 +1,5 @@
 """
-test_aml.py - Unit tests for the Phase 1 NDWS pipeline (src/aml).
+test_aml.py - Unit tests for the tabular NDWS pipeline (src/aml).
 
 Feature tests use hand-built patches with known answers, so they run without the dataset.
 The split test runs against the committed manifest in data/splits/.
@@ -7,14 +7,17 @@ The split test runs against the committed manifest in data/splits/.
 
 import os
 import unittest
+
 import numpy as np
+import pandas as pd
 from sklearn.metrics import average_precision_score
 
-from src.aml.ndws import CH, CHANNELS
-from src.aml.features import patch_features, clean_channels, FEATURES, FX
+from src.aml.features import FEATURES, FX, clean_channels, patch_features
+from src.aml.leak_test import crop_raw, crop_windows, position_columns
 from src.aml.metrics import BootstrapAP, best_f1_threshold, compute_metrics
+from src.aml.ndws import CH, CHANNELS
+from src.aml.splits import EXCLUDED, MANIFEST_PATH, derive_strict_columns, verify_manifest
 from src.aml.train import prior_correct
-from src.aml.splits import MANIFEST_PATH
 
 
 def make_patch(fire_cells=((32, 32),), wind_from_deg=0.0, wind_speed=5.0, elev_north_gradient=0.0):
@@ -127,10 +130,63 @@ class TestMetrics(unittest.TestCase):
         self.assertTrue(np.all(np.diff(q) > 0))
 
 
+def small_manifest():
+    """Official split gives the weeks, spatial split the locations."""
+    rows = [("train", "train", 1), ("train", "train", 1), ("train", "val", 2), ("train", "test", 3),
+            ("eval", "val", 2), ("test", "test", 3), ("eval", "train", 1), ("test", "train", 1)]
+    df = pd.DataFrame(rows, columns=["official_split", "spatial_split", "location_group"])
+    return derive_strict_columns(df)
+
+
+class TestStrictSplit(unittest.TestCase):
+    def test_assignment(self):
+        df = small_manifest()
+        self.assertEqual(df.strict_split.tolist(), ["train", "train", EXCLUDED, EXCLUDED, "val", "test", EXCLUDED, EXCLUDED])
+        self.assertEqual(df.dev_split.tolist(), ["train", "train", "val", EXCLUDED, EXCLUDED, EXCLUDED, EXCLUDED, EXCLUDED])
+
+    def test_verify_accepts_valid_manifest(self):
+        verify_manifest(small_manifest())
+
+    def test_verify_rejects_shared_location(self):
+        df = small_manifest()
+        df.loc[df.strict_split == "test", "location_group"] = 1
+        with self.assertRaises(ValueError):
+            verify_manifest(df)
+
+    def test_verify_rejects_training_week_in_strict_test(self):
+        df = small_manifest()
+        df.loc[df.strict_split == "test", "official_split"] = "train"
+        with self.assertRaises(ValueError):
+            verify_manifest(df)
+
+
+class TestLeakHelpers(unittest.TestCase):
+    def test_position_columns(self):
+        c = position_columns(np.array([0, 64 * 64 - 1]))
+        np.testing.assert_array_equal(c[:, :2], [[0, 0], [63, 63]])
+        self.assertAlmostEqual(float(c[0, 2]), float(c[1, 2]), places=5)
+
+    def test_crop_windows_are_fixed_and_inside_the_patch(self):
+        a, b = crop_windows(500)
+        a2, b2 = crop_windows(500)
+        np.testing.assert_array_equal(a, a2)
+        np.testing.assert_array_equal(b, b2)
+        self.assertTrue(((a >= 0) & (a <= 32) & (b >= 0) & (b <= 32)).all())
+
+    def test_features_work_on_cropped_patches(self):
+        raw = make_patch(fire_cells=((40, 40),))[None]
+        cropped = crop_raw(raw, np.array([30]), np.array([30]), 32)
+        f = patch_features(cropped[0])
+        self.assertEqual(f.shape, (len(FEATURES), 32, 32))
+        self.assertEqual(f[FX["dist_to_fire_km"], 10, 10], 0.0)
+
+
 @unittest.skipUnless(os.path.exists(MANIFEST_PATH), "split manifest not built")
 class TestSplits(unittest.TestCase):
+    def test_committed_manifest_passes_every_guarantee(self):
+        verify_manifest(pd.read_csv(MANIFEST_PATH))
+
     def test_spatial_split_is_location_disjoint(self):
-        import pandas as pd
         m = pd.read_csv(MANIFEST_PATH)
         groups = {s: set(m.loc[m.spatial_split == s, "location_group"]) for s in ("train", "val", "test")}
         self.assertFalse(groups["train"] & groups["test"])

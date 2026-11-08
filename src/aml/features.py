@@ -93,7 +93,7 @@ def _directional_fire(fire, row_step, col_step, max_km=3):
     """1 if any fire pixel lies 1..max_km pixels along (row_step, col_step) from the pixel."""
     out = np.zeros_like(fire)
     for d in range(1, max_km + 1):
-        out = np.maximum(out, _shift(fire, int(round(d * row_step)), int(round(d * col_step))))
+        out = np.maximum(out, _shift(fire, round(d * row_step), round(d * col_step)))
     return out
 
 

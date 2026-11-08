@@ -13,9 +13,9 @@ Usage (macOS, Google Chrome installed):
     python presentation/build_deck.py
 """
 
+import json
 import os
 import re
-import json
 import shutil
 import subprocess
 import tempfile

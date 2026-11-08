@@ -15,11 +15,20 @@ from a single pre-sort, which makes 1000 replicates over millions of pixels feas
 
 import numpy as np
 from sklearn.metrics import (
-    average_precision_score, roc_auc_score, roc_curve, precision_recall_curve,
-    brier_score_loss, f1_score, precision_score, recall_score,
+    average_precision_score,
+    brier_score_loss,
+    confusion_matrix,
+    f1_score,
+    precision_recall_curve,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+    roc_curve,
 )
 
-FPR_LEVELS = (0.01, 0.05)
+from src.config import load_config
+
+FPR_LEVELS = tuple(load_config("aml")["evaluation"]["fpr_levels"])
 
 
 def best_f1_threshold(y, p):
@@ -47,8 +56,10 @@ def compute_metrics(y, p, threshold):
         "threshold": float(threshold),
         "positive_rate": float(y.mean()),
         "pr_auc_lift": float(average_precision_score(y, p) / y.mean()),  # PR-AUC relative to chance
-        "n_pixels": int(len(y)),
+        "n_pixels": len(y),
     }
+    tn, fp, fn, tp = confusion_matrix(y, yhat, labels=[0, 1]).ravel()
+    out.update(tn=int(tn), fp=int(fp), fn=int(fn), tp=int(tp))
     for lvl in FPR_LEVELS:
         out[f"recall_at_{int(lvl * 100)}pct_fpr"] = recall_at_fpr(y, p, lvl)
     return out

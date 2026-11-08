@@ -11,9 +11,10 @@ Usage:
     python -m src.aml.ndws            # download (if needed) and cache all splits
 """
 
-import os
 import glob
 import json
+import os
+
 import numpy as np
 
 PATCH = 64
@@ -35,7 +36,7 @@ INPUT_CHANNELS = [
     "PrevFireMask",
 ]
 TARGET_CHANNEL = "FireMask"
-CHANNELS = INPUT_CHANNELS + [TARGET_CHANNEL]
+CHANNELS = [*INPUT_CHANNELS, TARGET_CHANNEL]
 CH = {name: i for i, name in enumerate(CHANNELS)}
 
 KAGGLE_DATASET = "fantineh/next-day-wildfire-spread"

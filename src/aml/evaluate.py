@@ -1,5 +1,5 @@
 """
-evaluate.py - Test-set evaluation, uncertainty and figures for the Phase 1 models.
+evaluate.py - Test-set evaluation, uncertainty and figures for the tabular models.
 
 Reads the test predictions saved by train.py and writes, per protocol, to
 experiments/ndws/results/<protocol>/:
@@ -10,7 +10,7 @@ experiments/ndws/results/<protocol>/:
     feature_importance.png     LightGBM gain importance
     shap_summary.png           SHAP values of LightGBM on a 20k-pixel test sample
     plausibility.png           predicted vs observed spread by distance, wind and slope
-    ablation.png               (spatial) LightGBM PR-AUC by feature-group subset
+    ablation.png               LightGBM PR-AUC by feature-group subset (where run)
 and, across protocols:
     experiments/ndws/results/protocol_gap.png
     experiments/ndws/RESULTS.md (generated tables)
@@ -19,25 +19,31 @@ Usage:
     python -m src.aml.evaluate
 """
 
-import os
 import json
+import os
+from itertools import pairwise
+
+import matplotlib
 import numpy as np
 import pandas as pd
-import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from sklearn.metrics import precision_recall_curve, roc_curve
 from sklearn.calibration import calibration_curve
+from sklearn.metrics import precision_recall_curve, roc_curve
 
+from src.config import load_config
+
+from .dataset import REPORTED_PROTOCOLS, eval_pixels, patch_refs
+from .features import FEATURE_GROUPS, FEATURES, FX
+from .metrics import bootstrap_pr_auc, compute_metrics, paired_bootstrap_delta
 from .ndws import BASE_DIR, CH, load_split
-from .features import FEATURES, FX, FEATURE_GROUPS
-from .dataset import patch_refs, eval_pixels
-from .metrics import compute_metrics, bootstrap_pr_auc, paired_bootstrap_delta
-from .train import RESULTS_DIR, MODEL_DIR, PRED_DIR
+from .train import MODEL_DIR, PRED_DIR, RESULTS_DIR
 
-N_BOOT = 500
-MODELS = ["persistence", "neighbourhood_persist", "logistic_regression", "random_forest", "xgboost", "lightgbm"]
+N_BOOT = load_config("aml")["evaluation"]["n_boot"]
+MODELS = ["dummy", "persistence", "neighbourhood_persist", "logistic_regression", "random_forest", "xgboost", "lightgbm"]
 LABELS = {
+    "dummy": "Dummy (training rate)",
     "persistence": "Persistence",
     "neighbourhood_persist": "Neighbourhood persistence",
     "logistic_regression": "Logistic regression",
@@ -46,7 +52,7 @@ LABELS = {
     "lightgbm": "LightGBM",
 }
 COLORS = {
-    "persistence": "#adb5bd", "neighbourhood_persist": "#6c757d", "logistic_regression": "#00798c",
+    "dummy": "#dee2e6", "persistence": "#adb5bd", "neighbourhood_persist": "#6c757d", "logistic_regression": "#00798c",
     "random_forest": "#edae49", "xgboost": "#30638e", "lightgbm": "#d1495b",
 }
 COMPARISONS = [("lightgbm", "logistic_regression"), ("lightgbm", "random_forest"), ("lightgbm", "xgboost"),
@@ -163,7 +169,7 @@ def importance_and_shap(protocol):
     gain = gain / gain.sum()
     order = np.argsort(gain)
     group_of = {f: g for g, fs in FEATURE_GROUPS.items() for f in fs}
-    palette = dict(zip(FEATURE_GROUPS, ["#8d99ae", "#d1495b", "#30638e", "#6a994e", "#edae49", "#00798c"]))
+    palette = dict(zip(FEATURE_GROUPS, ["#8d99ae", "#d1495b", "#30638e", "#6a994e", "#edae49", "#00798c"], strict=False))
     fig, ax = plt.subplots(figsize=(7, 8))
     ax.barh(np.array(FEATURES)[order], gain[order], color=[palette[group_of[FEATURES[i]]] for i in order])
     ax.set_xlabel("share of total split gain")
@@ -181,7 +187,7 @@ def importance_and_shap(protocol):
     fig.suptitle(f"SHAP values (log-odds), LightGBM, 5k test pixels ({protocol})")
     save(fig, os.path.join(RESULTS_DIR, protocol, "shap_summary.png"))
     mean_abs = np.abs(contrib).mean(axis=0)
-    return {f: float(v) for f, v in sorted(zip(FEATURES, mean_abs), key=lambda t: -t[1])}
+    return {f: float(v) for f, v in sorted(zip(FEATURES, mean_abs, strict=False), key=lambda t: -t[1])}
 
 
 def plausibility(protocol, scores):
@@ -194,10 +200,10 @@ def plausibility(protocol, scores):
     fig, axes = plt.subplots(1, 3, figsize=(13, 3.6))
 
     bins = [0, 1.5, 2.5, 3.5, 5, 7, 10, 15, 100]
-    labels = [f"{a:g}-{b:g}" for a, b in zip(bins[:-1], bins[1:])]
-    obs = [y[nf & (d > a) & (d <= b)].mean() for a, b in zip(bins[:-1], bins[1:])]
-    pred = [p[nf & (d > a) & (d <= b)].mean() for a, b in zip(bins[:-1], bins[1:])]
-    out["distance_km"] = {l: {"observed": float(o), "predicted": float(q)} for l, o, q in zip(labels, obs, pred)}
+    labels = [f"{a:g}-{b:g}" for a, b in pairwise(bins)]
+    obs = [y[nf & (d > a) & (d <= b)].mean() for a, b in pairwise(bins)]
+    pred = [p[nf & (d > a) & (d <= b)].mean() for a, b in pairwise(bins)]
+    out["distance_km"] = {lab: {"observed": float(o), "predicted": float(q)} for lab, o, q in zip(labels, obs, pred, strict=True)}
     x = np.arange(len(labels))
     axes[0].bar(x - 0.2, np.array(obs) * 100, 0.4, label="observed", color="#8d99ae")
     axes[0].bar(x + 0.2, np.array(pred) * 100, 0.4, label="LightGBM mean P", color="#d1495b")
@@ -213,10 +219,10 @@ def plausibility(protocol, scores):
         (axes[2], "upslope_from_fire", [-1, -0.02, 0.02, 1], "Relative elevation (+ = upslope of fire)"),
     ):
         v = X[:, FX[feat]]
-        labs = [f"{a:.2g}..{b:.2g}" for a, b in zip(edges[:-1], edges[1:])]
-        o = [y[near & (v > a) & (v <= b)].mean() for a, b in zip(edges[:-1], edges[1:])]
-        q = [p[near & (v > a) & (v <= b)].mean() for a, b in zip(edges[:-1], edges[1:])]
-        out[feat] = {l: {"observed": float(a), "predicted": float(b)} for l, a, b in zip(labs, o, q)}
+        labs = [f"{a:.2g}..{b:.2g}" for a, b in pairwise(edges)]
+        o = [y[near & (v > a) & (v <= b)].mean() for a, b in pairwise(edges)]
+        q = [p[near & (v > a) & (v <= b)].mean() for a, b in pairwise(edges)]
+        out[feat] = {lab: {"observed": float(a), "predicted": float(b)} for lab, a, b in zip(labs, o, q, strict=True)}
         x = np.arange(len(labs))
         ax.bar(x - 0.2, np.array(o) * 100, 0.4, label="observed", color="#8d99ae")
         ax.bar(x + 0.2, np.array(q) * 100, 0.4, label="LightGBM mean P", color="#d1495b")
@@ -244,18 +250,21 @@ def ablation_plot(results):
 
 
 def protocol_gap(tables):
-    """Raw PR-AUC and prevalence-normalised lift per model on both test protocols."""
+    """Raw PR-AUC and prevalence-normalised lift per model across the test protocols."""
     if len(tables) < 2:
         return
+    palette = {"official": "#adb5bd", "spatial": "#d1495b", "strict": "#30638e"}
+    width = 0.8 / len(tables)
     fig, axes = plt.subplots(1, 2, figsize=(13, 4))
     x = np.arange(len(MODELS))
-    for k, (proto, color) in enumerate((("official", "#adb5bd"), ("spatial", "#d1495b"))):
-        df = tables[proto].set_index("model").loc[MODELS]
+    for k, (proto, df) in enumerate(tables.items()):
+        df = df.set_index("model").loc[MODELS]
         err = np.vstack([df.pr_auc - df.pr_auc_ci_low, df.pr_auc_ci_high - df.pr_auc])
         prev = df.positive_rate.iloc[0]
-        axes[0].bar(x + (k - 0.5) * 0.38, df.pr_auc, 0.38, yerr=err, capsize=3, color=color,
+        offset = x + (k - (len(tables) - 1) / 2) * width
+        axes[0].bar(offset, df.pr_auc, width, yerr=err, capsize=2, color=palette[proto],
                     label=f"{proto} test (prevalence {prev:.2%})")
-        axes[1].bar(x + (k - 0.5) * 0.38, df.pr_auc_lift, 0.38, yerr=err / prev, capsize=3, color=color, label=f"{proto} test")
+        axes[1].bar(offset, df.pr_auc_lift, width, yerr=err / prev, capsize=2, color=palette[proto], label=f"{proto} test")
     axes[0].set_ylabel("Test PR-AUC (95% CI)")
     axes[0].set_title("Raw PR-AUC (chance level = prevalence)")
     axes[1].set_ylabel("PR-AUC / prevalence")
@@ -263,7 +272,7 @@ def protocol_gap(tables):
     for ax in axes:
         ax.set_xticks(x, [LABELS[m] for m in MODELS], rotation=20, fontsize=8)
         ax.legend(fontsize=8)
-    fig.suptitle("Official (shares terrain with train) vs spatially disjoint test")
+    fig.suptitle("Tabular models across the three test protocols")
     save(fig, os.path.join(RESULTS_DIR, "protocol_gap.png"))
 
 
@@ -272,12 +281,12 @@ def fmt(v, d=3):
 
 
 def write_markdown(tables, sigs, extras):
-    lines = ["# NDWS Phase 1 results (generated by `python -m src.aml.evaluate`)", "",
+    lines = ["# NDWS tabular results (generated by `python -m src.aml.evaluate`)", "",
              "All numbers are on the held-out **test** split; thresholds for F1 / precision / recall were chosen on "
              "the validation split. PR-AUC 95% CIs come from a patch-level bootstrap "
-             f"({N_BOOT} resamples). Lift = PR-AUC / test positive rate (chance level = 1x). The spatial test set "
-             "holds smaller, isolated fires with a lower positive rate than the official test set, so compare "
-             "protocols with Lift and ROC-AUC, not raw PR-AUC. Do not edit by hand; rerun the script.", ""]
+             f"({N_BOOT} resamples). Lift = PR-AUC / test positive rate (chance level = 1x). Positive rates differ "
+             "across protocols, so compare protocols with Lift and ROC-AUC, not raw PR-AUC. Do not edit by hand; "
+             "rerun the script.", ""]
     for proto, df in tables.items():
         lines += [f"## Protocol: `{proto}`", "",
                   "| Model | PR-AUC [95% CI] | Lift | ROC-AUC | F1 | Precision | Recall | Recall@1%FPR | Recall@5%FPR | Brier |",
@@ -301,51 +310,9 @@ def write_markdown(tables, sigs, extras):
         f.write("\n".join(lines) + "\n")
 
 
-TEX_MODEL = {"persistence": "Persistence", "neighbourhood_persist": "NbrPersist", "logistic_regression": "LogReg",
-             "random_forest": "RandomForest", "xgboost": "XGBoost", "lightgbm": "LightGBM"}
-TEX_METRIC = {"pr_auc": "PR", "pr_auc_ci_low": "PRlo", "pr_auc_ci_high": "PRhi", "pr_auc_lift": "Lift",
-              "roc_auc": "ROC", "f1": "Fone", "precision": "Prec", "recall": "Rec",
-              "recall_at_1pct_fpr": "Rone", "recall_at_5pct_fpr": "Rfive", "brier": "Brier", "val_pr_auc": "ValPR"}
-
-
-def write_latex(tables, sigs, extras):
-    """report/generated_results.tex: \\newcommand macros + booktabs tables used by report/main.tex."""
-    out = ["% Generated by `python -m src.aml.evaluate`. Do not edit by hand."]
-    for proto, df in tables.items():
-        P = proto.capitalize()
-        for _, r in df.iterrows():
-            for col, short in TEX_METRIC.items():
-                v = r[col]
-                txt = f"{v:.1f}" if col == "pr_auc_lift" else f"{v:.4f}" if col == "brier" else f"{v:.3f}"
-                out.append(f"\\newcommand{{\\{P}{TEX_MODEL[r.model]}{short}}}{{{txt}}}")
-        out.append(f"\\newcommand{{\\{P}PosRate}}{{{100 * df.positive_rate.iloc[0]:.2f}\\%}}")
-        out.append(f"\\newcommand{{\\{P}Pixels}}{{{int(df.n_pixels.iloc[0]):,}}}".replace(",", "{,}"))
-        for k, sg in sigs[proto].items():
-            a, b = k.split(" - ")
-            name = f"{P}Delta{TEX_MODEL[a]}vs{TEX_MODEL[b]}"
-            out.append(f"\\newcommand{{\\{name}}}{{{sg['delta']:+.3f}~[{sg['ci_low']:+.3f}, {sg['ci_high']:+.3f}]}}")
-        out.append(f"\\newcommand{{\\{P}ResultsTable}}{{%")
-        for _, r in df.iterrows():
-            out.append(f"{LABELS[r.model]} & {r.pr_auc:.3f} [{r.pr_auc_ci_low:.3f}, {r.pr_auc_ci_high:.3f}] & "
-                       f"{r.pr_auc_lift:.1f}$\\times$ & {r.roc_auc:.3f} & {r.f1:.3f} & {r.recall_at_1pct_fpr:.3f} & "
-                       f"{r.recall_at_5pct_fpr:.3f} & {r.brier:.4f} \\\\")
-        out.append("}")
-        ab = extras[proto].get("ablation")
-        if ab:
-            out.append(f"\\newcommand{{\\{P}AblationTable}}{{%")
-            for name, a in ab.items():
-                out.append(f"\\texttt{{{name.replace('_', chr(92) + '_')}}} & {a['n_features']} & "
-                           f"{a['val_pr_auc']:.3f} & {a['test_pr_auc']:.3f} \\\\")
-            out.append("}")
-    path = os.path.join(BASE_DIR, "report", "generated_results.tex")
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w") as f:
-        f.write("\n".join(out) + "\n")
-
-
 def main():
     tables, sigs, extras = {}, {}, {}
-    for protocol in ("official", "spatial"):
+    for protocol in REPORTED_PROTOCOLS:
         path = os.path.join(RESULTS_DIR, protocol, "results.json")
         if not os.path.exists(path):
             print(f"skip {protocol}: run `python -m src.aml.train --protocol {protocol}` first")
@@ -367,7 +334,6 @@ def main():
         print(tables[protocol][["model", "pr_auc", "pr_auc_ci_low", "pr_auc_ci_high", "roc_auc", "f1"]].to_string(index=False))
     protocol_gap(tables)
     write_markdown(tables, sigs, extras)
-    write_latex(tables, sigs, extras)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,14 @@
+# Dataset, cache and split settings.
+kaggle_dataset: fantineh/next-day-wildfire-spread
+patch_size: 64
+seed: 42
+terrain_fingerprint:
+  block_km: 8
+  min_block_std_m: 5.0
+spatial_split:
+  test_fraction: 0.10
+  val_fraction: 0.10
+# Fixed 32x32 window per held-out patch for position-controlled scoring.
+position_control:
+  crop_size: 32
+  seed: 2024

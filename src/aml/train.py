@@ -1,7 +1,7 @@
 """
-train.py - Train and select the Phase 1 tabular models for NDWS next-day fire prediction.
+train.py - Train and select the tabular models for NDWS next-day fire prediction.
 
-For one protocol (official or spatial):
+For one protocol (official, spatial or strict):
   1. Build the training sample (all positive pixels + 2% of negatives). Models are fit on the
      subsampled data without weights; their probabilities are then mapped back to the true class
      prior with the closed-form correction odds_true = odds_sample * NEG_RATE (see prior_correct).
@@ -9,6 +9,7 @@ For one protocol (official or spatial):
      a handful of trees and lowered validation PR-AUC (0.214 vs 0.229 for LightGBM). For LR and RF
      both options are fitted and the better one on validation is kept.
   2. Fit baselines and models:
+       dummy                 p = training-set fire rate for every pixel (chance level)
        persistence           p = day-t fire mask (no learning)
        neighbourhood_persist p = fraction of burning pixels in the 3x3 window at day t
        logistic_regression   median imputation + standardisation + L2 logistic regression
@@ -16,7 +17,8 @@ For one protocol (official or spatial):
        xgboost               histogram gradient boosting, small grid, early stopping
        lightgbm              leaf-wise gradient boosting, small grid, early stopping
   3. Select each family's configuration and its F1 threshold on the validation split.
-  4. Score every known-label test pixel once and save the predictions for evaluate.py.
+  4. Score every known-label validation and test pixel once and save the predictions
+     (evaluate.py and the hybrid models read them).
   5. (--ablation) Retrain LightGBM on feature-group subsets.
 
 Usage:
@@ -24,46 +26,40 @@ Usage:
     python -m src.aml.train --protocol official
 """
 
-import os
-import json
-import time
 import argparse
-import numpy as np
+import json
+import os
+import time
+
 import joblib
-from sklearn.pipeline import make_pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
+import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import average_precision_score
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
-from .ndws import BASE_DIR, CACHE_DIR
-from .features import FEATURES, FEATURE_GROUPS, FX
-from .dataset import training_sample, eval_pixels, feature_columns, NEG_RATE
+from src.config import load_config
+
+from .dataset import NEG_RATE, REPORTED_PROTOCOLS, eval_pixels, feature_columns, training_sample
+from .features import FEATURE_GROUPS, FEATURES, FX
 from .metrics import best_f1_threshold, compute_metrics
+from .ndws import BASE_DIR, CACHE_DIR
 
-SEED = 42
-RF_ROWS = 400_000
+CFG = load_config("aml")
+SEED = CFG["seed"]
+RF_ROWS = CFG["rf_rows"]
 RESULTS_DIR = os.path.join(BASE_DIR, "experiments", "ndws", "results")
 MODEL_DIR = os.path.join(BASE_DIR, "models", "ndws")
 PRED_DIR = os.path.join(CACHE_DIR, "preds")
 
 # Pixels of one patch share near-constant weather values, so small leaves let trees memorise
 # individual patches. Large minimum leaf sizes and column subsampling regularise against that.
-LGB_COMMON = dict(objective="binary", learning_rate=0.05, n_estimators=3000, subsample=0.8, subsample_freq=1,
-                  colsample_bytree=0.5, reg_lambda=1.0, metric="average_precision", n_jobs=8,
-                  random_state=SEED, verbose=-1)
-LGB_GRID = [
-    dict(num_leaves=31, min_child_samples=2000),
-    dict(num_leaves=63, min_child_samples=2000),
-    dict(num_leaves=127, min_child_samples=5000),
-]
-XGB_COMMON = dict(learning_rate=0.05, n_estimators=3000, subsample=0.8, colsample_bytree=0.5, reg_lambda=1.0,
-                  tree_method="hist", eval_metric="aucpr", early_stopping_rounds=100, n_jobs=8, random_state=SEED)
-XGB_GRID = [
-    dict(max_depth=6, min_child_weight=100),
-    dict(max_depth=8, min_child_weight=1000),
-]
+LGB_COMMON = {**CFG["lightgbm"]["common"], "n_jobs": 8, "random_state": SEED}
+LGB_GRID = CFG["lightgbm"]["grid"]
+XGB_COMMON = {**CFG["xgboost"]["common"], "n_jobs": 8, "random_state": SEED}
+XGB_GRID = CFG["xgboost"]["grid"]
 ABLATIONS = {
     "raw_only": ["raw"],
     "fire_only": ["fire"],
@@ -83,7 +79,8 @@ def fit_lightgbm(X, y, Xv, yv, wv, params):
     """Early stopping uses a validation pixel sample weighted back to the true class prior."""
     import lightgbm as lgb  # imported lazily: see note at fit_xgboost
     model = lgb.LGBMClassifier(**LGB_COMMON, **params)
-    model.fit(X, y, eval_set=[(Xv, yv)], eval_sample_weight=[wv], callbacks=[lgb.early_stopping(100, verbose=False)])
+    stop = lgb.early_stopping(CFG["lightgbm"]["early_stopping_rounds"], verbose=False)
+    model.fit(X, y, eval_set=[(Xv, yv)], eval_sample_weight=[wv], callbacks=[stop])
     return model
 
 
@@ -99,7 +96,7 @@ def fit_xgboost(X, y, Xv, yv, wv, params):
 
 def fit_logreg(X, y, w=None):
     model = make_pipeline(SimpleImputer(strategy="median"), StandardScaler(),
-                          LogisticRegression(C=1.0, max_iter=2000))
+                          LogisticRegression(**CFG["logistic_regression"]))
     model.fit(X, y, logisticregression__sample_weight=w)
     return model
 
@@ -108,8 +105,7 @@ def fit_random_forest(X, y, w=None):
     rng = np.random.default_rng(SEED)
     idx = rng.choice(len(y), size=min(RF_ROWS, len(y)), replace=False)
     model = make_pipeline(SimpleImputer(strategy="median"),
-                          RandomForestClassifier(n_estimators=200, max_depth=20, min_samples_leaf=50,
-                                                 max_features="sqrt", n_jobs=-1, random_state=SEED))
+                          RandomForestClassifier(**CFG["random_forest"], n_jobs=-1, random_state=SEED))
     model.fit(X[idx], y[idx], randomforestclassifier__sample_weight=None if w is None else w[idx])
     return model
 
@@ -130,11 +126,17 @@ def predict(model, X, weighted=False):
     return p.astype(np.float32) if weighted else prior_correct(p)
 
 
-def heuristic_scores(X):
+def heuristic_scores(X, train_rate):
     return {
+        "dummy": np.full(len(X), train_rate, dtype=np.float32),
         "persistence": X[:, FX["prev_fire"]].astype(np.float32),
         "neighbourhood_persist": X[:, FX["fire_frac_3"]].astype(np.float32),
     }
+
+
+def save_predictions(protocol, split, y, patch, pix, scores):
+    np.savez_compressed(os.path.join(PRED_DIR, f"{protocol}_{split}.npz"), y=y, patch=patch, pix=pix,
+                        **{f"p_{k}": v.astype(np.float32) for k, v in scores.items()})
 
 
 def run_protocol(protocol, ablation=False):
@@ -142,17 +144,18 @@ def run_protocol(protocol, ablation=False):
     os.makedirs(out_dir, exist_ok=True)
     os.makedirs(MODEL_DIR, exist_ok=True)
     os.makedirs(PRED_DIR, exist_ok=True)
-    timings, selection = {}, {}
+    selection = {}
 
     log(f"[{protocol}] building training sample (neg_rate={NEG_RATE})")
     X, y, w = training_sample(protocol, "train")
     Xes, yes, wes = training_sample(protocol, "val", seed=SEED + 1)  # early-stopping sample
     log(f"[{protocol}] train rows={len(y):,} positives={int(y.sum()):,}; early-stop rows={len(yes):,}")
+    train_rate = float(np.sum(w * y) / np.sum(w))  # fire rate before negatives were subsampled
     log(f"[{protocol}] scoring features for the full validation split")
-    Xv, yv, _, _ = eval_pixels(protocol, "val")
+    Xv, yv, val_patch, val_pix = eval_pixels(protocol, "val")
     log(f"[{protocol}] val pixels={len(yv):,} positive rate={yv.mean():.4f}")
 
-    models, val_scores = {}, heuristic_scores(Xv)
+    models, val_scores = {}, heuristic_scores(Xv, train_rate)
 
     # LR and RF: choose importance-weighted vs unweighted (+ prior correction) training on validation
     weighted = {}
@@ -190,19 +193,19 @@ def run_protocol(protocol, ablation=False):
 
     thresholds = {name: best_f1_threshold(yv, p) for name, p in val_scores.items()}
     val_metrics = {name: compute_metrics(yv, p, thresholds[name]) for name, p in val_scores.items()}
+    save_predictions(protocol, "val", yv, val_patch, val_pix, val_scores)
     del Xv, val_scores
 
     log(f"[{protocol}] scoring the test split")
     Xt, yt, patch, pix = eval_pixels(protocol, "test")
-    test_scores = heuristic_scores(Xt)
+    test_scores = heuristic_scores(Xt, train_rate)
     for name, m in models.items():
         test_scores[name] = predict(m, Xt, weighted=weighted.get(name, False))
     test_metrics = {name: compute_metrics(yt, p, thresholds[name]) for name, p in test_scores.items()}
     for name, mt in test_metrics.items():
         log(f"[{protocol}] TEST {name:<22} PR-AUC={mt['pr_auc']:.4f} ROC-AUC={mt['roc_auc']:.4f} F1={mt['f1']:.4f}")
 
-    np.savez_compressed(os.path.join(PRED_DIR, f"{protocol}_test.npz"), y=yt, patch=patch, pix=pix,
-                        **{f"p_{k}": v.astype(np.float16) for k, v in test_scores.items()})
+    save_predictions(protocol, "test", yt, patch, pix, test_scores)
     # 20k-pixel test sample for SHAP / partial-dependence plots
     rng = np.random.default_rng(SEED)
     idx = rng.choice(len(yt), 20000, replace=False)
@@ -217,13 +220,13 @@ def run_protocol(protocol, ablation=False):
         "protocol": protocol,
         "features": FEATURES,
         "neg_rate": NEG_RATE,
-        "train_rows": int(len(y)),
+        "train_rows": len(y),
         "train_positive_pixels": int(y.sum()),
         "selection": selection,
         "thresholds_from_val": thresholds,
         "val": val_metrics,
         "test": test_metrics,
-        "fit_seconds": timings,
+        "train_fire_rate": train_rate,
     }
 
     if ablation:
@@ -259,7 +262,7 @@ def run_ablation(protocol, X, y, Xes, yes, wes, params):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--protocol", choices=["official", "spatial"], required=True)
+    parser.add_argument("--protocol", choices=REPORTED_PROTOCOLS, required=True)
     parser.add_argument("--ablation", action="store_true")
     args = parser.parse_args()
     run_protocol(args.protocol, ablation=args.ablation)

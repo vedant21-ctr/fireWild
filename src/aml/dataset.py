@@ -1,9 +1,11 @@
 """
 dataset.py - Pixel-level tabular datasets built from NDWS patches.
 
-Two evaluation protocols share one interface:
+Evaluation protocols share one interface:
     official - NDWS train / eval / test as released (comparable with Huot et al., 2022)
     spatial  - location-group split from src/aml/splits.py (no terrain shared with train)
+    strict   - held-out patches differ from training in both week and location
+    dev      - tuning split for deep-learning hyperparameters; never used to report results
 
 Split names are normalised to train / val / test for both protocols.
 
@@ -16,13 +18,17 @@ is scored.
 
 import numpy as np
 
+from src.config import load_config
+
+from .features import FEATURE_GROUPS, FEATURES, FX, batch_features, patch_target
 from .ndws import load_split
 from .splits import load_manifest
-from .features import batch_features, patch_target, FEATURES
 
-PROTOCOLS = ("official", "spatial")
-NEG_RATE = 0.02
+REPORTED_PROTOCOLS = ("official", "spatial", "strict")
+PROTOCOLS = (*REPORTED_PROTOCOLS, "dev")
+NEG_RATE = load_config("aml")["neg_rate"]
 BATCH = 256
+_MANIFEST_COLUMN = {"spatial": "spatial_split", "strict": "strict_split", "dev": "dev_split"}
 
 _OFFICIAL_NAME = {"train": "train", "val": "eval", "test": "test"}
 
@@ -32,10 +38,10 @@ def patch_refs(protocol, split):
     if protocol == "official":
         name = _OFFICIAL_NAME[split]
         return [(name, i) for i in range(load_split(name).shape[0])]
-    if protocol == "spatial":
+    if protocol in _MANIFEST_COLUMN:
         m = load_manifest()
-        sub = m[m.spatial_split == split]
-        return list(zip(sub.official_split, sub.official_index))
+        sub = m[m[_MANIFEST_COLUMN[protocol]] == split]
+        return list(zip(sub.official_split, sub.official_index, strict=True))
     raise ValueError(f"unknown protocol {protocol!r}")
 
 
@@ -95,7 +101,6 @@ def eval_pixels(protocol, split):
 
 def feature_columns(groups=None):
     """Indices into FEATURES for a list of feature-group names (None = all)."""
-    from .features import FEATURE_GROUPS, FX
     if groups is None:
         return list(range(len(FEATURES)))
     return [FX[f] for g in groups for f in FEATURE_GROUPS[g]]

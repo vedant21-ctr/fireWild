@@ -16,17 +16,21 @@ Usage:
     python -m src.aml.eda
 """
 
-import os
 import json
+import os
+
+import matplotlib
 import numpy as np
 import pandas as pd
-import matplotlib
+
 matplotlib.use("Agg")
+import itertools
+
 import matplotlib.pyplot as plt
 
+from .features import FEATURES, FX, _directional_fire, batch_features, clean_channels
 from .ndws import BASE_DIR, CH, INPUT_CHANNELS, load_split
-from .features import clean_channels, batch_features, FEATURES, FX, _directional_fire
-from .splits import load_manifest, SPLIT_DIR
+from .splits import SPLIT_DIR, load_manifest
 
 OUT_DIR = os.path.join(BASE_DIR, "experiments", "ndws", "eda")
 SAMPLE_PATCHES = 3000
@@ -115,7 +119,7 @@ def channel_distributions(raw):
     names = [c for c in INPUT_CHANNELS if c != "PrevFireMask"]
     cleaned = [clean_channels(p) for p in raw]
     fig, axes = plt.subplots(3, 4, figsize=(13, 8))
-    for ax, name in zip(axes.ravel(), names):
+    for ax, name in zip(axes.ravel(), names, strict=False):
         vals = np.stack([c[name] for c in cleaned])
         fire, nofire = vals[y == 1], vals[y == 0]
         fire, nofire = fire[np.isfinite(fire)], nofire[np.isfinite(nofire)]
@@ -183,15 +187,15 @@ def spread_vs_distance(X, y):
     nf = (X[:, FX["prev_fire"]] == 0) & (y >= 0)
     d = X[:, FX["dist_to_fire_km"]]
     bins = [0, 1.5, 2.5, 3.5, 5, 7, 10, 15, 25, 100]
-    rates = [y[nf & (d > lo) & (d <= hi)].mean() for lo, hi in zip(bins[:-1], bins[1:])]
-    labels = [f"{lo:g}-{hi:g}" for lo, hi in zip(bins[:-1], bins[1:])]
+    rates = [y[nf & (d > lo) & (d <= hi)].mean() for lo, hi in itertools.pairwise(bins)]
+    labels = [f"{lo:g}-{hi:g}" for lo, hi in itertools.pairwise(bins)]
     fig, ax = plt.subplots(figsize=(7, 3.5))
     ax.bar(labels, np.array(rates) * 100, color="#d1495b")
     ax.set_xlabel("distance to nearest day-t fire pixel (km)")
     ax.set_ylabel("% newly burning at t+1")
     ax.set_title("New fire concentrates within a few km of the day-t front")
     save(fig, "spread_vs_distance.png")
-    return dict(zip(labels, map(float, rates)))
+    return dict(zip(labels, map(float, rates), strict=False))
 
 
 ORIENTATIONS = {
