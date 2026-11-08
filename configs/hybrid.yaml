@@ -1,0 +1,10 @@
+# Late fusion of tabular and spatial probabilities (src/hybrid/fusion.py).
+seed: 42
+# Validation patches are split in two: one half fits the fusion weights, the other selects the
+# hybrid and its F1 threshold.
+fit_fraction: 0.5
+logistic_C: 1000.0
+candidates:
+  fusion_tree_unet: [tree, unet]
+  fusion_tree_unet_features: [tree, unet_features]
+  fusion_tree_cnn: [tree, cnn]

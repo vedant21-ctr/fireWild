@@ -1,0 +1,29 @@
+[project]
+name = "firewild"
+version = "2.0.0"
+description = "Next Day Wildfire Spread prediction via tabular AML and spatial deep learning (CSAI Project 17)"
+requires-python = ">=3.12,<3.13"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.ruff]
+line-length = 150
+target-version = "py312"
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "C4", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"presentation/build_deck.py" = ["E501"]  # slide text and CSS
+# matplotlib.use("Agg") has to run before pyplot is imported
+"src/aml/evaluate.py" = ["E402"]
+"src/aml/eda.py" = ["E402"]
+"src/evaluation/*.py" = ["E402"]
+# single-letter names follow the maths in the report (X, Xv, ...)
+"src/**/*.py" = ["RUF001"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

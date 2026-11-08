@@ -1,0 +1,41 @@
+{
+  "protocol": "strict",
+  "lightgbm_params": {
+    "num_leaves": 127,
+    "min_child_samples": 5000
+  },
+  "add_position": {
+    "val": {
+      "pr_auc_features": 0.2324424780299017,
+      "pr_auc_features_plus_position": 0.3122530569913893,
+      "delta": 0.07981057896148758
+    },
+    "test": {
+      "pr_auc_features": 0.12449878288528139,
+      "pr_auc_features_plus_position": 0.25143007111585425,
+      "delta": 0.12693128823057287
+    }
+  },
+  "recover_position": {
+    "target": "pixel within 8 km of patch centre",
+    "test_roc_auc": 0.752714914792172,
+    "test_positive_rate": 0.05070591050490548,
+    "n_trees": 89
+  },
+  "crop_control": {
+    "val": {
+      "n_pixels": 385432,
+      "positive_rate": 0.034929637393885306,
+      "pr_auc_crop_trained": 0.2666444784773601,
+      "pr_auc_full_patch_model": 0.2731300312203538,
+      "pr_auc_position_prior": 0.039423191587014114
+    },
+    "test": {
+      "n_pixels": 393458,
+      "positive_rate": 0.018029878665575486,
+      "pr_auc_crop_trained": 0.1482487710402446,
+      "pr_auc_full_patch_model": 0.15735287311842766,
+      "pr_auc_position_prior": 0.01961784051010698
+    }
+  }
+}

@@ -1,0 +1,26 @@
+\begin{tabular}{llccc}
+\toprule
+Protocol & Candidate & Weights on logits & Val. PR-AUC & Test PR-AUC \\
+\midrule
+official & Fusion input: tree only & tree=0.91 & 0.192 & 0.265 \\
+official & Fusion input: U-Net only & unet=0.99 & 0.199 & 0.257 \\
+official & Fusion: tree + U-Net & tree=0.53, unet=0.43 & 0.205 & 0.270 \\
+official & Fusion: tree + CNN & tree=0.80, cnn=0.13 & 0.195 & 0.266 \\
+official & Fusion: tree + feature U-Net (selected) & tree=0.21, unet\_features=0.81 & 0.205 & 0.259 \\
+official & U-Net + engineered channels & -- & 0.204 & 0.254 \\
+\midrule
+spatial & Fusion input: tree only & tree=1.02 & 0.228 & 0.141 \\
+spatial & Fusion input: U-Net only & unet=1.16 & 0.229 & 0.130 \\
+spatial & Fusion: tree + U-Net & tree=0.65, unet=0.42 & 0.236 & 0.142 \\
+spatial & Fusion: tree + CNN & tree=0.66, cnn=0.43 & 0.238 & 0.142 \\
+spatial & Fusion: tree + feature U-Net (selected) & tree=0.37, unet\_features=0.85 & 0.242 & 0.140 \\
+spatial & U-Net + engineered channels & -- & 0.238 & 0.129 \\
+\midrule
+strict & Fusion input: tree only & tree=0.91 & 0.235 & 0.115 \\
+strict & Fusion input: U-Net only & unet=1.05 & 0.239 & 0.101 \\
+strict & Fusion: tree + U-Net (selected) & tree=0.68, unet=0.28 & 0.242 & 0.115 \\
+strict & Fusion: tree + CNN & tree=0.46, cnn=0.61 & 0.239 & 0.111 \\
+strict & Fusion: tree + feature U-Net & tree=0.42, unet\_features=0.64 & 0.240 & 0.120 \\
+strict & U-Net + engineered channels & -- & 0.230 & 0.116 \\
+\bottomrule
+\end{tabular}

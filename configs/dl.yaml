@@ -1,0 +1,67 @@
+# Spatial deep learning. Hyperparameters are chosen greedily on the "dev" protocol (see src/aml/splits.py),
+# whose train and validation patches appear in no reported test split.
+defaults:
+  architecture: unet       # unet | cnn
+  channels: base           # base | fire | fire_wind | all (see src/dl/data.py)
+  loss: bce                # bce | weighted_bce | dice | bce_dice
+  pos_weight: 1.0
+  base: 24
+  dropout: 0.2
+  weight_decay: 0.0001
+  augment: true
+  crop: 32                 # random training crop; 0 trains on full 64x64 patches (position leak diagnostic only)
+  lr: 0.001
+  batch: 64
+  epochs: 30
+  patience: 6
+  seed: 42
+
+# Each stage varies one setting and keeps the value with the best dev validation PR-AUC.
+sweep:
+  architecture:
+    - {architecture: unet}
+    - {architecture: cnn}
+  loss:
+    - {loss: bce}
+    - {loss: weighted_bce, pos_weight: 3.0}
+    - {loss: weighted_bce, pos_weight: 10.0}
+    - {loss: dice}
+    - {loss: bce_dice}
+  dropout:
+    - {dropout: 0.0}
+    - {dropout: 0.2}
+    - {dropout: 0.4}
+  weight_decay:
+    - {weight_decay: 0.0}
+    - {weight_decay: 0.0001}
+    - {weight_decay: 0.001}
+  width:
+    - {base: 16}
+    - {base: 24}
+    - {base: 32}
+  # Hybrid option B: engineered tabular channels added to the network input.
+  feature_channels:
+    - {channels: base}
+    - {channels: fire}
+    - {channels: fire_wind}
+    - {channels: all}
+
+# Controlled single-change runs on the dev protocol, reported as ablations.
+ablations:
+  no_augmentation: {augment: false}
+  no_dropout: {dropout: 0.0}
+  no_weight_decay: {weight_decay: 0.0}
+  no_regularisation: {augment: false, dropout: 0.0, weight_decay: 0.0}
+  no_skip_connections: {skip_connections: false}
+  no_prev_fire_channel: {drop_channels: [prev_fire, prev_unknown]}
+  no_wind_channels: {drop_channels: [wind_u, wind_v]}
+  no_weather_channels: {drop_channels: [tmmn, tmmx, sph, pr, pdsi, erc]}
+  no_terrain_vegetation: {drop_channels: [elevation, ndvi]}
+
+# Runs on every reported protocol. Settings not listed come from the sweep's selected configuration.
+final:
+  cnn: {architecture: cnn, channels: base}
+  unet: {architecture: unet, channels: base}
+  unet_features: {architecture: unet, channels: selected}
+  unet_fullpatch: {architecture: unet, channels: base, crop: 0}
+final_seeds: [42, 43, 44]
