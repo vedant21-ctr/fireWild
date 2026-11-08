@@ -204,8 +204,35 @@ def macro_name(*parts):
     return "r" + "".join(re.sub(r"[^A-Za-z]", "", p.title()) for p in parts)
 
 
+def data_macros():
+    """Dataset, split and model-size numbers quoted in the text."""
+    audit = read_json(BASE_DIR, "data", "splits", "split_audit.json")
+    eda = read_json(EXP_DIR, "eda", "eda_summary.json")
+    balance = {r["split"]: r for r in eda["class_balance"]}
+    wind = eda["wind_orientation"]["rows S->N, cols W->E (adopted)"]
+    test_overlap = audit["overlap"]["test"]
+    macros = {
+        "rPatches": f"{audit['n_patches']:,}", "rLocationGroups": str(audit["n_location_groups"]),
+        "rTwoLargestGroups": f"{100 * sum(audit['largest_groups'][:2]) / audit['n_patches']:.0f}",
+        "rOfficialOverlap": f"{100 * test_overlap['share_terrain_with_train'] / test_overlap['n_patches']:.0f}",
+        "rPersistenceRecall": f"{100 * balance['train']['persistence_recall']:.0f}",
+        "rNewFireShare": f"{100 * balance['train']['frac_next_day_fire_new']:.0f}",
+        "rTrainPositiveRate": f"{100 * balance['train']['positive_rate']:.2f}", "rUnknownRate": f"{100 * balance['train']['unknown_label_rate']:.1f}",
+        "rWindRatio": f"{wind['ratio']:.2f}", "rWindLow": f"{wind['ratio_ci95'][0]:.2f}", "rWindHigh": f"{wind['ratio_ci95'][1]:.2f}",
+        "rStrictTrain": f"{audit['strict_split_sizes']['train']:,}", "rStrictVal": str(audit["strict_split_sizes"]["val"]),
+        "rStrictTest": str(audit["strict_split_sizes"]["test"]), "rDevTrain": f"{audit['dev_split_sizes']['train']:,}",
+        "rDevVal": f"{audit['dev_split_sizes']['val']:,}", "rSpatialTrain": f"{audit['spatial_split_sizes']['train']:,}",
+        "rSpatialVal": f"{audit['spatial_split_sizes']['val']:,}", "rSpatialTest": f"{audit['spatial_split_sizes']['test']:,}",
+    }
+    for split, name in (("train", "Train"), ("eval", "Val"), ("test", "Test")):
+        macros[f"rOfficial{name}"] = f"{balance[split]['patches']:,}"
+    for name in ("cnn", "unet", "unet_features"):
+        macros[macro_name(name, "parameters")] = f"{read_json(EXP_DIR, 'dl', 'strict', name, 'results.json')['parameters']:,}"
+    return macros
+
+
 def numbers_and_macros(table, fusions, leak, seeds, ablations):
-    numbers, macros = {}, {}
+    numbers, macros = {}, data_macros()
     active = table[table.target == "active"]
     for r in table.to_dict("records"):
         slot = numbers.setdefault(r["protocol"], {}).setdefault(r["regime"], {}).setdefault(r["target"], {})

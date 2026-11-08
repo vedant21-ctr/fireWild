@@ -18,16 +18,17 @@ Short status of the final submission. Branch: `phase2/final-submission`. Last up
 - `CONTRIBUTIONS.md` rewritten from the real history, with suggested tasks for teammates
 - Viva guide rewritten
 - Generator for report tables and numbers (`src/evaluation/report_assets.py`)
+- All 30 final deep-learning runs and the hybrid finished
 
 ## In progress
 
-- Full experiment run (`scripts/run_all.sh`): final CNN, U-Net and feature U-Net runs on all three splits
+- Final comparison with confidence intervals (`src.evaluation.compare`): official done, spatial running, strict next
+- IEEE report: drafted up to Evaluation Metrics, plus Limitations and Future Work
 
 ## Left
 
-- Hybrid and final comparison
+- Report abstract, results, ablation studies, discussion and conclusion; compile to PDF
 - README with re-run results
-- Final IEEE report, including what changed since Phase 1
 - Final slides and executed notebooks
 - `docs/DEVELOPMENT_LOG.md`, `docs/EXPERIMENT_TRACKER.md`, `docs/REQUIREMENTS_CHECKLIST.md`
 - Fresh-clone check, final review, pull request into `main` for Vedant to review
