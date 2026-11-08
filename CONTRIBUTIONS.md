@@ -50,8 +50,7 @@ committed each file.
 
 ## How the final-submission branch was produced
 
-Aaryan directed the work on `phase2/final-submission` and made its commits, using Claude Code (an AI coding assistant)
-to write code and documents and to run the experiments. This covers the strict split, the position-leak test, the CNN,
+Aaryan directed the work on `phase2/final-submission` and made its commits. This covers the strict split, the position-leak test, the CNN,
 the tuning sweep, the ablations, late fusion, the re-run of every experiment, and the final report, slides and viva
 guide. Every reported number comes from a results file produced by running that code. Each member should still be able
 to explain the work themselves at the viva.

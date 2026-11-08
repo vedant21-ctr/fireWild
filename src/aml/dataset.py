@@ -25,7 +25,6 @@ from .ndws import load_split
 from .splits import load_manifest
 
 REPORTED_PROTOCOLS = ("official", "spatial", "strict")
-PROTOCOLS = (*REPORTED_PROTOCOLS, "dev")
 NEG_RATE = load_config("aml")["neg_rate"]
 BATCH = 256
 _MANIFEST_COLUMN = {"spatial": "spatial_split", "strict": "strict_split", "dev": "dev_split"}
