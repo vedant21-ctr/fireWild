@@ -51,8 +51,7 @@ committed each file.
 ## How the final-submission branch was produced
 
 Aaryan directed the work on `phase2/final-submission` and made its commits. This covers the strict split, the position-leak test, the CNN,
-the tuning sweep, the ablations, late fusion, the re-run of every experiment, and the final report, slides and viva
-guide. Every reported number comes from a results file produced by running that code. Each member should still be able
+the tuning sweep, the ablations, late fusion, the re-run of every experiment, and the final report and slides. Every reported number comes from a results file produced by running that code. Each member should still be able
 to explain the work themselves at the viva.
 
 ## Suggested remaining tasks
@@ -61,9 +60,9 @@ No commits have been made under anyone else's name. These tasks are open for eac
 
 | Member | Suggested task | Files |
 |---|---|---|
-| Vedant Satbhai | Review and merge the pull request into `main`; follow the README from a fresh clone and fix anything that fails | `README.md`, `scripts/run_all.sh` |
+| Vedant Satbhai | Follow the README from a fresh clone and fix anything that fails | `README.md`, `scripts/run_all.sh` |
 | Pratik Agade | Re-run the EDA notebook, check each statistic in the dataset card against `eda_summary.json`, and correct any mismatch | `notebooks/01_ndws_eda.ipynb`, `docs/DATASET_CARD.md` |
 | Lakshay Saharan | Read the feature code against the report's feature section and add a unit test for one feature family not yet tested | `src/aml/features.py`, `tests/test_aml.py` |
-| Raghvendra Singh | Re-run one final U-Net seed on the strict split, and record whether the result matches the committed one | `src/dl/train.py`, `docs/EXPERIMENT_TRACKER.md` |
+| Raghvendra Singh | Re-run one final U-Net seed on the strict split, and record whether the result matches the committed one | `src/dl/train.py` |
 | Aaryan Krishna | Proofread the report and rehearse the results and limitations sections | `report/main.tex` |
-| Everyone | Add non-git contributions to this file; prepare for the viva with `docs/THEORY_AND_VIVA_PREP.md`; agree who presents which slides | `CONTRIBUTIONS.md` |
+| Everyone | Add non-git contributions to this file; prepare for the viva; agree who presents which slides | `CONTRIBUTIONS.md` |

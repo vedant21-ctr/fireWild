@@ -79,7 +79,7 @@ free disk space. To rebuild the report and slides, run `tectonic report/main.tex
 | `notebooks/` | EDA and final results |
 | `report/`, `presentation/` | IEEE report and slides |
 | `tests/` | Unit tests for leakage controls, features, models and metrics |
-| `docs/` | [Methodology](docs/METHODOLOGY.md), [architecture](docs/ARCHITECTURE.md), [literature review](docs/LITERATURE_REVIEW.md) and project records |
+| `docs/` | [Methodology](docs/METHODOLOGY.md), [architecture](docs/ARCHITECTURE.md), [dataset card](docs/DATASET_CARD.md) and [literature review](docs/LITERATURE_REVIEW.md) |
 
 The full write-up is in [report/main.pdf](report/main.pdf), with slides in [presentation/fireWild_final.pdf](presentation/fireWild_final.pdf).
 Numbers in the results block above, the report and the slides are generated from the result files by `python -m src.evaluation.report_assets`.
