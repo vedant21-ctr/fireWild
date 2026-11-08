@@ -5,7 +5,6 @@ Short status of the final submission. Branch: `phase2/final-submission`, pull re
 ## Done
 
 - CLBI moved to `archive/clbi-prototype`; simulated data and unneeded files removed from this branch
-- Graded Phase 1 report, slides and metrics grouped in `phase1_submission/`
 - Strict and tuning splits, position-leak tests, CNN, tuned U-Net, hybrids and the unified comparison
 - Every experiment re-run with `scripts/run_all.sh`; tests and Ruff pass; a fresh clone passes the tests and regenerates the tables
 - README, IEEE report, slides, executed notebooks, viva guide, requirements checklist, development log and experiment tracker

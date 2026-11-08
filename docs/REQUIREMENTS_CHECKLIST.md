@@ -14,9 +14,9 @@ Maps each CSAI requirement for Project 17 to where it is met, and its status.
 | Theoretical rigor | Report Sections IX and XIII, `docs/THEORY_AND_VIVA_PREP.md` | Done |
 | Model application | `src/aml/train.py`, `configs/aml.yaml`, `experiments/ndws/results/` | Done |
 | GitHub repository and code quality | Modular `src/`, YAML configs, `tests/` passing, Ruff passing at line length 150 | Done |
-| Project presentation | `phase1_submission/slides.pdf` and `.pptx` (frozen) | Done |
+| Project presentation | `presentation/fireWild_phase1.pdf` and `.pptx` on branch `phase1-final-submission` (frozen) | Done |
 | Viva voce | `docs/THEORY_AND_VIVA_PREP.md` | Team |
-| Report in LaTeX/IEEE format | `phase1_submission/report.pdf` (frozen), `report/main.pdf` | Done |
+| Report in LaTeX/IEEE format | `report/main.pdf` on branch `phase1-final-submission` (frozen), and the final `report/main.pdf` | Done |
 
 ## Phase 2: Deep Learning
 

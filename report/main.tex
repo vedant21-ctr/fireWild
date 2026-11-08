@@ -254,7 +254,7 @@ U-Net runs use three seeds; hybrid inputs and thresholded results use the first 
 (\texttt{scripts/run\_all.sh}) with versioned YAML configurations.
 
 \subsection{Changes since Phase 1}
-The graded Phase 1 materials are preserved unchanged in \texttt{phase1\_submission/}. Table~\ref{tab:phase1} compares their test PR-AUC with a full re-run.
+The graded Phase 1 materials are preserved unchanged on the \texttt{phase1-final-submission} branch. Table~\ref{tab:phase1} compares their test PR-AUC with a full re-run.
 The official and spatial protocols reproduce to three decimals. Three changes were made after Phase 1. A \emph{strict} protocol was added because the
 Phase 1 spatial split still mixed weeks between training and test. A position-leak test was added because Phase 1 applied crop training only to its U-Net
 and did not test whether tabular models exploit position. A Dummy baseline, a CNN, a tuned U-Net and hybrids were added to complete the comparison.

@@ -1,10 +1,24 @@
-# fireWild: Next-Day Wildfire Spread Prediction
+# Next-Day Wildfire Spread Prediction
 
-**CSAI Project 17:** *Next Day Wildfire Spread Prediction via Tabular AML and Spatial Deep Learning.*
+Tabular machine learning and spatial deep learning for predicting where an active wildfire will be burning the next day.
 
-For every 1 km pixel of a 64 x 64 km region with an active fire on day *t*, predict the probability that it is burning on
-day *t*+1. The project compares engineered tabular models, spatial deep learning and a hybrid of the two, on the
-[Next Day Wildfire Spread](https://www.kaggle.com/datasets/fantineh/next-day-wildfire-spread) dataset.
+For every 1 km pixel of a 64 x 64 km region with an active fire on day *t*, the models estimate the probability that the
+pixel is burning on day *t*+1, using only information available at the end of day *t*.
+
+## Dataset
+
+[Next Day Wildfire Spread](https://www.kaggle.com/datasets/fantineh/next-day-wildfire-spread) (Huot et al., 2022): patches
+from the contiguous US, 2012 to 2020, with 11 environmental rasters and the day-*t* MODIS fire mask as inputs. The target
+is the day-*t*+1 fire mask. About 1% of pixels burn, so PR-AUC is the main metric. Details are in the
+[dataset card](docs/DATASET_CARD.md).
+
+## Approach
+
+- **Tabular models:** Dummy, persistence, logistic regression, random forest, XGBoost and LightGBM on 32 engineered features per pixel, covering fire context, wind, terrain, weather and vegetation.
+- **Spatial models:** a compact dilated CNN and a U-Net, trained on random 32 x 32 crops.
+- **Hybrids:** a U-Net with the engineered features as extra input channels, and late fusion of tree and network predictions.
+- **Three test splits:** `official` (published random-week split), `spatial` (held-out locations) and `strict` (held-out locations and weeks).
+- **Patch-centre leak controls:** patches are centred on fires, so pixel position predicts the label. Crop training, position-controlled scoring and dedicated tests measure this.
 
 ## Results
 
@@ -32,51 +46,23 @@ Test PR-AUC with 95% patch-bootstrap intervals, active target, full patches. Net
 Full tables, including position-controlled scoring, the new-fire target and paired tests, are in
 [experiments/ndws/FINAL_RESULTS.md](experiments/ndws/FINAL_RESULTS.md).
 
-**The splits.** `official` is the published random-week split. `spatial` holds out locations. `strict` holds out both
-locations and weeks. The strict test set is small, so its intervals are wide. See the
-[dataset card](docs/DATASET_CARD.md).
+The strict test set is small, so its intervals are wide. The data has no dates or coordinates, weeks are randomly assigned
+and every sample contains fire, so these results measure generalisation to held-out weeks and locations. They are not a
+test of forecasting future seasons.
 
-**The limits.** The data has no dates or coordinates, weeks are randomly assigned, and every sample contains fire. These
-results measure generalisation to held-out weeks and locations, and are not a test of forecasting future seasons.
-
-## Deliverables
-
-| Item | File |
-|---|---|
-| IEEE report | [report/main.pdf](report/main.pdf) |
-| Slides | [presentation/fireWild_final.pdf](presentation/fireWild_final.pdf), [.pptx](presentation/fireWild_final.pptx) |
-| Viva guide | [docs/THEORY_AND_VIVA_PREP.md](docs/THEORY_AND_VIVA_PREP.md) |
-| Graded Phase 1 report and slides (frozen) | [phase1_submission/](phase1_submission/) |
-| Team contributions | [CONTRIBUTIONS.md](CONTRIBUTIONS.md) |
-
-## Documentation
-
-| Topic | File |
-|---|---|
-| Requirements and where each is met | [docs/REQUIREMENTS_CHECKLIST.md](docs/REQUIREMENTS_CHECKLIST.md) |
-| Dataset, splits and limits | [docs/DATASET_CARD.md](docs/DATASET_CARD.md) |
-| Methodology | [docs/METHODOLOGY.md](docs/METHODOLOGY.md) |
-| Architecture | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Literature review | [docs/LITERATURE_REVIEW.md](docs/LITERATURE_REVIEW.md) |
-| Experiments | [docs/EXPERIMENT_TRACKER.md](docs/EXPERIMENT_TRACKER.md) |
-| Development history | [docs/DEVELOPMENT_LOG.md](docs/DEVELOPMENT_LOG.md) |
-| Project plan | [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) |
-| Status | [PROGRESS.md](PROGRESS.md) |
-
-## Reproducing
+## Getting started
 
 Requires Python 3.12. On macOS, run `brew install libomp` first. The dataset downloads through `kagglehub` without credentials.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-PYTHON=python bash scripts/run_all.sh
+PYTHON=python bash scripts/run_all.sh   # every experiment, about 7 hours on an 8 GB Apple M3
 python -m pytest
-python presentation/build_deck.py
 ```
 
-`run_all.sh` skips a stage when its output exists, so an interrupted run can be resumed. The full run took about 7 hours on
-an 8 GB Apple M3 laptop, and needs about 15 GB of free disk space for data and predictions. To rebuild the report, run `tectonic report/main.tex`.
+`run_all.sh` skips a stage when its output exists, so an interrupted run can be resumed. The full run needs about 15 GB of
+free disk space. To rebuild the report and slides, run `tectonic report/main.tex` and `python presentation/build_deck.py`.
 
 ## Repository layout
 
@@ -93,6 +79,7 @@ an 8 GB Apple M3 laptop, and needs about 15 GB of free disk space for data and p
 | `notebooks/` | EDA and final results |
 | `report/`, `presentation/` | IEEE report and slides |
 | `tests/` | Unit tests for leakage controls, features, models and metrics |
+| `docs/` | [Methodology](docs/METHODOLOGY.md), [architecture](docs/ARCHITECTURE.md), [literature review](docs/LITERATURE_REVIEW.md) and project records |
 
-Numbers in the results block above, the report and the slides are generated from the result files by
-`python -m src.evaluation.report_assets`.
+The full write-up is in [report/main.pdf](report/main.pdf), with slides in [presentation/fireWild_final.pdf](presentation/fireWild_final.pdf).
+Numbers in the results block above, the report and the slides are generated from the result files by `python -m src.evaluation.report_assets`.

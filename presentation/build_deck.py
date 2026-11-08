@@ -217,7 +217,7 @@ def slides(n):
 
     add("Since Phase 1", "What changed, and why",
         '<div class="row"><div class="col">' + bullets(
-            "Graded Phase 1 materials are frozen in <code>phase1_submission/</code>, and the official and spatial results reproduce to three decimals",
+            "A full re-run reproduces the graded Phase 1 official and spatial scores to three decimals",
             "New <b>strict split</b>: the Phase 1 spatial split still mixed weeks between training and test",
             "New <b>position-leak test</b>: Phase 1 did not test whether tabular models exploit position",
             "New <b>Dummy baseline, CNN, tuned U-Net and hybrids</b> to complete the comparison",
