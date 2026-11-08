@@ -18,6 +18,7 @@ Labels keep -1 for unknown pixels; they are masked out of the loss and of every 
 """
 
 import os
+import tempfile
 
 import numpy as np
 import torch
@@ -113,33 +114,53 @@ def channel_indices(channels):
     return [ALL_CHANNELS.index(c) for c in channels]
 
 
-def load_channels(protocol, split, channels):
-    """Unnormalised float32 inputs and int8 labels for a split, read into RAM."""
+def open_cache():
     if not os.path.exists(INPUTS_PATH):
         build_cache()
-    idx = global_indices(protocol, split)
-    X_mm = np.load(INPUTS_PATH, mmap_mode="r")
-    y_mm = np.load(LABELS_PATH, mmap_mode="r")
-    cols = channel_indices(channels)
-    return np.asarray(X_mm[idx][:, cols], dtype=np.float32), np.asarray(y_mm[idx])
+    return np.load(INPUTS_PATH, mmap_mode="r"), np.load(LABELS_PATH, mmap_mode="r")
+
+
+def channel_stats(name, values):
+    """(mean, std) that standardise one channel, over its finite values."""
+    if name in BINARY_CHANNELS:
+        return 0.0, 1.0
+    v = values[np.isfinite(values)]
+    if name in VECTOR_CHANNELS:
+        return 0.0, float(max(np.sqrt(np.mean(v ** 2)), 1e-6))
+    return float(v.mean()), float(max(v.std(), 1e-6))
+
+
+def norm_dict(channels, stats):
+    return {"channels": list(channels), "mean": [m for m, _ in stats], "std": [s for _, s in stats]}
 
 
 def compute_norm(X, channels=DL_CHANNELS):
     """Per-channel mean / std over finite values (call on TRAINING inputs only)."""
-    mean, std = [], []
-    for i, name in enumerate(channels):
-        if name in BINARY_CHANNELS:
-            mean.append(0.0)
-            std.append(1.0)
-            continue
-        v = X[:, i][np.isfinite(X[:, i])]
-        if name in VECTOR_CHANNELS:
-            mean.append(0.0)
-            std.append(float(max(np.sqrt(np.mean(v ** 2)), 1e-6)))
-            continue
-        mean.append(float(v.mean()))
-        std.append(float(max(v.std(), 1e-6)))
-    return {"channels": list(channels), "mean": mean, "std": std}
+    return norm_dict(channels, [channel_stats(name, X[:, i]) for i, name in enumerate(channels)])
+
+
+def compute_split_norm(protocol, split, channels):
+    """compute_norm for a cached split, reading one channel at a time so large channel sets fit in RAM."""
+    X_mm, _ = open_cache()
+    idx = global_indices(protocol, split)
+    stats = [channel_stats(name, np.asarray(X_mm[idx, c], dtype=np.float32)) for name, c in zip(channels, channel_indices(channels), strict=True)]
+    return norm_dict(channels, stats)
+
+
+def load_normalised(protocol, split, channels, norm, chunk=256):
+    """Normalised float16 inputs and int8 labels for a split.
+
+    Inputs are normalised in small chunks into an unnamed temporary file, so the OS can drop them from RAM without
+    using swap. Holding 31 channels in memory, with the intermediate copies, does not fit on an 8 GB machine.
+    """
+    X_mm, y_mm = open_cache()
+    idx = global_indices(protocol, split)
+    cols = channel_indices(channels)
+    with tempfile.TemporaryFile(dir=DL_CACHE_DIR) as f:
+        out = np.memmap(f, dtype=np.float16, mode="w+", shape=(len(idx), len(cols), PATCH, PATCH))
+    for i in range(0, len(idx), chunk):
+        out[i:i + chunk] = normalise(np.asarray(X_mm[idx[i:i + chunk]][:, cols], dtype=np.float32), norm)
+    return out, np.asarray(y_mm[idx])
 
 
 def normalise(X, norm):

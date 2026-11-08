@@ -37,8 +37,8 @@ from .data import (
     augment,
     batch_all_channels,
     channel_indices,
-    compute_norm,
-    load_channels,
+    compute_split_norm,
+    load_normalised,
     normalise,
     random_crop,
     vector_index_pairs,
@@ -103,6 +103,10 @@ def crop_inputs(protocol, split, channels, norm):
     return normalise(np.concatenate(Xs), norm), np.concatenate(ys)
 
 
+def results_path(group, name, seed):
+    return os.path.join(RESULTS_DIR, group, name, "results.json" if seed == CFG["defaults"]["seed"] else f"results_seed{seed}.json")
+
+
 def train(protocol, name, cfg, group=None, save_predictions=False):
     """Train one configuration. Results go to experiments/ndws/dl/<group or protocol>/<name>/results.json."""
     seed = cfg["seed"]
@@ -114,13 +118,9 @@ def train(protocol, name, cfg, group=None, save_predictions=False):
     for d in (out_dir, MODEL_DIR, PRED_DIR):
         os.makedirs(d, exist_ok=True)
 
-    raw_train, ytr = load_channels(protocol, "train", channels)
-    norm = compute_norm(raw_train, channels)
-    Xtr = normalise(raw_train, norm)
-    del raw_train
-    raw_val, yva = load_channels(protocol, "val", channels)
-    Xva = normalise(raw_val, norm)
-    del raw_val
+    norm = compute_split_norm(protocol, "train", channels)
+    Xtr, ytr = load_normalised(protocol, "train", channels, norm)
+    Xva, yva = load_normalised(protocol, "val", channels, norm)
     log(f"[{protocol}/{name}] seed {seed} train {Xtr.shape}, val {Xva.shape}, device {dev}")
 
     model = build_model(cfg, len(channels)).to(dev)
@@ -183,8 +183,8 @@ def train(protocol, name, cfg, group=None, save_predictions=False):
 
     if save_predictions:
         np.save(os.path.join(PRED_DIR, f"{tag}_val.npy"), p_val.astype(np.float32))
-        raw_test, yte = load_channels(protocol, "test", channels)
-        p_test = predict(model, normalise(raw_test, norm), dev)
+        Xte, yte = load_normalised(protocol, "test", channels, norm)
+        p_test = predict(model, Xte, dev)
         np.save(os.path.join(PRED_DIR, f"{tag}_test.npy"), p_test.astype(np.float32))
         yt, pt = known_pixels(np.asarray(yte), p_test)
         results["test"] = compute_metrics(yt, pt, threshold)
@@ -193,8 +193,7 @@ def train(protocol, name, cfg, group=None, save_predictions=False):
             Xc, _ = crop_inputs(protocol, split, channels, norm)
             np.save(os.path.join(PRED_DIR, f"{tag}_{split}_crop.npy"), predict(model, Xc, dev).astype(np.float32))
 
-    results_path = os.path.join(out_dir, "results.json" if seed == CFG["defaults"]["seed"] else f"results_seed{seed}.json")
-    with open(results_path, "w") as f:
+    with open(results_path(group or protocol, name, seed), "w") as f:
         json.dump(results, f, indent=2)
     del model, opt, best_state
     if dev.type == "mps":

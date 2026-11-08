@@ -18,7 +18,7 @@ stage() {  # stage <output that marks completion> <log name> <python module and 
     return
   fi
   echo "run  $name"
-  "$PYTHON" -m "$@" 2>&1 | tee "$LOGS/$name.log"
+  "$PYTHON" -m "$@" 2>&1 | tee -a "$LOGS/$name.log"
 }
 
 stage data/ndws/manifest.json data "src.aml.ndws"
@@ -36,7 +36,7 @@ for protocol in official spatial strict; do
 done
 
 stage experiments/ndws/dl/dev/selected.json dl_sweep src.dl.run_experiments sweep
-stage experiments/ndws/dl/dev/ablations.csv dl_ablations src.dl.run_experiments ablate
+stage experiments/ndws/dl/dev/ablation/no_terrain_vegetation/results.json dl_ablations src.dl.run_experiments ablate
 stage experiments/ndws/dl/strict/unet_fullpatch/results.json dl_final src.dl.run_experiments final
 stage experiments/ndws/hybrid/strict/fusion.json hybrid src.hybrid.fusion
 stage experiments/ndws/FINAL_RESULTS.md compare src.evaluation.compare

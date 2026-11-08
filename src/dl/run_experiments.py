@@ -24,7 +24,7 @@ import pandas as pd
 
 from src.aml.dataset import REPORTED_PROTOCOLS
 
-from .train import CFG, RESULTS_DIR, log, resolve_config, train
+from .train import CFG, RESULTS_DIR, log, resolve_config, results_path, train
 
 DEV = "dev"
 DEV_DIR = os.path.join(RESULTS_DIR, DEV)
@@ -104,6 +104,10 @@ def run_final():
         for name, spec in CFG["final"].items():
             seeds = CFG["final_seeds"] if name != "unet_fullpatch" else CFG["final_seeds"][:1]
             for seed in seeds:
+                # the results file is written last, so its presence means the run and its predictions are complete
+                if os.path.exists(results_path(protocol, name, seed)):
+                    log(f"[{protocol}/{name}] seed {seed} already complete, skipping")
+                    continue
                 train(protocol, name, final_config(name, spec, sel, seed), save_predictions=True)
 
 
