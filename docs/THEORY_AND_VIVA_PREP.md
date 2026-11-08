@@ -1,174 +1,242 @@
-# Theory and Viva Preparation (Phase 1, ML)
+# Viva Guide
 
-Every team member should be able to explain everything on this page without notes. Numbers quoted
-come from `experiments/ndws/RESULTS.md`, `experiments/ndws/eda/eda_summary.json` and
-`data/splits/split_audit.json`.
+Project 17: Next Day Wildfire Spread Prediction via Tabular AML and Spatial Deep Learning.
+
+The viva is individual, so every member should be able to answer every question here. Each answer has four parts:
+
+- **Simple:** how you would explain it to a friend.
+- **Technical:** the precise statement.
+- **Maths:** the idea behind it.
+- **Code:** where to open the project and show it.
+
+Learn the reasoning, not the wording. Results to quote are in `experiments/ndws/FINAL_RESULTS.md`.
+
+## The project in five sentences
+
+1. For each 1 km pixel of a 64 x 64 km area around a fire, we predict the probability that it is burning the next day.
+2. Only about 1% of pixels burn, so we judge models by PR-AUC rather than accuracy.
+3. We compare tabular models, which see one pixel at a time plus hand-made features, with CNN and U-Net models, which see the whole image.
+4. We test on three splits, because a random split can flatter a model by reusing the same places and weeks.
+5. We also check whether models are cheating by learning that the middle of a patch usually burns.
 
 ---
 
-## 1. Problem formulation
+## Basic questions
 
-- **Input:** at day *t*, a 64×64 km patch (1 km pixels) with 11 environmental rasters plus the day-*t*
-  fire mask.
-- **Output:** for every pixel, P(pixel burns on day *t*+1).
-- **Unit of prediction:** the pixel (1 km²). This is binary classification with extreme imbalance: about
-  1.1% of known-label pixels are positive.
-- **Unknown labels:** `-1` (cloud / no data) appears in about 2.4% of target pixels. These pixels are
-  dropped from training and evaluation, as in Huot et al. (2022).
-- **Why tabular?** Phase 1 is the ML phase. Each pixel becomes one row of engineered features, so
-  spatial context has to be encoded by hand (neighbourhood aggregates, distances, directional features).
-  The brief's "gap" is exactly that hand-made summaries may miss fire-front geometry, which Phase 2's CNN /
-  U-Net can learn directly.
+### B1. What exactly are you predicting?
 
-## 2. Data quality findings (EDA)
+- **Simple:** Given today's fire map and today's weather, terrain and vegetation, which pixels will be on fire tomorrow?
+- **Technical:** Binary per-pixel classification. The input is 11 day-*t* environmental rasters plus the day-*t* fire mask. The label is the MODIS fire mask at *t*+1. Pixels with label -1 (cloud or no data) are ignored.
+- **Maths:** Each model estimates P(y = 1 | x), where x is the information available at the end of day *t*.
+- **Code:** `src/aml/features.py::patch_target`, `src/dl/model.py::masked_bce`.
 
-| Issue | Handling |
-|---|---|
-| `tmmn`, `tmmx` outside 200–330 K (missing stored as 0 K; maxima up to 344 K ≈ 71 °C), about 0.35% of pixels | NaN; trees route NaN natively, LR/RF use median imputation fitted on train |
-| `sph` ≤ 0, `vs` < 0 | NaN |
-| `th` (wind direction) corrupted: values from −496,522 to 37,620 in about 0.2% of pixels | outside [0, 361] → NaN; (360, 361] wrapped |
-| elevation below 0 m (minimum −5 m) | kept: sub-sea-level terrain is real |
-| `pr` slightly negative (interpolation artefact) | clipped at 0 |
-| `NDVI` stored ×10⁴ | rescaled to [-1, 1] |
-| `population` heavy-tailed | log1p |
-| 74% of next-day fire pixels were **not** burning at *t* | persistence alone is weak; this is the hard part |
-| Kaggle release has no coordinates or orientation metadata | orientation inferred empirically (section 4) |
+### B2. What is the difference between the `active` and `transition` targets?
 
-## 3. Feature engineering (32 features, `src/aml/features.py`)
+- **Simple:** `active` asks "will this pixel be burning tomorrow?", which includes fires that just keep burning. `transition` looks only at pixels not burning today, so it asks "will fire arrive here?".
+- **Technical:** `active` uses every known pixel. `transition` keeps pixels known not to be burning at *t*. All models train on `active`. Their scores are then evaluated on both targets.
+- **Maths:** Transition is P(y(t+1) = 1 | y(t) = 0), a conditional form of the same probability, so the same scores can be used.
+- **Code:** `src/evaluation/compare.py::target_masks`.
 
-| Group | Features | Physical rationale |
+### B3. Why not use accuracy?
+
+- **Simple:** If 99% of pixels never burn, a model that always says "no fire" is 99% accurate and completely useless.
+- **Technical:** Accuracy is dominated by the majority class. PR-AUC measures how well the rare positives are ranked at the top.
+- **Maths:** A random ranking has PR-AUC equal to the positive rate, so about 0.01 here. Lift is PR-AUC divided by the positive rate.
+- **Code:** `src/aml/metrics.py::compute_metrics`.
+
+### B4. What are precision, recall and F1?
+
+- **Simple:** Precision: when we say fire, how often are we right? Recall: of the real fires, how many did we catch? F1 balances the two.
+- **Technical:** They are computed at one threshold, chosen on validation to maximise F1, and then applied unchanged to test.
+- **Maths:** Precision = TP/(TP+FP). Recall = TP/(TP+FN). F1 = 2PR/(P+R), the harmonic mean, which is low if either value is low.
+- **Code:** `src/aml/metrics.py::best_f1_threshold`.
+
+### B5. What are ROC-AUC and recall at a fixed false-positive rate?
+
+- **Simple:** ROC-AUC is the chance that a random burning pixel scores higher than a random non-burning one. Recall at 1% FPR says how many fires we catch if we accept false alarms on 1% of safe pixels.
+- **Technical:** ROC-AUC can look high under imbalance because the huge number of negatives keeps the FPR small. Fixed-FPR recall gives an operational reading.
+- **Maths:** ROC plots TPR against FPR, where FPR = FP/(FP+TN). With a very large TN, FPR barely moves even when false alarms are numerous.
+- **Code:** `src/aml/metrics.py::recall_at_fpr`.
+
+### B6. What are your baselines and why do you need them?
+
+- **Simple:** A baseline tells you whether a clever model is actually better than a trivial rule.
+- **Technical:** Dummy predicts the training positive rate everywhere. Persistence predicts that today's fire stays. Neighbourhood persistence uses the share of fire around each pixel.
+- **Maths:** Dummy has a constant score, so its PR-AUC equals the prevalence and its ROC-AUC is 0.5.
+- **Code:** `src/aml/train.py::heuristic_scores`.
+
+### B7. What is a train, validation and test split?
+
+- **Simple:** Train is for learning, validation is for choosing settings, and test is the final exam, opened once.
+- **Technical:** Hyperparameters, early stopping, thresholds and hybrid selection use validation only. Test is scored once with the chosen settings.
+- **Maths:** If you pick the best of many options using test, the score you report is an optimistically biased maximum.
+- **Code:** `src/aml/dataset.py`, `src/dl/train.py::train`.
+
+### B8. What is a U-Net?
+
+- **Simple:** It shrinks the image to understand the big picture, then grows it back to give an answer for each pixel. Shortcuts bring the fine detail back.
+- **Technical:** Three downsampling stages, a bottleneck and three upsampling stages. Skip connections concatenate encoder features onto decoder features of the same resolution.
+- **Maths:** Each pooling step doubles the area each later convolution covers. Skip connections restore the high-resolution information that pooling removed.
+- **Code:** `src/dl/model.py::UNet`.
+
+---
+
+## Intermediate questions
+
+### I1. Why three splits?
+
+- **Simple:** Each split asks a different question. `official` is the published benchmark, `spatial` tests new places, and `strict` tests new places and new weeks together.
+- **Technical:** `official` is NDWS's random-week split. `spatial` holds out location groups inferred from identical terrain. `strict` keeps patches that are in the held-out set under both definitions, so test patches share neither weeks nor terrain groups with training.
+- **Maths:** Nearby or repeated samples are not independent. Random splitting therefore underestimates the error on genuinely new data.
+- **Code:** `src/aml/splits.py::derive_strict_columns`, `src/aml/splits.py::verify_manifest`.
+
+### I2. How can you hold out locations when the data has no coordinates?
+
+- **Simple:** Elevation barely changes between days, so two patches with the same terrain are the same place. We use that terrain as a fingerprint.
+- **Technical:** Patches are linked through matching elevation fingerprints and connected into location groups. Whole groups go to one side of the split.
+- **Maths:** This is finding connected components in a graph whose edges are terrain matches.
+- **Limit to admit:** Only exact 8 x 8 km overlaps are detected, so nearby fires that do not overlap can still land on both sides. Two groups also hold most of the patches.
+- **Code:** `src/aml/splits.py`.
+
+### I3. What is the patch-centre leak?
+
+- **Simple:** NDWS patches are centred on fires. A model could learn "the middle burns" without learning anything about fire.
+- **Technical:** A full-patch CNN can infer its position from zero padding at the borders. That signal would not exist in a real forecast over a fixed map.
+- **Maths:** P(y | position) differs strongly from P(y), so position is a predictive feature that comes from how samples were chosen.
+- **Code:** `src/dl/data.py::random_crop`, `src/evaluation/compare.py::centre_prior`.
+
+### I4. How did you test whether the tabular models use that leak?
+
+- **Simple:** Three checks: add position as a feature, try to recover position from our features, and re-score on random windows where the centre is no longer special.
+- **Technical:** Adding explicit position raises PR-AUC sharply, so the position signal exists and our features do not already contain all of it. A classifier can still recover "near the centre" from the features to some degree. On position-controlled windows, models trained on full patches perform about as well as models trained on windows.
+- **Maths:** If a model depended heavily on position, then removing the relationship between position and label would reduce its lift.
+- **Limit to admit:** The features still partly encode closeness to the centre, most likely through where the fire is.
+- **Code:** `src/aml/leak_test.py::add_position_test`, `recover_position_test`, `crop_control_test`.
+
+### I5. Why subsample negatives, and how do you fix the probabilities?
+
+- **Simple:** There are too many non-fire pixels to train on, so we keep all fires and 2% of the rest. This makes the model overestimate fire, so we scale the probability back down.
+- **Technical:** Trees are trained on all positives and 2% of negatives. Their scores are mapped back to the true prior. Validation and test are never subsampled.
+- **Maths:** Keeping negatives at rate r multiplies the odds by 1/r, so true odds = r x sample odds, and p = r p_s / (r p_s + 1 - p_s).
+- **Code:** `src/aml/train.py::prior_correct`.
+
+### I6. Which features did you engineer and why?
+
+- **Simple:** One pixel alone does not know what surrounds it, so we add summaries: how much fire is nearby, how far the nearest fire is, whether wind blows from fire toward this pixel, and whether it lies uphill of the fire.
+- **Technical:** 32 features in six groups: raw, fire, wind, terrain, weather and vegetation. Each is computed from day-*t* inputs in the same patch only.
+- **Maths:** Wind push is a dot product between the wind vector and the direction from the fire. Vapour pressure deficit measures how dry the air is.
+- **Code:** `src/aml/features.py::patch_features`, `FEATURE_GROUPS`.
+
+### I7. How does a gradient-boosted tree model work?
+
+- **Simple:** Trees are added one at a time, and each new tree corrects the mistakes of the trees so far.
+- **Technical:** LightGBM and XGBoost fit each tree to the gradients of the log loss. Size, learning rate and early stopping control overfitting. Missing values go down a learned branch.
+- **Maths:** F_m(x) = F_{m-1}(x) + eta h_m(x), where h_m approximates the negative gradient of the loss.
+- **Code:** `src/aml/train.py::fit_lightgbm`, `fit_xgboost`, `configs/aml.yaml`.
+
+### I8. How did you choose U-Net settings without touching the test set?
+
+- **Simple:** We tried one setting at a time and kept the best on a separate tuning split, then froze the settings for the final runs.
+- **Technical:** A greedy one-factor search ran on the `dev` protocol, whose validation patches come from the official training set but held-out spatial groups. No reported test patch is used.
+- **Maths:** A greedy search cannot capture interactions between settings, but it needs far fewer runs than a full grid.
+- **Code:** `src/dl/run_experiments.py::run_sweep`, `configs/dl.yaml`.
+
+### I9. What loss did you use, and why not Dice?
+
+- **Simple:** Weighted cross-entropy treats each pixel separately and makes missing a fire ten times as costly. Dice scores overlap and did much worse here.
+- **Technical:** Weighted BCE with pos_weight 10 had the best tuning score. BCE keeps per-pixel probabilities usable for ranking, which PR-AUC rewards.
+- **Maths:** BCE = -[w y log p + (1 - y) log(1 - p)]. Soft Dice = 1 - 2 sum(p y)/(sum p + sum y). Dice rewards overlap of a thresholded shape more than the ranking of scores.
+- **Limit to admit:** pos_weight changes calibration, so raw U-Net probabilities are not true probabilities. PR-AUC depends only on the ranking of scores, so it does not need calibrated probabilities.
+- **Code:** `src/dl/model.py::masked_bce`, `masked_dice`, `make_loss`.
+
+### I10. What do augmentation and random crops do?
+
+- **Simple:** Flips and rotations show the model more variations. Crops also hide where the original centre was.
+- **Technical:** One of the eight dihedral transforms is applied per batch, and wind and aspect vectors are transformed with the image. Training uses a random 32 x 32 crop of each patch.
+- **Maths:** If wind blows east and you mirror east-west, wind must become west. Otherwise you create physically inconsistent examples.
+- **Honest result:** Removing augmentation scored slightly higher on the tuning split, within the variation we saw between settings. We do not claim that augmentation improved the model.
+- **Code:** `src/dl/data.py::apply_dihedral`, `augment`, `random_crop`.
+
+---
+
+## Advanced questions
+
+### A1. Why might trees match or beat a U-Net on this data?
+
+- **Simple:** The most useful information is close to the fire, and our hand-made features already summarise it. Patches are small and there are not many of them for a deep network.
+- **Technical:** Tree models receive explicit multi-scale fire context. Coarse weather rasters offer little fine spatial detail for convolutions to exploit. Grinsztajn et al. (2022) also find that trees perform strongly on medium-sized tabular data.
+- **Maths:** A CNN's advantage is translation-equivariant local pattern learning. If features already approximate those patterns, the extra hypothesis space brings more variance than reduced bias.
+- **Code:** `src/aml/features.py`, `experiments/ndws/FINAL_RESULTS.md`.
+
+### A2. What does the receptive field mean here?
+
+- **Simple:** It is how far a network can see around a pixel when making a prediction.
+- **Technical:** The dilated CNN has a 29-pixel receptive field. The U-Net's pooling gives it a much larger one.
+- **Maths:** Each layer adds (k - 1) x dilation x stride product to the receptive field.
+- **Code:** `src/dl/model.py::CompactCNN`, `tests/test_dl.py`.
+
+### A3. Why late fusion by logistic regression on logits?
+
+- **Simple:** It learns how much to trust each model, using data neither model trained on.
+- **Technical:** Logistic regression over the base models' logits is fitted on half of the validation patches. The other half selects among hybrid candidates and sets the threshold. U-Net with engineered channels also competes as hybrid option B.
+- **Maths:** logit(p) = w0 + w1 logit(p_tree) + w2 logit(p_unet), which is a weighted combination of log-odds. Under conditional independence, log-odds add.
+- **Why not fit on train:** Base models' scores on their own training data are overconfident, so a stacker would over-trust them (Wolpert, 1992).
+- **Code:** `src/hybrid/fusion.py::fit_fusion`, `split_val_patches`.
+
+### A4. How do you know a difference between models is real?
+
+- **Simple:** We resample the test patches many times and see whether the winner stays the same.
+- **Technical:** A patch-level bootstrap with 500 resamples gives PR-AUC intervals. The paired version uses the same resample for both models. Pixels in the same patch are correlated, so we resample patches rather than pixels.
+- **Maths:** For each resample compute delta = PR-AUC(A) - PR-AUC(B). The 2.5th and 97.5th percentiles give a 95% interval. P(delta <= 0) is the share of resamples where A does not beat B.
+- **Limit to admit:** The bootstrap describes only the uncertainty from the choice of test patches. Training seeds are checked separately.
+- **Code:** `src/aml/metrics.py::bootstrap_pr_auc`, `paired_bootstrap_delta`, `src/evaluation/compare.py::seed_stability`.
+
+### A5. Why is the strict test set small, and how does that affect conclusions?
+
+- **Simple:** Very few patches are outside the training weeks and also outside the training places.
+- **Technical:** Strict test has 405 patches, so its intervals are wide and overlap. Claims of small differences on that split are not justified.
+- **Maths:** Standard error shrinks as 1/sqrt(n), so fewer independent patches means more uncertainty.
+- **Code:** `data/splits/split_audit.json`.
+
+### A6. Are NDWS weeks chronological? Could you forecast the future?
+
+- **Simple:** No. Weeks are randomly assigned, so training can include weeks after the test weeks. We test generalisation to other weeks, not forecasting into the future.
+- **Technical:** The Kaggle release contains no dates, so a chronological split cannot be built. A random-week split with a buffer reduces temporal overlap but is not a forecast test.
+- **Maths:** A chronological split would detect drift between training and future distributions. Random weeks mix those distributions.
+- **Code:** `docs/DATASET_CARD.md`.
+
+### A7. What did removing the day-*t* fire channels show?
+
+- **Simple:** Without today's fire map the model nearly collapses. Tomorrow's fire is mostly about where fire is today.
+- **Technical:** On the tuning split, removing `prev_fire` and `prev_unknown` reduced U-Net validation PR-AUC from 0.239 to 0.030, a much larger fall than removing any other group.
+- **Maths:** Next-day fire is strongly autocorrelated in space and time, so the previous state carries most of the mutual information.
+- **Limit to admit:** Ablations are single runs on the tuning split, so small differences should not be interpreted.
+- **Code:** `configs/dl.yaml`, `experiments/ndws/dl/dev/ablations.csv`.
+
+### A8. What can this model not claim?
+
+- **Simple:** It cannot say why a fire spread, cannot replace fire officials, and has not been tested across future seasons.
+- **Technical:** Results come from one satellite-derived dataset, patches centred on known fires and retrospective weather. MODIS labels are noisy, and a day's weather is averaged over the day of the observation. A patch is only selected because a fire exists, so the problem is easier than monitoring all land.
+- **Maths:** The models estimate P(y | x) under the sampling distribution of NDWS. Changing the sampling changes P(y | x).
+- **Code:** `docs/DATASET_CARD.md`, `docs/METHODOLOGY.md`.
+
+### A9. What changed between Phase 1 and this final submission, and why?
+
+- **Simple:** We kept the Phase 1 results but added a stricter split, a test for the position leak, the deep models and a hybrid.
+- **Technical:** The graded Phase 1 materials are frozen in `phase1_submission/`. The official and spatial tabular results reproduce them to three decimals after a full re-run. New work: the strict protocol, the leak tests, the Dummy baseline, the CNN, the tuned U-Net and late fusion.
+- **Maths:** The strict split removes both sources of dependence at once, so it costs training data and test size in exchange for a harder test.
+- **Code:** `src/evaluation/report_assets.py::phase1_change_table`, `report/tables/phase1_changes.tex`.
+
+---
+
+## Where each member should go deeper
+
+| Member | Phase 1 area | Be ready to go deep on |
 |---|---|---|
-| raw (10) | elevation, wind speed, tmin, tmax, humidity, precip, PDSI, NDVI, log population, ERC | fuel, weather, drought, ignition sources |
-| fire (8) | prev_fire, prev_unknown, burning fraction in 3/5/9/17 km windows, distance to nearest fire, log patch fire count | fire spreads from existing fire; multi-scale "lagged burn activity" |
-| wind (6) | u, v components, fire 1–3 km upwind / downwind, cosine alignment of wind with the fire→pixel vector, wind push = alignment × speed / (1 + distance) | spread is faster downwind |
-| terrain (4) | slope, aspect (sin/cos), rise-over-run from nearest fire pixel | fire runs faster upslope (preheating of fuel above the flame); empirically, sloped ground near fire burns about 2× more than level ground |
-| weather (2) | temperature range, vapour-pressure deficit | VPD = e_s(T_max) − e_a measures atmospheric dryness, which drives fuel moisture |
-| vegetation (2) | 5×5 NDVI mean and std | fuel amount and continuity |
+| Vedant Satbhai | Data and spatial audit | I1, I2, A5, A6 |
+| Pratik Agade | EDA and data quality | B1, B2, I6, A8 |
+| Lakshay Saharan | Feature engineering | I4, I6, A1, A7 |
+| Raghvendra Singh | Models and tuning | B6, I5, I7, I8, I9 |
+| Aaryan Krishna | Evaluation and integration | B3, B5, A3, A4, A9 |
 
-Formulas worth knowing:
-- Saturation vapour pressure (Tetens): e_s = 0.6108·exp(17.27·T / (T + 237.3)) kPa, with T in °C.
-- Actual vapour pressure from specific humidity q: e_a = q·p / (0.622 + 0.378·q).
-- Pressure from elevation (FAO-56): p = 101.3·((293 − 0.0065·z)/293)^5.26 kPa.
-- Wind *toward* vector from meteorological direction θ (wind blows FROM θ): (u, v) = −speed·(sin θ, cos θ).
-
-**Leakage rule:** every feature uses day-*t* inputs only. `tests/test_aml.py::test_features_ignore_target`
-checks that changing the t+1 mask leaves the features unchanged.
-
-## 4. Orientation check (a physical plausibility test)
-
-The Kaggle TFRecords carry no georeferencing. We tested all four row/column conventions on all 14,979
-training patches. Only rows south→north, columns west→east gives significantly more new fire downwind than
-upwind: ratio 1.12, 95% patch-bootstrap CI [1.09, 1.15]. Rows north→south gives 1.01 [0.98, 1.04] (no wind
-effect), and the fully reversed convention gives 0.89 (physically backwards). We adopt south→north. The
-effect is modest because GRIDMET wind is a daily ~4 km average. Terrain: within 3 km of fire, upslope (17.0%) and downslope (16.6%)
-pixels burn about twice as often as level ground (7.9%) (EDA `terrain_effect.png`). Slope magnitude matters;
-the upslope asymmetry is marginal at 1 km daily resolution. Be honest about this in the viva. Viva point: *we let physics choose between two
-conventions instead of assuming one.*
-
-## 5. Splits and leakage
-
-- **Official split:** random **weeks** (8:1:1) with a one-day buffer, so it is temporally separated.
-- **Problem found:** the same terrain appears in different splits (recurring or overlapping fires).
-- **Terrain fingerprint:** elevation is static, so if two patches share an identical, non-flat 8×8 km
-  elevation block, they cover the same ground. Algorithm: hash every 8×8 block on a stride-8 grid; slide
-  an 8×8 window over every patch and look up hashes (an exact match is O(1) per window); join matches with
-  **union-find**, giving 845 location groups.
-- **Control:** horizontally mirrored patches should never match. They match 0 / 1,855 times, so the hits
-  are not chance.
-- **Finding:** about 95% of official test patches share terrain with training patches.
-- **Spatial protocol:** whole location groups are assigned to train / val / test (80 / 10 / 10 by patch
-  count), so held-out patches share no terrain with training. Consecutive days of the same fire overlap in
-  terrain and therefore fall in the same group. This makes the split **event-disjoint** as well.
-- **Result:** raw PR-AUC halves on the spatial test, but its prevalence also drops (1.25% → 0.48%) because the
-  held-out groups are smaller, isolated fires (the two giant recurring-fire groups must stay in train). Lift over
-  chance (20.9× → 28.6×), ROC-AUC (0.905 → 0.896) and the model ranking barely change. Conclusion: the overlap is
-  real but does not measurably inflate pixel-level tabular results. Only a hint of location memorisation shows
-  (elevation and population carry more SHAP weight on the official split). See `experiments/ndws/results/protocol_gap.png`.
-
-## 6. Models
-
-### Logistic regression
-p = σ(wᵀx + b), trained by minimising log-loss L = −Σ[y log p + (1−y) log(1−p)] + λ‖w‖². The loss is
-convex, so there is a single optimum (found with L-BFGS). Features are standardised so the L2 penalty treats
-them equally. It is linear in log-odds, so interactions such as "wind matters only near fire" must be
-hand-made (`wind_push`).
-
-### Random forest
-Many deep trees, each trained on a bootstrap sample with a random feature subset at each split. The
-variance of the average of B trees with pairwise correlation ρ is ρσ² + (1−ρ)σ²/B. Feature subsampling
-lowers ρ, and averaging shrinks the second term. Trained on a 400k-row subsample for memory.
-
-### Gradient boosting (XGBoost, LightGBM)
-An additive model F_M(x) = Σ_m η·f_m(x). Each tree f_m is fitted to the gradient of the loss at the
-current prediction. XGBoost uses a second-order Taylor expansion: with gradient sums G and hessian sums H
-per leaf, the optimal leaf weight is **w\* = −G / (H + λ)** and the split gain is
-½[G_L²/(H_L+λ) + G_R²/(H_R+λ) − (G_L+G_R)²/(H_L+H_R+λ)] − γ. For log-loss, g = p − y and h = p(1−p).
-- **XGBoost** grows trees depth-wise (we use `max_depth`) and finds splits with histograms.
-- **LightGBM** grows trees **leaf-wise** (it splits the leaf with the largest gain; we use `num_leaves`). It
-  adds GOSS (keeps large-gradient rows and samples small-gradient rows) and EFB (bundles mutually exclusive
-  sparse features).
-- **Regularisation we needed:** pixels in one patch share almost constant weather values, so small leaves
-  can memorise individual patches. Large minimum leaf sizes (2,000–5,000 rows), column subsampling (0.5),
-  L2 penalty and **early stopping** on validation PR-AUC control this. Viva point: the first configuration
-  (min leaf 200, importance weights) stopped after 5 trees. Diagnosing and fixing that is part of the work.
-
-## 7. Imbalance handling and calibration
-
-- All positive pixels are kept, plus a random 2% of negatives (training split only). Val and test are
-  never subsampled.
-- Two options were compared on validation for each family:
-  1. **Importance weights:** weight 1/0.02 = 50 on negatives, which restores the true prior during training.
-  2. **Unweighted + prior correction:** keeping each negative with probability r multiplies the odds by
-     1/r, so odds_true = r·odds_sample, i.e. **p_true = r·p / (r·p + 1 − p)** (Saerens et al., 2002). The
-     map is monotone, so ranking metrics (PR-AUC, ROC-AUC) are unchanged and only calibration changes.
-- Boosting worked better unweighted. LR and RF pick whichever option is better on validation (stored in
-  `results.json → selection`).
-- **Brier score** = mean (p − y)². It rewards calibrated probabilities. The reliability plot compares
-  mean predicted probability with observed frequency per quantile bin.
-
-## 8. Metrics
-
-- **PR-AUC (average precision)** = Σ_k (R_k − R_{k−1})·P_k. Chance level equals the positive rate (about
-  0.01), so 0.2 is about 20× chance. With 1% positives a model can have ROC-AUC 0.9 and still produce
-  mostly false alarms. PR-AUC exposes this because precision depends on the negative count.
-- **ROC-AUC** = P(score of a random positive > score of a random negative). It is insensitive to class
-  ratio, so it is reported but is not the headline metric.
-- **F1 / precision / recall** use a threshold chosen **on validation** (max F1) and are then applied to test
-  unchanged. Choosing the threshold on test would leak.
-- **Recall at 1% / 5% FPR:** the fraction of new fire caught if at most 1% / 5% of non-fire pixels may be
-  flagged, i.e. an alarm budget.
-- **Accuracy is not reported:** predicting "no fire" everywhere scores about 99%.
-
-## 9. Uncertainty and significance
-
-Pixels in one patch are correlated, so resampling pixels would understate uncertainty. We resample
-**patches** with replacement (500 bootstrap replicates) and recompute PR-AUC on all pixels of the resampled
-patches. That gives a 95% percentile CI. For model comparisons we use a **paired** bootstrap (same
-resampled patches for both models) on ΔPR-AUC. If the 95% CI of Δ excludes 0, the difference is robust.
-Implementation trick: sort scores once, then each replicate is just a weighted cumulative sum
-(`src/aml/metrics.py::BootstrapAP`).
-
-## 10. Likely viva questions
-
-1. *Why PR-AUC and not accuracy or ROC-AUC?* See section 8.
-2. *How do you know there is no leakage?* Features use day-*t* inputs only (unit-tested); thresholds and
-   hyperparameters are chosen on validation; test is scored once; the spatial protocol removes shared
-   terrain (audited, with a mirrored-patch control).
-3. *Why is the spatial-split PR-AUC so much lower?* Mostly prevalence: PR-AUC's chance level is the positive
-   rate, and the spatial test has 0.48% positives vs 1.25% (smaller, isolated fires). Lift and ROC-AUC are
-   nearly unchanged, so the overlap does not substantially inflate the official score. Do not claim it does.
-4. *Why gradient boosting over random forest?* Boosting reduces bias stage by stage, while RF reduces
-   variance by averaging. Here boosting is **not** significantly better than RF (paired ΔPR-AUC CI includes 0
-   on both protocols). Both clearly beat logistic regression, so non-linearity matters but the ensemble type does not.
-5. *What does SHAP show?* Distance to fire, then the 17/9/5 km burn fractions, then wind push (downwind of
-   fire raises risk), upslope_from_fire, elevation and NDVI. High VPD raises risk.
-6. *Why is performance far from perfect?* MODIS 1 km daily detections are noisy (clouds, detection
-   timing); 74% of t+1 fire is new; there is no fuel-moisture, suppression or sub-daily wind information.
-   Huot et al.'s CNN gets 28.4% PR-AUC on the official split.
-7. *What would you do in Phase 2?* A U-Net on the multichannel patch, with the same splits and metrics.
-   Add ConvLSTM only with multi-day sequences (e.g. WildfireSpreadTS). Possible hybrid: feed LightGBM
-   probabilities or engineered channels into the U-Net, or stack CNN embeddings into boosting. The DL model
-   must beat the tuned LightGBM on the **spatial** test with a paired bootstrap.
-8. *Why 2% negative sampling?* It keeps memory manageable (1.9M training rows) while keeping all
-   positives. 5% gave the same validation PR-AUC (0.226 vs 0.225).
-9. *How was the image orientation determined?* See section 4.
+Everyone should be able to run `pytest -q`, open `configs/dl.yaml`, and explain one prediction map from the report.

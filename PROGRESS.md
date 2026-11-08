@@ -13,18 +13,21 @@ Short status of the final submission. Branch: `phase2/final-submission`. Last up
 - Position-leak test, Compact CNN, loss and regularisation sweep, late fusion and unified comparison written
 - Test crash fixed; unit tests and Ruff pass
 - Methodology, architecture, project plan, dataset card and literature review updated; citations verified
+- Tabular models and leak tests re-run on all three splits; deep-learning sweep and ablations finished
+- Memory fix for the 31-channel U-Net; `run_all.sh` resumes interrupted final and ablation stages correctly
+- `CONTRIBUTIONS.md` rewritten from the real history, with suggested tasks for teammates
+- Viva guide rewritten
+- Generator for report tables and numbers (`src/evaluation/report_assets.py`)
 
 ## In progress
 
-- Full experiment run (`scripts/run_all.sh`): tabular training on all three splits
+- Full experiment run (`scripts/run_all.sh`): final CNN, U-Net and feature U-Net runs on all three splits
 
 ## Left
 
-- Deep-learning sweep, ablations and final runs; hybrid; final comparison
+- Hybrid and final comparison
 - README with re-run results
 - Final IEEE report, including what changed since Phase 1
-- Final slides, executed notebooks and viva guide
-- `CONTRIBUTIONS.md` matching the real history, with suggested tasks for teammates
+- Final slides and executed notebooks
 - `docs/DEVELOPMENT_LOG.md`, `docs/EXPERIMENT_TRACKER.md`, `docs/REQUIREMENTS_CHECKLIST.md`
-- Make `run_all.sh` treat a partial ablation run as unfinished (after the current run ends)
 - Fresh-clone check, final review, pull request into `main` for Vedant to review
