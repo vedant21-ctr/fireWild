@@ -21,32 +21,34 @@ BASE_DIR = os.path.dirname(HERE)
 CHROME = os.environ.get("CHROME", "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
 W, H = 1920, 1080
 FONTS = "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=IBM+Plex+Sans:wght@400;600&display=swap"
-TITLE = "Next-Day Wildfire Spread Prediction"
-INK, ACCENT, MUTED, PAPER, RULE = "#1f2a33", "#b0432c", "#6a7178", "#f7f5f0", "#d6d1c4"
+TITLE = "Predicting Tomorrow's Wildfire"
+INK, ACCENT, MUTED, PAPER, RULE, CARD = "#1f2a33", "#b0432c", "#6a7178", "#f7f5f0", "#d6d1c4", "#ffffff"
 
 CSS = f"""
 @page {{ size: {W}px {H}px; margin: 0 }}
 html, body {{ margin: 0; padding: 0; background: {INK} }}
 section {{ position: relative; width: {W}px; height: {H}px; box-sizing: border-box; overflow: hidden; display: flex; flex-direction: column;
-          gap: 32px; padding: 72px 112px 96px; background: {PAPER}; color: {INK}; font: 36px/1.4 'IBM Plex Sans', Arial, sans-serif;
+          gap: 44px; padding: 80px 112px 96px; background: {PAPER}; color: {INK}; font: 42px/1.35 'IBM Plex Sans', Arial, sans-serif;
           page-break-after: always; break-after: page }}
 section * {{ box-sizing: border-box }}
-h1, h2, p, ul, table {{ margin: 0 }}
-.kicker {{ font-size: 24px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: {ACCENT} }}
-h1 {{ font: 600 104px/1.05 'EB Garamond', Georgia, serif }}
-h2 {{ font: 600 62px/1.1 'EB Garamond', Georgia, serif }}
-.head {{ display: flex; flex-direction: column; gap: 10px }}
-.row {{ display: flex; gap: 56px; align-items: center; flex: 1; min-height: 0 }}
-.col {{ display: flex; flex-direction: column; gap: 22px; flex: 1; min-width: 0 }}
-.fig {{ flex: 1; min-width: 0; min-height: 0; max-height: 100%; object-fit: contain; background: #fff; border: 1px solid {RULE}; padding: 12px }}
+h1, h2, h3, p, ul, table {{ margin: 0 }}
+h1 {{ font: 600 124px/1.05 'EB Garamond', Georgia, serif }}
+h2 {{ font: 600 76px/1.1 'EB Garamond', Georgia, serif }}
+h3 {{ font: 600 46px/1.2 'IBM Plex Sans', Arial, sans-serif }}
+.row {{ display: flex; gap: 40px; align-items: stretch; flex: 1; min-height: 0 }}
+.center {{ align-items: center }}
+.card {{ flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 22px; justify-content: center; background: {CARD}; border: 1px solid {RULE}; padding: 44px 40px }}
+.card p {{ font-size: 37px; color: #3e4a54 }}
+.arrow {{ align-self: center; font-size: 84px; color: {ACCENT} }}
+.big {{ font: 600 132px/1 'EB Garamond', Georgia, serif; color: {ACCENT} }}
+.note {{ color: #3e4a54 }}
 .full {{ flex: 1; min-height: 0; width: 100%; object-fit: contain; background: #fff; border: 1px solid {RULE}; padding: 12px }}
-ul {{ padding-left: 1.1em; display: flex; flex-direction: column; gap: 16px }}
+ul {{ padding-left: 1.1em; display: flex; flex-direction: column; gap: 26px }}
 table {{ border-collapse: collapse; width: 100% }}
-th, td {{ padding: 9px 18px; border-bottom: 1px solid {RULE}; text-align: left; font-size: 31px }}
-th {{ font-weight: 600; color: {MUTED}; font-size: 26px }}
+th, td {{ padding: 26px 24px; border-bottom: 1px solid {RULE}; text-align: left; font-size: 46px }}
+th {{ font-weight: 600; color: {MUTED}; font-size: 34px }}
 td.best {{ font-weight: 600; color: {ACCENT} }}
-.big {{ font: 600 84px/1 'EB Garamond', Georgia, serif; color: {ACCENT} }}
-.foot {{ position: absolute; left: 112px; right: 112px; bottom: 40px; font-size: 22px; color: {MUTED} }}
+.foot {{ position: absolute; right: 112px; bottom: 36px; font-size: 26px; color: {MUTED} }}
 aside {{ display: none }}
 """
 
@@ -56,206 +58,108 @@ def load_numbers():
         return dict(re.findall(r"\\newcommand\{\\(\w+)\}\{(.*)\}", f.read()))
 
 
-def figure(path, css="fig"):
-    return f'<img class="{css}" src="file://{os.path.join(BASE_DIR, "experiments", "ndws", path)}">'
+def figure(path):
+    return f'<img class="full" src="file://{os.path.join(BASE_DIR, "experiments", "ndws", path)}">'
+
+
+def card(title, text):
+    return f'<div class="card"><h3>{title}</h3><p>{text}</p></div>'
+
+
+def stat(number, text):
+    return f'<div class="card"><div class="big">{number}</div><p>{text}</p></div>'
+
+
+def cards(*items):
+    return '<div class="row">' + "".join(items) + "</div>"
 
 
 def bullets(*items):
-    return "<ul>" + "".join(f"<li>{i}</li>" for i in items) + "</ul>"
+    return '<div class="row center"><ul>' + "".join(f"<li>{i}</li>" for i in items) + "</ul></div>"
 
 
-def table(header, rows):
-    head = "".join(f"<th>{h}</th>" for h in header)
-    body = "".join("<tr>" + "".join(c if c.startswith("<td") else f"<td>{c}</td>" for c in r) + "</tr>" for r in rows)
-    return f"<table><tr>{head}</tr>{body}</table>"
+def percent(value):
+    return f"{100 * float(value):.0f}%"
 
 
-def score_rows(n, models):
-    """PR-AUC [95% CI] per protocol, marking the highest score in each column."""
+def best_tree(n, protocol):
+    return max(n[f"r{protocol}Full{m}Pr"] for m in ("RandomForest", "Xgboost", "Lightgbm"))
+
+
+def results_table(n):
     protocols = ("Official", "Spatial", "Strict")
-    best = {p: max(float(n[f"r{p}Full{m}Pr"]) for _, m in models) for p in protocols}
-    rows = []
-    for label, m in models:
-        cells = []
-        for p in protocols:
-            text = f"{n[f'r{p}Full{m}Pr']} [{n[f'r{p}Full{m}CiLow']}, {n[f'r{p}Full{m}CiHigh']}]"
-            cells.append(f'<td class="best">{text}</td>' if float(n[f"r{p}Full{m}Pr"]) == best[p] else text)
-        rows.append([label, *cells])
-    return rows
+    head = "<tr><th></th><th>New weeks</th><th>New places</th><th>New weeks and places</th></tr>"
+    tree = "".join(f'<td class="best">{best_tree(n, p)}</td>' for p in protocols)
+    rows = f"<tr><td>Best tree model</td>{tree}</tr>"
+    for label, model in (("U-Net", "Unet"), ("Hybrid", "Hybrid")):
+        rows += f"<tr><td>{label}</td>" + "".join(f"<td>{n[f'r{p}Full{model}Pr']}</td>" for p in protocols) + "</tr>"
+    return f'<div class="row center"><table>{head}{rows}</table></div>'
 
 
 def slides(n):
-    s = []
-
-    def add(kicker, title, body, notes, source=""):
-        s.append((kicker, title, body, notes, source))
-
-    add("The task", "Which pixels will be burning tomorrow?",
-        '<div class="row"><div class="col">' + bullets(
-            "For each 1 km pixel around an active fire, estimate the chance it burns on day <i>t</i>+1",
-            "Inputs: 11 environmental rasters and the fire map from day <i>t</i>",
-            f"Only {n['rTrainPositiveRate']}% of training pixels are positive, so accuracy is useless. We use PR-AUC",
-            "Two families compared on the same pixels: trees on hand-made features, and CNN and U-Net on images",
-        ) + "</div></div>",
-        "State the question simply. A model that always says no fire would be about 99% accurate and useless, which is why PR-AUC is the main metric.")
-
-    add("Data", "NDWS: one day of inputs, the next day's fire",
-        '<div class="row">' + figure("eda/example_patches.png") + '<div class="col" style="flex:.55">' + bullets(
-            f"{n['rPatches']} patches of 64 x 64 km, US, 2012 to 2020",
-            "Labels: fire, no fire, or unknown (excluded)",
-            "No coordinates, dates or event IDs in the release",
-        ) + "</div></div>",
-        "Walk through one row of the figure. Stress that the release has no coordinates, dates or fire IDs, which limits what we can claim.",
-        "experiments/ndws/eda/example_patches.png")
-
-    add("What the data shows", "Fire mostly appears close to fire",
-        '<div class="row">' + figure("eda/spread_vs_distance.png") + figure("eda/wind_orientation.png") + "</div>"
-        f"<p>{n['rNewFireShare']}% of next-day fire pixels were not burning on day <i>t</i>. Persistence alone recalls {n['rPersistenceRecall']}% of them. "
-        f"New fire is {n['rWindRatio']} times as likely downwind as upwind (95% CI {n['rWindLow']} to {n['rWindHigh']}).</p>",
-        "The left chart motivates the distance features. The right chart is how we inferred image orientation, since the data has no georeferencing.",
-        "experiments/ndws/eda/")
-
-    add("Honest evaluation", "Three test splits, three different questions",
-        '<div class="row"><div class="col">' + table(
-            ["Protocol", "Weeks kept apart", "Terrain kept apart", "Train / val / test patches"],
-            [["Official", "Yes", "No", f"{n['rOfficialTrain']} / {n['rOfficialVal']} / {n['rOfficialTest']}"],
-             ["Spatial", "No", "Yes", f"{n['rSpatialTrain']} / {n['rSpatialVal']} / {n['rSpatialTest']}"],
-             ["Strict", "Yes", "Yes", f"{n['rStrictTrain']} / {n['rStrictVal']} / {n['rStrictTest']}"]]) +
-        f"<p>Identical terrain shows about <b>{n['rOfficialOverlap']}%</b> of official test patches overlap training locations. "
-        f"The strict test set is small ({n['rStrictTest']} patches), so its intervals are wide.</p></div></div>",
-        "Explain the terrain fingerprint: elevation barely changes between days, so identical terrain means the same place. Strict is the hardest test, and the smallest.",
-        "data/splits/split_audit.json")
-
-    add("A hidden shortcut", "Patches are centred on fire, so position leaks the answer",
-        '<div class="row"><div class="col">' + bullets(
-            f"On full patches, a prior using only position scores {n['rStrictFullCentrePriorPr']} on strict, above every valid model",
-            f"A U-Net trained on full patches gains {n['rOfficialFullActiveUnetFullpatchMinusUnetDelta']}, "
-            f"{n['rSpatialFullActiveUnetFullpatchMinusUnetDelta']} and {n['rStrictFullActiveUnetFullpatchMinusUnetDelta']} over random crops",
-            "So networks train on random 32 x 32 crops",
-            "Every model is also scored on fixed random windows where the centre is not special",
-        ) + '</div><div class="col">' + table(
-            ["LightGBM test PR-AUC", "Official", "Spatial", "Strict"],
-            [["Features", n["rOfficialLeakFeatures"], n["rSpatialLeakFeatures"], n["rStrictLeakFeatures"]],
-             ["+ position", n["rOfficialLeakPosition"], n["rSpatialLeakPosition"], n["rStrictLeakPosition"]]]) +
-        "<p>Adding position helps a lot, so the tabular features do not already contain all of it.</p></div></div>",
-        "Full-patch results are diagnostics and not valid forecasts. In a real forecast over a fixed map, the centre of an image means nothing.",
-        "src/aml/leak_test.py, experiments/ndws/results/*/leak_test.json")
-
-    add("Models", "Trees, networks and hybrids",
-        '<div class="row"><div class="col">' + table(["Family", "What it sees", "Models"], [
-            ["Baselines", "Trivial rules", "Dummy, persistence, neighbourhood persistence"],
-            ["Tabular", "32 features per pixel", "Logistic regression, random forest, XGBoost, LightGBM"],
-            ["Spatial", "Image patches", f"Compact CNN ({n['rCnnParameters']} params), U-Net ({n['rUnetParameters']} params)"],
-            ["Hybrid", "Both", "U-Net with 31 channels, and late fusion of tree and network"]]) +
-        "<p>U-Net settings were chosen on a separate tuning split: weighted cross-entropy (weight 10), dropout 0.2. "
-        "Fusion weights use half of validation, and the other half picks the hybrid.</p></div></div>",
-        "Emphasise that tuning and hybrid selection never see test data.",
-        "configs/dl.yaml, experiments/ndws/dl/dev/selected.json")
-
-    models = [("Dummy", "Dummy"), ("Random forest", "RandomForest"), ("XGBoost", "Xgboost"), ("LightGBM", "Lightgbm"), ("Compact CNN", "Cnn"),
-              ("U-Net", "Unet"), ("U-Net + 31 channels", "UnetFeatures"), ("Hybrid (selected on validation)", "Hybrid")]
-    add("Results", "No network or hybrid beats the best tree",
-        '<div class="col">' + table(["Test PR-AUC [95% CI]", "Official", "Spatial", "Strict"], score_rows(n, models)) + "</div>"
-        f"<p>Positive rates differ across splits ({n['rOfficialPositiveRate']}%, {n['rSpatialPositiveRate']}%, {n['rStrictPositiveRate']}%), so compare within a column. "
-        "Network rows use the first of three training seeds.</p>",
-        "Give the headline first: the best tree wins every column. The intervals overlap, so the next slide uses paired tests. Report this honestly, as the brief asks.",
-        "experiments/ndws/final/metrics.csv")
-
-    add("Are the gaps real?", "Paired tests against the validation-selected tree (XGBoost)",
-        '<div class="row"><div class="col">' + table(["Difference in PR-AUC", "Official", "Spatial", "Strict"], [
-            ["U-Net - XGBoost", n["rOfficialFullActiveUnetMinusXgboostDelta"], n["rSpatialFullActiveUnetMinusXgboostDelta"], n["rStrictFullActiveUnetMinusXgboostDelta"]],
-            ["CNN - XGBoost", n["rOfficialFullActiveCnnMinusXgboostDelta"], n["rSpatialFullActiveCnnMinusXgboostDelta"], n["rStrictFullActiveCnnMinusXgboostDelta"]],
-            ["Hybrid - XGBoost", n["rOfficialFullActiveHybridMinusXgboostDelta"], n["rSpatialFullActiveHybridMinusXgboostDelta"], n["rStrictFullActiveHybridMinusXgboostDelta"]],
-            ["Hybrid - U-Net", n["rOfficialFullActiveHybridMinusUnetDelta"], n["rSpatialFullActiveHybridMinusUnetDelta"], n["rStrictFullActiveHybridMinusUnetDelta"]]]) +
-        bullets("U-Net and CNN are significantly below XGBoost on all three splits",
-                "The hybrid is significantly below XGBoost on official, and indistinguishable on spatial and strict",
-                "The hybrid significantly improves on the U-Net on spatial and strict") + "</div></div>",
-        "Paired bootstrap on the same resampled patches. Intervals for each difference are in report tables. Strict's best test tree is LightGBM, but the test uses the tree chosen on validation.",
-        "experiments/ndws/final/significance.json")
-
-    add("Without the centre", "Fixed windows close the gap on official and spatial, not on strict",
-        '<div class="row"><div class="col">' + table(["Test PR-AUC on fixed windows", "Official", "Spatial", "Strict"], [
-            ["LightGBM (window-trained)", n["rOfficialCropLightgbmCropPr"], n["rSpatialCropLightgbmCropPr"], n["rStrictCropLightgbmCropPr"]],
-            ["U-Net", n["rOfficialCropUnetPr"], n["rSpatialCropUnetPr"], n["rStrictCropUnetPr"]],
-            ["Hybrid", n["rOfficialCropHybridPr"], n["rSpatialCropHybridPr"], n["rStrictCropHybridPr"]],
-            ["Position prior only", n["rOfficialCropPositionPriorPr"], n["rSpatialCropPositionPriorPr"], n["rStrictCropPositionPriorPr"]]]) +
-        bullets(f"Official: the hybrid beats the window-trained tree by {n['rOfficialCropActiveHybridMinusLightgbmCropDelta']}, the only significant hybrid win over a tree",
-                f"Strict: the U-Net trails by {n['rStrictCropActiveUnetMinusLightgbmCropDelta']} and the hybrid by {n['rStrictCropActiveHybridMinusLightgbmCropDelta']}") + "</div></div>",
-        "Here position carries almost no information. On official the U-Net and hybrid match or beat the window-trained tree, on spatial they are within its interval, and on strict the tree is still ahead.",
-        "experiments/ndws/final/metrics.csv")
-
-    add("Stability", "Three seeds: small gaps are within training noise",
-        '<div class="row"><div class="col">' + table(["Mean test PR-AUC", "Official", "Spatial", "Strict"], [
-            ["Compact CNN", n["rOfficialCnnSeedMean"], n["rSpatialCnnSeedMean"], n["rStrictCnnSeedMean"]],
-            ["U-Net", n["rOfficialUnetSeedMean"], n["rSpatialUnetSeedMean"], n["rStrictUnetSeedMean"]],
-            ["U-Net + 31 channels", n["rOfficialUnetFeaturesSeedMean"], n["rSpatialUnetFeaturesSeedMean"], n["rStrictUnetFeaturesSeedMean"]]]) +
-        f"<p>Seed standard deviation runs from {n['rSeedSdMin']} to {n['rSeedSdMax']}. The 31-channel U-Net's lead on strict has the largest spread, so we treat it as suggestive only.</p></div></div>",
-        "These are means of three training runs, separate from the bootstrap on test patches.",
-        "experiments/ndws/final/seed_stability.csv")
-
-    add("What matters", "Today's fire map dominates",
-        '<div class="row">' + figure("final/dl_ablations.png") + '<div class="col" style="flex:.7">' + bullets(
-            f"Without day-<i>t</i> fire channels: validation PR-AUC {n['rAblationBaseline']} falls to {n['rAblationNoPrevFireChannel']}",
-            f"Tabular on strict: raw values only {n['rStrictTabularRawOnly']}, fire context only {n['rStrictTabularFireOnly']}",
-            f"Removing augmentation gave {n['rAblationNoAugmentation']}, so we do not claim it helped",
-        ) + "</div></div>",
-        "Single-run ablations on the tuning split. Only the fire channels produce a large effect, so do not over-read the smaller bars.",
-        "experiments/ndws/dl/dev/ablations.csv")
-
-    add("Prediction maps", "Actual, trees, networks, hybrid, and errors (strict test)",
-        figure("final/strict/prediction_maps.png", "full"),
-        "Read one row from left to right. Trees and hybrid stay close to fire. Networks give smoother, wider areas. False negatives are mostly new fire away from the perimeter.",
-        "experiments/ndws/final/strict/prediction_maps.png")
-
-    add("Where models fail", "Fire far from today's perimeter is missed",
-        '<div class="row">' + figure("final/strict/error_by_distance.png") + '<div class="col" style="flex:.6">' + table(["XGBoost recall", "Under 1.5 km", "1.5-3.5", "3.5-7"], [
-            ["Official", n["rOfficialRecallNear"], n["rOfficialRecallMid"], n["rOfficialRecallFar"]],
-            ["Spatial", n["rSpatialRecallNear"], n["rSpatialRecallMid"], n["rSpatialRecallFar"]],
-            ["Strict", n["rStrictRecallNear"], n["rStrictRecallMid"], n["rStrictRecallFar"]]]) + "</div></div>",
-        "Recall at the validation-chosen threshold, by distance to the nearest day-t fire pixel.",
-        "experiments/ndws/final/*/error_analysis.json")
-
-    add("Since Phase 1", "What changed, and why",
-        '<div class="row"><div class="col">' + bullets(
-            "A full re-run reproduces the graded Phase 1 official and spatial scores to three decimals",
-            "New <b>strict split</b>: the Phase 1 spatial split still mixed weeks between training and test",
-            "New <b>position-leak test</b>: Phase 1 did not test whether tabular models exploit position",
-            "New <b>Dummy baseline, CNN, tuned U-Net and hybrids</b> to complete the comparison",
-        ) + "</div></div>",
-        "The graders asked for this. The rerun matching Phase 1 shows the pipeline is reproducible.",
-        "report/tables/phase1_changes.tex")
-
-    add("Limits", "What this work cannot claim",
-        '<div class="row"><div class="col">' + bullets(
-            "Weeks are randomly assigned, so this is not forecasting into future seasons",
-            "No coordinates, dates, fuel moisture or suppression data",
-            "Terrain matching only finds exact overlaps, so nearby fires may still cross splits",
-            f"The strict test has only {n['rStrictTest']} patches",
-            "Samples exist only where fire is present, so this is not monitoring of all land",
-        ) + "</div></div>",
-        "Say these before the examiner does. Associations do not prove how a fire physically spread.")
-
-    add("Conclusion", "Well-built features still lead on this benchmark",
-        '<div class="row"><div class="col">' + bullets(
-            f"Best test PR-AUC: XGBoost {n['rOfficialFullXgboostPr']} (official) and {n['rSpatialFullXgboostPr']} (spatial), LightGBM {n['rStrictFullLightgbmPr']} (strict)",
-            "The hybrid improved on the U-Net but did not beat the best tree",
-            "Benchmark scores depend strongly on how data is split and sampled",
-            "Next: WildfireSpreadTS, for real dates and multi-day models",
-        ) + "</div></div>",
-        "End with the honest conclusion. Offer the viva guide and repository for detail.")
-    return s
+    accuracy = f"{100 - float(n['rTrainPositiveRate']):.0f}%"
+    return [
+        ("Can we predict where a wildfire will burn tomorrow?",
+         cards(card("Today", "Where the fire is, the weather, the land and the vegetation"), '<div class="arrow">&rarr;</div>',
+               card("Our models", "Learn from thousands of past fires"), '<div class="arrow">&rarr;</div>',
+               card("Tomorrow", "The chance that each 1 km square is on fire")),
+         "Say: Our question is simple. If we know where a fire is today, along with the weather and land, can we predict which squares will be burning tomorrow?"),
+        ("Our data: real wildfires seen from satellites",
+         cards(stat(n["rPatches"], "snapshots of US wildfires, 2012 to 2020"), stat("64 km", "wide area in each snapshot, split into 1 km squares"),
+               stat(f"{float(n['rTrainPositiveRate']):.0f}%", "of squares are burning the next day")),
+         "Say: Each snapshot shows one fire today and the same area tomorrow. Fire is rare: only about one square in a hundred is burning next day."),
+        ("Fire is rare, so accuracy would fool us",
+         cards(stat(accuracy, "accuracy for a model that always says &ldquo;no fire&rdquo;. It sounds great, but it is useless."),
+               card("So we use PR-AUC", f"It measures how well a model finds real fires without too many false alarms. Higher is better. Random guessing scores about {n['rOfficialFullDummyPr']}.")),
+         "Say: A lazy model that always says no fire is almost always right, and helps nobody. PR-AUC rewards a model only for finding the rare fires."),
+        ("We compared three kinds of model",
+         cards(card("Tree models", "Look at one square at a time, using 32 facts we designed, like distance to the fire and wind direction."),
+               card("Neural networks", "A CNN and a U-Net look at the whole map and learn patterns themselves."),
+               card("Hybrid", "Combines a tree model and a network, to see if each can help the other.")),
+         "Say: Trees depend on the facts we give them. Networks work out their own patterns from the map. The hybrid tries to get the best of both."),
+        ("How the U-Net reads a map",
+         cards(card("1. Shrink", "Compress the map to understand the big picture."), '<div class="arrow">&rarr;</div>',
+               card("2. Grow back", "Expand to full size, giving an answer for every square."), '<div class="arrow">&rarr;</div>',
+               card("3. Keep the detail", "Skip connections carry fine detail, like the fire's edge, straight across.")),
+         "Say: The U-Net first zooms out to see the whole fire, then zooms back in. Shortcuts in the network stop it losing the sharp detail at the fire's edge."),
+        ("We tested on data the models had never seen",
+         cards(card("New weeks", "The standard test. But about " + n["rOfficialOverlap"] + "% of its areas also appear in training."),
+               card("New places", "Test areas never appear in training."), card("New weeks and places", "The hardest test, but also the smallest, with only " + n["rStrictTest"] + " snapshots.")),
+         "Say: We found most areas in the standard test also appear in training. So we added two harder tests where the model has never seen that land."),
+        ("We blocked a hidden shortcut",
+         cards(stat(n["rOfficialFullUnetPr"], "U-Net, trained on random crops so it cannot use position"), stat(n["rOfficialFullUnetFullpatchPr"], "U-Net on full images. Higher, but only because it learns &ldquo;the middle burns&rdquo;.")),
+         "Say: Every snapshot is centred on a fire, so a model can cheat by learning that the middle usually burns. That would not work in real life, so we train on random crops, and we report the fair score. Numbers are for the new-weeks test."),
+        ("Result: tree models won all three tests", results_table(n) + '<p class="note">Higher is better. Gaps are small. The U-Net is really behind; on the two harder tests the hybrid is level with XGBoost.</p>',
+         "Say: This is the main result. The best tree model scored highest on every test. The networks were close, but did not beat it. We report this honestly, even though networks are the fancier approach."),
+        ("The hybrid helped the U-Net, but not enough",
+         cards(stat(n["rSpatialFullActiveHybridMinusUnetDelta"], "better than the U-Net on new places"), stat(n["rStrictFullActiveHybridMinusUnetDelta"], "better than the U-Net on new weeks and places"),
+               card("But", "It did not beat the best tree model on any test.")),
+         "Say: Combining trees and networks made the network better on the harder tests. But it still did not beat the tree models, so we do not claim that the hybrid is the winner."),
+        ("Today's fire map matters most",
+         cards(stat(n["rAblationBaseline"], "U-Net score with every input"), '<div class="arrow">&rarr;</div>', stat(n["rAblationNoPrevFireChannel"], "after removing today's fire map")),
+         "Say: We removed inputs one at a time to see what matters. Without today's fire map the model almost stops working. Removing other inputs changed the score only a little."),
+        ("One example: the fire moved",
+         figure("final/strict/prediction_map_example.png") + '<p class="note">The models expect fire to stay close to where it is today, so they miss fire that jumps further away.</p>',
+         "Say: Read this from left to right: today's fire, tomorrow's real fire, then each model's guess, then the mistakes. Models are good near today's fire and weak when fire moves far."),
+        ("What we cannot claim",
+         bullets("The data has no real dates, so this does not prove we can forecast future seasons", "Every snapshot already contains a fire, so this is not a search for new fires",
+                 "It shows patterns in the data, not why a fire spread"),
+         "Say: We want to be clear about the limits. These are honest boundaries of the dataset, and the report covers them in detail."),
+        ("What we learned",
+         bullets("Well-designed features can match or beat neural networks on this problem", "How you test a model changes what you can conclude", "Combining models helped the network, but the simple tree models stayed on top"),
+         "Say: Three things to remember. Good features still matter. Fair testing matters. And a more complex model is not automatically a better one. Thank you."),
+    ]
 
 
 def render(slide_list):
-    pages = [f"""<section><div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:28px">
-<p class="kicker">Project 17 &middot; Final submission</p><h1>{TITLE}</h1>
-<p style="font-size:38px;color:{MUTED}">Tabular machine learning and spatial deep learning, compared with care for leakage</p>
-<p>Vedant Satbhai &middot; Pratik Agade &middot; Lakshay Saharan &middot; Raghvendra Singh &middot; Aaryan Krishna</p>
-<p style="color:{MUTED}">CSAI, Newton School of Technology, Rishihood University</p></div>
-<aside>Introduce the team and the single question: can we tell where a wildfire will be tomorrow, and how far can we trust the score?</aside></section>"""]
-    for i, (kicker, title, body, notes, source) in enumerate(slide_list, start=2):
-        foot = f"{i}" + (f" &middot; {source}" if source else "")
-        pages.append(f'<section><div class="head"><p class="kicker">{kicker}</p><h2>{title}</h2></div>{body}<p class="foot">{foot}</p><aside>{notes}</aside></section>')
+    pages = [f"""<section><div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:36px">
+<h1>{TITLE}</h1>
+<p style="color:{MUTED}">Comparing tree models and neural networks on real wildfire data</p>
+<p style="font-size:36px">Vedant Satbhai &middot; Pratik Agade &middot; Lakshay Saharan &middot; Raghvendra Singh &middot; Aaryan Krishna</p>
+<p style="font-size:32px;color:{MUTED}">CSAI, Newton School of Technology, Rishihood University</p></div>
+<aside>Say: We are presenting our project on predicting where a wildfire will burn tomorrow.</aside></section>"""]
+    for i, (title, body, notes) in enumerate(slide_list, start=2):
+        pages.append(f'<section><h2>{title}</h2>{body}<p class="foot">{i}</p><aside>{notes}</aside></section>')
     return pages
 
 
