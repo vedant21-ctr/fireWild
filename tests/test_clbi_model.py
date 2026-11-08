@@ -84,6 +84,11 @@ class TestCLBIProductionEngine(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.engine.predict_df(inf_df)
 
+    def test_10b_empty_input_raises_actionable_error(self):
+        empty_df = self.demo_df.iloc[0:0]
+        with self.assertRaisesRegex(ValueError, "no candidate segments"):
+            self.engine.predict_df(empty_df)
+
     def test_11_demo_contains_exactly_100_segments(self):
         self.assertEqual(len(self.demo_df), 100)
 

@@ -38,6 +38,13 @@ CLEAN_FEATURES = [
     "attack_dot_product"
 ]
 
+# Exclusive upper P(Breach) bound of the LOW, MEDIUM and HIGH tiers; CRITICAL is P(Breach) >= RISK_THRESHOLDS["high"]
+RISK_THRESHOLDS = {
+    "low": 0.30,
+    "medium": 0.60,
+    "high": 0.80
+}
+
 FEATURE_LABELS = {
     "attack_dot_product": "Direct Head-Fire Attack Alignment (cos theta)",
     "burn_prob": "Predicted Next-Day Spread Probability Intensity",
@@ -134,11 +141,11 @@ class CLBIDecisionEngine:
         # Assign Risk Tiers
         risk_tiers = []
         for p in p_breach:
-            if p < 0.30:
+            if p < RISK_THRESHOLDS["low"]:
                 risk_tiers.append("LOW")
-            elif p < 0.60:
+            elif p < RISK_THRESHOLDS["medium"]:
                 risk_tiers.append("MEDIUM")
-            elif p < 0.80:
+            elif p < RISK_THRESHOLDS["high"]:
                 risk_tiers.append("HIGH")
             else:
                 risk_tiers.append("CRITICAL")
@@ -201,24 +208,28 @@ class CLBIDecisionEngine:
         missing_cols = [col for col in self.features if col not in df.columns]
         if missing_cols:
             raise ValueError(f"DataFrame is missing required CLBI model features: {missing_cols}")
-            
-        # 2. Numeric dtype check
+
+        # 2. Non-empty check
+        if df.empty:
+            raise ValueError("DataFrame contains no candidate segments. At least one segment is required for CLBI inference.")
+
+        # 3. Numeric dtype check
         for col in self.features:
             if not pd.api.types.is_numeric_dtype(df[col]):
                 raise ValueError(f"Feature '{col}' must be numeric, got dtype {df[col].dtype}")
                 
-        # 3. NaN check
+        # 4. NaN check
         for col in self.features:
             if df[col].isnull().any():
                 nan_count = df[col].isnull().sum()
                 raise ValueError(f"Feature '{col}' contains {nan_count} NaN values. Missing values are not permitted.")
                 
-        # 4. Infinite values check
+        # 5. Infinite values check
         for col in self.features:
             if np.isinf(df[col]).any():
                 raise ValueError(f"Feature '{col}' contains infinite (Inf/-Inf) values.")
                 
-        # 5. Value bounds checks based on project specs
+        # 6. Value bounds checks based on project specs
         if (df["burn_prob"] < 0.0).any() or (df["burn_prob"] > 1.0).any():
             raise ValueError("Feature 'burn_prob' must be bounded in [0.0, 1.0]")
             

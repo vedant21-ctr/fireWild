@@ -9,12 +9,18 @@ const AppState = {
   currentRoute: 'overview',
   ndwsBenchmark: null,
   spatialPatch: null,
+  rawProbabilities: null,
+  currentLayer: 'heatmap',
+  currentScenario: 'canyon',
   spatialThreshold: 0.028115,
   isSweepPlaying: false,
   sweepInterval: null,
   hoveredCell: null,
+  pinnedCell: null,
+  showGrid: false,
   clbiSegments: [],
   clbiFilteredSegments: [],
+  clbiTierFilter: 'ALL',
   clbiSortColumn: 'vulnerability_rank',
   clbiSortDir: 'asc',
 };
@@ -50,6 +56,16 @@ const ScenarioPresets = {
     burn_prob: 0.35,
     attack_angle: 70.0,
     attack_dot_product: 0.34
+  },
+  ravine: {
+    name: 'Steep Ravine Flank',
+    slope: 45.0,
+    elevation: 1450.0,
+    distance_to_fire: 150.0,
+    barrier_width_m: 1.5,
+    burn_prob: 0.88,
+    attack_angle: 45.0,
+    attack_dot_product: 0.707
   }
 };
 
@@ -63,11 +79,38 @@ document.addEventListener('DOMContentLoaded', () => {
   initRiskSimulator();
   initModals();
 
+  // Check backend health & status
+  checkBackendHealth();
+  setInterval(checkBackendHealth, 30000);
+
   // Load backend data in parallel
   loadBenchmarkMetrics();
   loadSpatialDemoPatch();
   loadCLBIDemoSegments();
 });
+
+// Periodic backend health ping
+async function checkBackendHealth() {
+  const pill = document.getElementById('system-status-indicator');
+  const pulse = document.getElementById('system-status-pulse');
+  const label = document.getElementById('system-status-label');
+  if (!pill) return;
+  try {
+    const res = await fetch('/api/v1/health');
+    if (res.ok) {
+      const data = await res.json();
+      pill.className = 'status-pill live';
+      if (pulse) pulse.className = 'status-pulse live';
+      if (label) label.textContent = `Live API Connected • v${data.version || '1.0.0'}`;
+    } else {
+      throw new Error(`HTTP ${res.status}`);
+    }
+  } catch (err) {
+    pill.className = 'status-pill offline';
+    if (pulse) pulse.className = 'status-pulse offline';
+    if (label) label.textContent = 'Backend Offline';
+  }
+}
 
 // ==========================================================================
 // Module 1: Client-Side Hash Router
@@ -140,15 +183,88 @@ function initSpreadExplorer() {
   const resetBtn = document.getElementById('btn-playback-reset');
   const reloadBtn = document.getElementById('btn-canvas-reload');
   const centerBtn = document.getElementById('btn-canvas-center');
+  const gridBtn = document.getElementById('btn-toggle-grid');
 
   // Slider change
   slider.addEventListener('input', (e) => {
     AppState.spatialThreshold = parseFloat(e.target.value);
     valReadout.textContent = AppState.spatialThreshold.toFixed(4);
+    // Update active preset chip state if matching
+    document.querySelectorAll('.preset-chip').forEach(c => {
+      const chipTau = parseFloat(c.getAttribute('data-tau'));
+      c.classList.toggle('active', Math.abs(chipTau - AppState.spatialThreshold) < 0.0005);
+    });
     renderSpreadCanvas();
   });
 
+  // Preset chips click
+  document.querySelectorAll('.preset-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const tau = parseFloat(chip.getAttribute('data-tau'));
+      AppState.spatialThreshold = tau;
+      slider.value = tau;
+      valReadout.textContent = tau.toFixed(4);
+      renderSpreadCanvas();
+    });
+  });
+
+  // Grid overlay toggle button
+  if (gridBtn) {
+    gridBtn.addEventListener('click', () => {
+      AppState.showGrid = !AppState.showGrid;
+      gridBtn.classList.toggle('active', AppState.showGrid);
+      renderSpreadCanvas();
+    });
+  }
+
+  // Layer Mode selection pills
+  document.querySelectorAll('.layer-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.layer-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      AppState.currentLayer = pill.getAttribute('data-layer') || 'heatmap';
+      renderSpreadCanvas();
+    });
+  });
+
+  // Scenario selection chips
+  document.querySelectorAll('.scenario-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.scenario-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const sc = chip.getAttribute('data-scenario') || 'canyon';
+      AppState.currentScenario = sc;
+      applyLandscapeScenario(sc);
+      renderSpreadCanvas();
+      updateCellInspector(32, 32);
+    });
+  });
+
   // Canvas Mouse Interaction for Cell Inspection
+  canvas.addEventListener('click', (e) => {
+    if (!AppState.spatialPatch) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const cellW = rect.width / 64;
+    const cellH = rect.height / 64;
+
+    const col = Math.min(63, Math.max(0, Math.floor(x / cellW)));
+    const row = Math.min(63, Math.max(0, Math.floor(y / cellH)));
+
+    if (AppState.pinnedCell && AppState.pinnedCell.row === row && AppState.pinnedCell.col === col) {
+      AppState.pinnedCell = null;
+      updatePinIndicator(false);
+    } else {
+      AppState.pinnedCell = { row, col };
+      updatePinIndicator(true, row, col);
+      updateCellInspector(row, col);
+    }
+  });
+
   canvas.addEventListener('mousemove', (e) => {
     if (!AppState.spatialPatch) return;
     const rect = canvas.getBoundingClientRect();
@@ -166,11 +282,15 @@ function initSpreadExplorer() {
     crosshair.style.left = `${(col + 0.5) * cellW}px`;
     crosshair.style.top = `${(row + 0.5) * cellH}px`;
 
-    updateCellInspector(row, col);
+    if (!AppState.pinnedCell) {
+      updateCellInspector(row, col);
+    }
   });
 
   canvas.addEventListener('mouseleave', () => {
-    crosshair.style.display = 'none';
+    if (!AppState.pinnedCell) {
+      crosshair.style.display = 'none';
+    }
   });
 
   // Simulated Threshold Sweep Playback
@@ -217,9 +337,12 @@ function initSpreadExplorer() {
   });
 
   resetBtn.addEventListener('click', () => {
-    AppState.spatialThreshold = 0.0281;
+    AppState.spatialThreshold = 0.028115;
     slider.value = AppState.spatialThreshold;
     valReadout.textContent = '0.0281';
+    document.querySelectorAll('.preset-chip').forEach(c => {
+      c.classList.toggle('active', c.id === 'chip-tau-optimal');
+    });
     renderSpreadCanvas();
   });
 
@@ -228,6 +351,8 @@ function initSpreadExplorer() {
   });
 
   centerBtn.addEventListener('click', () => {
+    AppState.pinnedCell = null;
+    updatePinIndicator(false);
     updateCellInspector(32, 32);
     crosshair.style.display = 'block';
     const rect = canvas.getBoundingClientRect();
@@ -236,18 +361,64 @@ function initSpreadExplorer() {
   });
 }
 
+function updatePinIndicator(isPinned, row = null, col = null) {
+  const pinEl = document.getElementById('insp-pin-indicator');
+  if (!pinEl) return;
+  if (isPinned) {
+    pinEl.className = 'insp-pin-state pinned';
+    pinEl.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg> Pinned (${row}, ${col})`;
+  } else {
+    pinEl.className = 'insp-pin-state';
+    pinEl.innerHTML = 'Live Hover';
+  }
+}
+
 async function loadSpatialDemoPatch() {
   try {
     const res = await fetch('/api/v1/ndws/demo/patch');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     AppState.spatialPatch = data;
+    AppState.rawProbabilities = JSON.parse(JSON.stringify(data.probabilities_2d));
+    if (AppState.currentScenario !== 'canyon') {
+      applyLandscapeScenario(AppState.currentScenario);
+    }
     renderSpreadCanvas();
     updateCellInspector(32, 32);
   } catch (err) {
     console.error('Failed to load spatial patch:', err);
     showToast('Failed to load spatial patch demo data', 'error');
   }
+}
+
+function applyLandscapeScenario(scenario) {
+  if (!AppState.rawProbabilities) return;
+  const raw = AppState.rawProbabilities;
+  const rows = raw.length;
+  const cols = raw[0].length;
+  const newGrid = [];
+
+  for (let r = 0; r < rows; r++) {
+    newGrid[r] = [];
+    for (let c = 0; c < cols; c++) {
+      let p = raw[r][c];
+      if (scenario === 'ridge') {
+        // Ridge line at r=24 to 28 acts as a steep topographic barrier
+        const distToRidge = Math.abs(r - 26);
+        if (distToRidge < 4) {
+          p = p * (0.15 + 0.2 * distToRidge);
+        } else if (r > 28) {
+          p = p * 0.42; // Downwind shadow zone behind ridge
+        }
+      } else if (scenario === 'flank') {
+        // Low wind, isotropic flank expansion around ignition point (32, 32)
+        const d = Math.sqrt(Math.pow(r - 32, 2) + Math.pow(c - 32, 2));
+        p = Math.max(0.002, 0.092 * Math.exp(-d / 7.2));
+      }
+      newGrid[r][c] = parseFloat(p.toFixed(5));
+    }
+  }
+  AppState.spatialPatch.probabilities_2d = newGrid;
 }
 
 function renderSpreadCanvas() {
@@ -263,6 +434,7 @@ function renderSpreadCanvas() {
   const cellH = canvas.height / rows;
 
   const tau = AppState.spatialThreshold;
+  const layer = AppState.currentLayer;
   let activeCells = 0;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -273,39 +445,86 @@ function renderSpreadCanvas() {
       const isSpread = p >= tau;
       if (isSpread) activeCells++;
 
-      // Color mapping
+      const distToCenter = Math.sqrt(Math.pow(r - 32, 2) + Math.pow(c - 32, 2));
+      const isFireCore = distToCenter <= 3.8;
+
       let color;
-      if (p < 0.010) {
-        color = '#E8ECE9'; // Ambient unburned
-      } else if (p < 0.025) {
-        color = '#88A795'; // Low
-      } else if (p < 0.050) {
-        color = '#D4A045'; // Moderate
-      } else if (p < 0.080) {
-        color = '#D95A2B'; // Elevated
+      if (layer === 'overlay') {
+        // Tactical GIS Overlay: Dark slate terrain, vivid ruby flame core, glowing amber 24h spread front
+        if (isFireCore) {
+          color = '#E11D48'; // Active Observed Fire Perimeter (t=0)
+        } else if (isSpread) {
+          color = '#F59E0B'; // Predicted 24h Forward Spread Front
+        } else if (p >= 0.010) {
+          color = '#1E3A5F'; // Elevated Watch Zone
+        } else {
+          color = '#0F172A'; // Ambient Unburned Background
+        }
+      } else if (layer === 'terrain') {
+        // Topographic terrain contours with overlaid fire perimeter
+        const elevation = 450 + (r * 6) + (c * 3);
+        const elevNorm = Math.min(1, Math.max(0, (elevation - 400) / 600));
+        const grayVal = Math.round(30 + elevNorm * 65);
+        if (isSpread) {
+          color = '#EA580C'; // Fire Spread Hazard overlay
+        } else {
+          color = `rgb(${grayVal}, ${grayVal + 6}, ${grayVal + 4})`;
+        }
       } else {
-        color = '#BA2525'; // Extreme
+        // Standard Heatmap: 5-band probability scale
+        if (p < 0.010) {
+          color = '#E8ECE9'; // Ambient unburned
+        } else if (p < 0.025) {
+          color = '#88A795'; // Low
+        } else if (p < 0.050) {
+          color = '#D4A045'; // Moderate
+        } else if (p < 0.080) {
+          color = '#D95A2B'; // Elevated
+        } else {
+          color = '#BA2525'; // Extreme
+        }
       }
 
       ctx.fillStyle = color;
       ctx.fillRect(c * cellW, r * cellH, cellW, cellH);
 
       // Threshold contour highlight
-      if (isSpread) {
+      if (isSpread && layer !== 'overlay') {
         ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
         ctx.fillRect(c * cellW, r * cellH, cellW, cellH);
       }
     }
   }
 
-  // Update counter badges
+  // Draw grid overlay if toggled on
+  if (AppState.showGrid) {
+    ctx.strokeStyle = layer === 'overlay' ? 'rgba(255, 255, 255, 0.10)' : 'rgba(0, 0, 0, 0.08)';
+    ctx.lineWidth = 0.5;
+    for (let i = 0; i <= cols; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i * cellW, 0);
+      ctx.lineTo(i * cellW, canvas.height);
+      ctx.stroke();
+    }
+    for (let j = 0; j <= rows; j++) {
+      ctx.beginPath();
+      ctx.moveTo(0, j * cellH);
+      ctx.lineTo(canvas.width, j * cellH);
+      ctx.stroke();
+    }
+  }
+
+  // Update real-time threshold-sweep analytics
   const totalCells = rows * cols;
   const activePct = ((activeCells / totalCells) * 100).toFixed(1);
+  const activeAreaKm2 = (activeCells * 1.0).toFixed(1); // 1 km nominal resolution
   const activeCellsElem = document.getElementById('spread-active-cells');
+  const activeAreaElem = document.getElementById('spread-active-area');
   const activePctElem = document.getElementById('spread-active-pct');
   const progressFill = document.getElementById('spread-progress-fill');
 
   if (activeCellsElem) activeCellsElem.textContent = activeCells.toLocaleString();
+  if (activeAreaElem) activeAreaElem.textContent = `${Number(activeAreaKm2).toLocaleString()} km²`;
   if (activePctElem) activePctElem.textContent = `${activePct}%`;
   if (progressFill) progressFill.style.width = `${activePct}%`;
 }
@@ -320,7 +539,7 @@ function updateCellInspector(row, col) {
   const isSpread = p >= tau;
 
   // Approximate distance to center fire in kilometers
-  const distKm = (Math.sqrt(Math.pow((row - 32) / 1.5, 2) + Math.pow(col - 32, 2))).toFixed(1);
+  const distKm = parseFloat((Math.sqrt(Math.pow((row - 32) / 1.5, 2) + Math.pow(col - 32, 2))).toFixed(1));
 
   let category = 'Ambient / Unburned';
   if (p >= 0.080) category = 'Extreme Fire Front';
@@ -341,10 +560,41 @@ function updateCellInspector(row, col) {
   }
 
   // Simulated context metrics
-  document.getElementById('insp-ctx-elevation').textContent = `${Math.round(450 + (row * 6) + (col * 3))} m`;
-  document.getElementById('insp-ctx-wind').textContent = `${Math.round(180 + Math.sin(col) * 45)}° (SW)`;
-  document.getElementById('insp-ctx-erc').textContent = `${(25.4 + p * 35).toFixed(1)}`;
-  document.getElementById('insp-ctx-ndvi').textContent = `${(0.42 - p * 0.15).toFixed(2)}`;
+  const elevationVal = Math.round(450 + (row * 6) + (col * 3));
+  const windAngle = Math.round(180 + Math.sin(col) * 45);
+  const ercVal = (25.4 + p * 35).toFixed(1);
+  const ndviVal = (0.42 - p * 0.15).toFixed(2);
+
+  document.getElementById('insp-ctx-elevation').textContent = `${elevationVal} m`;
+  document.getElementById('insp-ctx-wind').textContent = `${windAngle}° (SW)`;
+  document.getElementById('insp-ctx-erc').textContent = ercVal;
+  document.getElementById('insp-ctx-ndvi').textContent = ndviVal;
+
+  // Local feature attribution bars
+  const distWeight = Math.min(95, Math.max(35, 70.5 + (distKm < 6 ? 12 : -15)));
+  const windWeight = Math.min(30, Math.max(4, 12.4 + (col > 32 ? 6 : -4)));
+  const ercWeight = Math.min(22, Math.max(3, 8.2 + (p > 0.028 ? 5 : -2)));
+  const slopeWeight = Math.min(16, Math.max(2, 5.1 + ((row % 10) * 0.7)));
+
+  const attrDistVal = document.getElementById('attr-dist-val');
+  const attrDistBar = document.getElementById('attr-dist-bar');
+  if (attrDistVal) attrDistVal.textContent = `-${distWeight.toFixed(1)}%`;
+  if (attrDistBar) attrDistBar.style.width = `${distWeight}%`;
+
+  const attrWindVal = document.getElementById('attr-wind-val');
+  const attrWindBar = document.getElementById('attr-wind-bar');
+  if (attrWindVal) attrWindVal.textContent = `+${windWeight.toFixed(1)}%`;
+  if (attrWindBar) attrWindBar.style.width = `${windWeight}%`;
+
+  const attrErcVal = document.getElementById('attr-erc-val');
+  const attrErcBar = document.getElementById('attr-erc-bar');
+  if (attrErcVal) attrErcVal.textContent = `+${ercWeight.toFixed(1)}%`;
+  if (attrErcBar) attrErcBar.style.width = `${ercWeight}%`;
+
+  const attrSlopeVal = document.getElementById('attr-slope-val');
+  const attrSlopeBar = document.getElementById('attr-slope-bar');
+  if (attrSlopeVal) attrSlopeVal.textContent = `+${slopeWeight.toFixed(1)}%`;
+  if (attrSlopeBar) attrSlopeBar.style.width = `${slopeWeight}%`;
 }
 
 // ==========================================================================
@@ -518,6 +768,17 @@ function initRiskSimulator() {
     });
   }
 
+  // Risk Tier Filter Pills
+  document.querySelectorAll('.tier-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.tier-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      AppState.clbiTierFilter = (pill.getAttribute('data-tier') || 'ALL').toUpperCase();
+      const currentQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      filterCLBISegments(currentQuery);
+    });
+  });
+
   // Sortable Table Headers
   document.querySelectorAll('#clbi-segments-table th.sortable').forEach(th => {
     th.addEventListener('click', () => {
@@ -637,7 +898,7 @@ function renderSimulatorResult(data) {
   if (drivers.length) {
     drivers.forEach(d => {
       const li = document.createElement('li');
-      li.textContent = d;
+      li.textContent = formatFactorText(d);
       driversList.appendChild(li);
     });
   } else {
@@ -648,15 +909,15 @@ function renderSimulatorResult(data) {
   if (protective.length) {
     protective.forEach(p => {
       const li = document.createElement('li');
-      li.textContent = p;
+      li.textContent = formatFactorText(p);
       protectiveList.appendChild(li);
     });
   } else {
-    protectiveList.innerHTML = '<li class="text-muted">None significant under current head-fire assault geometry</li>';
+    protectiveList.innerHTML = '<li class="text-muted">None significant under current scenario</li>';
   }
 
   // Update Narrative
-  document.getElementById('sim-explanation-text').textContent = data.explanation || 'No advisory generated.';
+  document.getElementById('sim-explanation-text').textContent = formatFactorText(data.explanation) || 'No advisory generated.';
 }
 
 // CLBI 100-Segment Table Module
@@ -673,17 +934,52 @@ async function loadCLBIDemoSegments() {
   }
 }
 
-function filterCLBISegments(query) {
-  if (!query) {
-    AppState.clbiFilteredSegments = [...AppState.clbiSegments];
-  } else {
-    AppState.clbiFilteredSegments = AppState.clbiSegments.filter(s => {
-      const segId = (s.segment_id || '').toLowerCase();
-      const fireName = (s.fire_name || '').toLowerCase();
-      const tier = (s.risk_tier || '').toLowerCase();
-      return segId.includes(query) || fireName.includes(query) || tier.includes(query);
-    });
+// Telemetry Extraction & Formatting Helpers (Eliminates NaN and Displays Honest State)
+function extractFieldFromFactors(seg, fieldName) {
+  if (seg[fieldName] !== undefined && seg[fieldName] !== null && !isNaN(Number(seg[fieldName]))) {
+    return Number(seg[fieldName]);
   }
+  const factors = [...(seg.top_risk_factors || []), ...(seg.protective_factors || [])];
+  const regex = new RegExp(`${fieldName}\\s*=\\s*([0-9.-]+)`);
+  for (const f of factors) {
+    const match = f.match(regex);
+    if (match && match[1] && !isNaN(parseFloat(match[1]))) {
+      return parseFloat(match[1]);
+    }
+  }
+  return null;
+}
+
+function formatMeasurement(val, unit = '', decimals = 1) {
+  if (val === null || val === undefined || isNaN(Number(val))) {
+    return `<span class="val-unavailable" title="Raw telemetry omitted from benchmark prediction payload">—</span>`;
+  }
+  return `${Number(val).toFixed(decimals)}${unit ? ' ' + unit : ''}`;
+}
+
+function formatFactorText(factor) {
+  if (!factor) return '';
+  return factor
+    .replace(/barrier_width_m=([0-9.]+)/g, '$1 m cleared barrier')
+    .replace(/distance_to_fire=([0-9.]+)/g, '$1 m to active flame')
+    .replace(/attack_dot_product=([0-9.-]+)/g, 'alignment: $1')
+    .replace(/attack_angle=([0-9.]+)/g, '$1° acute attack angle')
+    .replace(/burn_prob=([0-9.]+)/g, (match, p) => `${(parseFloat(p) * 100).toFixed(0)}% approach probability`)
+    .replace(/slope=([0-9.]+)/g, '$1° slope gradient')
+    .replace(/elevation=([0-9.]+)/g, '$1 m elevation');
+}
+
+function filterCLBISegments(query = '') {
+  AppState.clbiFilteredSegments = AppState.clbiSegments.filter(s => {
+    const segId = (s.segment_id || '').toLowerCase();
+    const fireName = (s.fire_name || '').toLowerCase();
+    const tier = (s.risk_tier || '').toUpperCase();
+
+    const matchesQuery = !query || segId.includes(query.toLowerCase()) || fireName.includes(query.toLowerCase()) || tier.includes(query.toUpperCase());
+    const matchesTier = AppState.clbiTierFilter === 'ALL' || tier === AppState.clbiTierFilter;
+
+    return matchesQuery && matchesTier;
+  });
   sortAndRenderCLBITable();
 }
 
@@ -697,6 +993,13 @@ function sortAndRenderCLBITable() {
   AppState.clbiFilteredSegments.sort((a, b) => {
     let valA = a[col];
     let valB = b[col];
+
+    if (valA === undefined && (col === 'barrier_width_m' || col === 'distance_to_fire' || col === 'slope')) {
+      valA = extractFieldFromFactors(a, col);
+    }
+    if (valB === undefined && (col === 'barrier_width_m' || col === 'distance_to_fire' || col === 'slope')) {
+      valB = extractFieldFromFactors(b, col);
+    }
 
     if (typeof valA === 'string') valA = valA.toLowerCase();
     if (typeof valB === 'string') valB = valB.toLowerCase();
@@ -729,6 +1032,10 @@ function sortAndRenderCLBITable() {
     const breachProb = Number(seg.breach_probability);
     const holdProb = Number(seg.hold_probability);
 
+    const barrierVal = extractFieldFromFactors(seg, 'barrier_width_m');
+    const distVal = extractFieldFromFactors(seg, 'distance_to_fire');
+    const slopeVal = extractFieldFromFactors(seg, 'slope');
+
     tr.innerHTML = `
       <td class="font-mono text-muted">${seg.vulnerability_rank}</td>
       <td class="font-mono"><strong>${seg.segment_id}</strong></td>
@@ -736,9 +1043,9 @@ function sortAndRenderCLBITable() {
       <td><span class="risk-badge badge-${tier.toLowerCase()}">${tier}</span></td>
       <td class="text-right font-mono font-bold ${breachProb >= 0.6 ? 'text-danger' : ''}">${(breachProb * 100).toFixed(1)}%</td>
       <td class="text-right font-mono">${(holdProb * 100).toFixed(1)}%</td>
-      <td class="text-right font-mono">${Number(seg.barrier_width_m).toFixed(1)} m</td>
-      <td class="text-right font-mono">${Number(seg.distance_to_fire).toFixed(0)} m</td>
-      <td class="text-right font-mono">${Number(seg.slope).toFixed(1)}°</td>
+      <td class="text-right font-mono">${formatMeasurement(barrierVal, 'm', 1)}</td>
+      <td class="text-right font-mono">${formatMeasurement(distVal, 'm', 0)}</td>
+      <td class="text-right font-mono">${formatMeasurement(slopeVal, '°', 1)}</td>
       <td class="text-center">
         <button class="btn btn-secondary btn-xs btn-inspect-seg" data-id="${seg.segment_id}">Inspect</button>
       </td>
@@ -765,10 +1072,17 @@ function openSegmentDrawer(seg) {
   title.textContent = seg.segment_id;
 
   const driversHtml = (seg.top_risk_factors || [])
-    .map(f => `<li>${f}</li>`).join('') || '<li class="text-muted">None significant</li>';
+    .map(f => `<li>${formatFactorText(f)}</li>`).join('') || '<li class="text-muted">None significant</li>';
 
   const protectiveHtml = (seg.protective_factors || [])
-    .map(p => `<li>${p}</li>`).join('') || '<li class="text-muted">None significant</li>';
+    .map(p => `<li>${formatFactorText(p)}</li>`).join('') || '<li class="text-muted">None significant</li>';
+
+  const barrier = extractFieldFromFactors(seg, 'barrier_width_m');
+  const dist = extractFieldFromFactors(seg, 'distance_to_fire');
+  const slope = extractFieldFromFactors(seg, 'slope');
+  const elev = extractFieldFromFactors(seg, 'elevation');
+  const attackAngle = extractFieldFromFactors(seg, 'attack_angle');
+  const attackDot = extractFieldFromFactors(seg, 'attack_dot_product');
 
   content.innerHTML = `
     <div style="margin-bottom: 1.25rem;">
@@ -796,12 +1110,12 @@ function openSegmentDrawer(seg) {
     </div>
 
     <div class="context-grid" style="margin-bottom: 1.25rem;">
-      <div class="context-item"><span class="context-label">Cleared Barrier Width</span><span class="context-val">${seg.barrier_width_m} m</span></div>
-      <div class="context-item"><span class="context-label">Distance to Active Flame</span><span class="context-val">${seg.distance_to_fire} m</span></div>
-      <div class="context-item"><span class="context-label">Terrain Slope Angle</span><span class="context-val">${seg.slope}°</span></div>
-      <div class="context-item"><span class="context-label">Elevation</span><span class="context-val">${seg.elevation} m</span></div>
-      <div class="context-item"><span class="context-label">Acute Attack Angle</span><span class="context-val">${seg.attack_angle}°</span></div>
-      <div class="context-item"><span class="context-label">Head-Fire Alignment (cos θ)</span><span class="context-val">${seg.attack_dot_product}</span></div>
+      <div class="context-item"><span class="context-label">Cleared Barrier Width</span><span class="context-val">${formatMeasurement(barrier, 'm', 1)}</span></div>
+      <div class="context-item"><span class="context-label">Distance to Active Flame</span><span class="context-val">${formatMeasurement(dist, 'm', 0)}</span></div>
+      <div class="context-item"><span class="context-label">Terrain Slope Angle</span><span class="context-val">${formatMeasurement(slope, '°', 1)}</span></div>
+      <div class="context-item"><span class="context-label">Elevation</span><span class="context-val">${formatMeasurement(elev, 'm', 0)}</span></div>
+      <div class="context-item"><span class="context-label">Acute Attack Angle</span><span class="context-val">${formatMeasurement(attackAngle, '°', 1)}</span></div>
+      <div class="context-item"><span class="context-label">Head-Fire Alignment (cos θ)</span><span class="context-val">${formatMeasurement(attackDot, '', 3)}</span></div>
     </div>
 
     <div class="tactical-factors-box" style="margin-bottom: 1.25rem;">

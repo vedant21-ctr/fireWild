@@ -7,7 +7,7 @@ import pandas as pd
 from typing import Dict, Any, List
 from fastapi import APIRouter, HTTPException, Depends
 
-from src.model.clbi_model import CLBIDecisionEngine
+from src.model.clbi_model import CLBIDecisionEngine, RISK_THRESHOLDS
 from src.api.schemas import (
     SegmentInput,
     SingleSegmentPredictionResponse,
@@ -22,10 +22,8 @@ from src.api.schemas import (
 
 router = APIRouter(prefix="/api/v1", tags=["CLBI API"])
 
-# Global singleton or dependency for decision engine
-_ENGINE_INSTANCE: float = None
-
 def get_engine() -> CLBIDecisionEngine:
+    """Loads the decision engine per request so a retrained artifact is picked up without a restart."""
     try:
         return CLBIDecisionEngine()
     except FileNotFoundError as e:
@@ -36,6 +34,30 @@ def get_engine() -> CLBIDecisionEngine:
                 "message": str(e)
             }
         )
+
+def _segment_response_fields(row: pd.Series) -> Dict[str, Any]:
+    """Maps a predicted segment row to the response fields shared by every prediction endpoint."""
+    return {
+        "segment_id": row["segment_id"],
+        "fire_id": row.get("fire_id"),
+        "fire_name": row.get("fire_name"),
+        "date": str(row["date"]) if pd.notnull(row.get("date")) else None,
+        "breach_probability": float(row["breach_probability"]),
+        "hold_probability": float(row["hold_probability"]),
+        "risk_tier": row["risk_tier"],
+        "top_risk_factors": row["top_risk_factors"],
+        "protective_factors": row["protective_factors"],
+        "explanation": row["explanation"]
+    }
+
+def _ranked_segment_response(row: pd.Series) -> BatchSegmentPredictionResponse:
+    """Builds a segment response including population rank fields (batch and prioritization endpoints)."""
+    return BatchSegmentPredictionResponse(
+        **_segment_response_fields(row),
+        vulnerability_rank=int(row["vulnerability_rank"]),
+        priority_percentile=float(row["priority_percentile"]),
+        priority_recommended=bool(row["priority_recommended"])
+    )
 
 @router.get("/health", response_model=HealthResponse, summary="System Health Check")
 def get_health() -> HealthResponse:
@@ -49,11 +71,7 @@ def get_model_info(engine: CLBIDecisionEngine = Depends(get_engine)) -> ModelInf
     return ModelInfoResponse(
         model_type=metadata.get("model_type", "Standardized 7-Feature Logistic Regression Pipeline"),
         feature_list=engine.features,
-        risk_thresholds={
-            "low": 0.30,
-            "medium": 0.60,
-            "high": 0.80
-        },
+        risk_thresholds=dict(RISK_THRESHOLDS),
         training_rows=metadata.get("training_rows", 3050),
         training_fires=metadata.get("training_fires", ["CA-MNF-013028", "CA-SHU-007808", "CA-SNF-000958"]),
         evaluation=metadata.get("evaluation", {
@@ -82,19 +100,10 @@ def predict_single_segment(
 
     row = predicted_df.iloc[0]
     return SingleSegmentPredictionResponse(
-        segment_id=row["segment_id"],
-        fire_id=row.get("fire_id"),
-        fire_name=row.get("fire_name"),
-        date=str(row["date"]) if pd.notnull(row.get("date")) else None,
-        breach_probability=float(row["breach_probability"]),
-        hold_probability=float(row["hold_probability"]),
-        risk_tier=row["risk_tier"],
+        **_segment_response_fields(row),
         vulnerability_rank=None,
         priority_percentile=None,
-        priority_recommended=None,
-        top_risk_factors=row["top_risk_factors"],
-        protective_factors=row["protective_factors"],
-        explanation=row["explanation"]
+        priority_recommended=None
     )
 
 @router.post("/predict/batch", response_model=BatchPredictResponse, summary="Batch Segments Risk Prediction")
@@ -112,25 +121,7 @@ def predict_batch_segments(
     except ValueError as val_err:
         raise HTTPException(status_code=400, detail={"error": "validation_error", "message": str(val_err)})
 
-    response_segments = []
-    for idx, row in predicted_df.iterrows():
-        response_segments.append(
-            BatchSegmentPredictionResponse(
-                segment_id=row["segment_id"],
-                fire_id=row.get("fire_id"),
-                fire_name=row.get("fire_name"),
-                date=str(row["date"]) if pd.notnull(row.get("date")) else None,
-                breach_probability=float(row["breach_probability"]),
-                hold_probability=float(row["hold_probability"]),
-                risk_tier=row["risk_tier"],
-                vulnerability_rank=int(row["vulnerability_rank"]),
-                priority_percentile=float(row["priority_percentile"]),
-                priority_recommended=bool(row["priority_recommended"]),
-                top_risk_factors=row["top_risk_factors"],
-                protective_factors=row["protective_factors"],
-                explanation=row["explanation"]
-            )
-        )
+    response_segments = [_ranked_segment_response(row) for _, row in predicted_df.iterrows()]
 
     return BatchPredictResponse(
         total_segments=len(response_segments),
@@ -163,25 +154,7 @@ def prioritize_segments(
     selected_df = res["selected_segments"]
     selected_count = res["total_selected_segments"]
 
-    response_segments = []
-    for idx, row in selected_df.iterrows():
-        response_segments.append(
-            BatchSegmentPredictionResponse(
-                segment_id=row["segment_id"],
-                fire_id=row.get("fire_id"),
-                fire_name=row.get("fire_name"),
-                date=str(row["date"]) if pd.notnull(row.get("date")) else None,
-                breach_probability=float(row["breach_probability"]),
-                hold_probability=float(row["hold_probability"]),
-                risk_tier=row["risk_tier"],
-                vulnerability_rank=int(row["vulnerability_rank"]),
-                priority_percentile=float(row["priority_percentile"]),
-                priority_recommended=bool(row["priority_recommended"]),
-                top_risk_factors=row["top_risk_factors"],
-                protective_factors=row["protective_factors"],
-                explanation=row["explanation"]
-            )
-        )
+    response_segments = [_ranked_segment_response(row) for _, row in selected_df.iterrows()]
 
     return PrioritizationResponse(
         total_segments=len(request.segments),
