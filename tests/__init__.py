@@ -1,3 +1,3 @@
 """
-tests/__init__.py - Unit test package for CLBI
+tests/__init__.py - Unit test package for the NDWS pipeline
 """

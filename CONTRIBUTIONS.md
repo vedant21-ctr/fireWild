@@ -24,9 +24,3 @@ present its slides, and write its report section.
   - Aaryan: Saito & Rehmsmeier 2015, SHAP, Niculescu-Mizil & Caruana 2005
 - **IEEE report** (`report/main.tex`): Aaryan integrated it; each member wrote their section.
 - **Presentation**: each member presents the slides for their module.
-
-## Separate from Phase 1
-
-Vedant Satbhai built the CLBI prototype (`src/model`, `src/api`, `src/evaluation`, synthetic data in
-`data/final`) before the Phase 1 pipeline. It is documented as a synthetic-data software prototype and is not
-part of the Phase 1 evaluation.

@@ -3,8 +3,8 @@
 **Source:** Kaggle `fantineh/next-day-wildfire-spread` (version 2), released with Huot, Hu, Goyal, Sankar,
 Ihme & Chen, "Next Day Wildfire Spread: A Machine Learning Dataset to Predict Wildfire Spreading From
 Remote-Sensing Data", *IEEE TGRS* 60, 2022 (arXiv:2112.02447). Built with Google Earth Engine.
-**Download:** `python -m src.aml.ndws` (kagglehub). Raw TFRecords are about 2 GB; the NumPy cache in
-`data/ndws/` (gitignored) is about 4.3 GB.
+**Download:** `python -m src.aml.ndws` (kagglehub). The download is about 3.7 GB; the NumPy cache in
+`data/ndws/` (gitignored) is about 3.9 GB.
 **Task:** per-pixel binary classification. Is a 1 km² pixel burning at day *t*+1, given day-*t* inputs?
 
 ## Composition

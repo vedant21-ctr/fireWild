@@ -172,5 +172,3 @@ Implementation trick: sort scores once, then each replicate is just a weighted c
 8. *Why 2% negative sampling?* It keeps memory manageable (1.9M training rows) while keeping all
    positives. 5% gave the same validation PR-AUC (0.226 vs 0.225).
 9. *How was the image orientation determined?* See section 4.
-10. *What is the CLBI part of the repository?* A software prototype trained on **synthetic** data (see
-    `docs/CLBI_SYNTHETIC_DATASET_CARD.md`). It is not part of the Phase 1 evaluation.
