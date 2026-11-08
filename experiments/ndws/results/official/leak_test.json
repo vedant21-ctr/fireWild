@@ -1,0 +1,41 @@
+{
+  "protocol": "official",
+  "lightgbm_params": {
+    "num_leaves": 31,
+    "min_child_samples": 2000
+  },
+  "add_position": {
+    "val": {
+      "pr_auc_features": 0.20391042499804354,
+      "pr_auc_features_plus_position": 0.28494832354230815,
+      "delta": 0.0810378985442646
+    },
+    "test": {
+      "pr_auc_features": 0.26261362020741746,
+      "pr_auc_features_plus_position": 0.3448417142822869,
+      "delta": 0.08222809407486942
+    }
+  },
+  "recover_position": {
+    "target": "pixel within 8 km of patch centre",
+    "test_roc_auc": 0.8432360171198137,
+    "test_positive_rate": 0.051096368598323914,
+    "n_trees": 261
+  },
+  "crop_control": {
+    "val": {
+      "n_pixels": 1879091,
+      "positive_rate": 0.030192257852333922,
+      "pr_auc_crop_trained": 0.21729274644919463,
+      "pr_auc_full_patch_model": 0.22730018304988348,
+      "pr_auc_position_prior": 0.03331343299512832
+    },
+    "test": {
+      "n_pixels": 1683516,
+      "positive_rate": 0.028604420748005958,
+      "pr_auc_crop_trained": 0.28985144634535176,
+      "pr_auc_full_patch_model": 0.29337681536318966,
+      "pr_auc_position_prior": 0.032479040050161855
+    }
+  }
+}

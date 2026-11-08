@@ -1,0 +1,171 @@
+{
+  "protocol": "spatial",
+  "name": "unet_fullpatch",
+  "target": "next-day active fire (FireMask at t+1, known pixels)",
+  "config": {
+    "architecture": "unet",
+    "channels": "base",
+    "loss": "weighted_bce",
+    "pos_weight": 10.0,
+    "base": 24,
+    "dropout": 0.2,
+    "weight_decay": 0.0001,
+    "augment": true,
+    "crop": 0,
+    "lr": 0.001,
+    "batch": 64,
+    "epochs": 30,
+    "patience": 6,
+    "seed": 42
+  },
+  "channels": [
+    "elevation",
+    "wind_u",
+    "wind_v",
+    "tmmn",
+    "tmmx",
+    "sph",
+    "pr",
+    "pdsi",
+    "ndvi",
+    "log_population",
+    "erc",
+    "prev_fire",
+    "prev_unknown"
+  ],
+  "n_channels": 13,
+  "parameters": 1086841,
+  "device": "mps",
+  "epochs_run": 13,
+  "best_epoch": 7,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.3007703751710982,
+      "val_pr_auc": 0.2559578239838952,
+      "lr": 0.001,
+      "seconds": 37.73323893547058
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.18737448238093277,
+      "val_pr_auc": 0.28350242107511536,
+      "lr": 0.001,
+      "seconds": 34.831364154815674
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.17616630804821334,
+      "val_pr_auc": 0.30218922232878576,
+      "lr": 0.001,
+      "seconds": 35.37295913696289
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.1708489005807145,
+      "val_pr_auc": 0.2875205122340133,
+      "lr": 0.001,
+      "seconds": 35.858558177948
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.16910970461522712,
+      "val_pr_auc": 0.31314433542071607,
+      "lr": 0.001,
+      "seconds": 36.66591787338257
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.1661034057816041,
+      "val_pr_auc": 0.30204278793556666,
+      "lr": 0.001,
+      "seconds": 37.24174880981445
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.1653781261230851,
+      "val_pr_auc": 0.3390997925611328,
+      "lr": 0.001,
+      "seconds": 37.479774951934814
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.16381226913553887,
+      "val_pr_auc": 0.32265201047793135,
+      "lr": 0.001,
+      "seconds": 38.03527784347534
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.16257043834775686,
+      "val_pr_auc": 0.33838144868617354,
+      "lr": 0.001,
+      "seconds": 37.43037986755371
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.16122524035644942,
+      "val_pr_auc": 0.33374019643039826,
+      "lr": 0.0005,
+      "seconds": 37.70913004875183
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.15854557918320442,
+      "val_pr_auc": 0.3184943147104286,
+      "lr": 0.0005,
+      "seconds": 37.0239691734314
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.1571468204131414,
+      "val_pr_auc": 0.3319488120404731,
+      "lr": 0.0005,
+      "seconds": 37.185373306274414
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.15601722234538917,
+      "val_pr_auc": 0.3205685822354678,
+      "lr": 0.00025,
+      "seconds": 37.31706118583679
+    }
+  ],
+  "threshold_from_val": 0.7667776346206665,
+  "val": {
+    "pr_auc": 0.3390997925611328,
+    "roc_auc": 0.9635903878177685,
+    "f1": 0.4027215164982106,
+    "precision": 0.34414769671984224,
+    "recall": 0.4853233909444216,
+    "brier": 0.016164414584636688,
+    "threshold": 0.7667776346206665,
+    "positive_rate": 0.008566867938031842,
+    "pr_auc_lift": 39.58270338868301,
+    "n_pixels": 7388698,
+    "tn": 7266856,
+    "fp": 58544,
+    "fn": 32578,
+    "tp": 30720,
+    "recall_at_1pct_fpr": 0.540664791936554,
+    "recall_at_5pct_fpr": 0.8587475117697242
+  },
+  "test": {
+    "pr_auc": 0.2323849760367907,
+    "roc_auc": 0.9391194631817985,
+    "f1": 0.3147558327914743,
+    "precision": 0.25505921017379035,
+    "recall": 0.41093525179856116,
+    "brier": 0.012685451656579971,
+    "threshold": 0.7667776346206665,
+    "positive_rate": 0.00482680117815619,
+    "pr_auc_lift": 48.14471685480951,
+    "n_pixels": 7199385,
+    "tn": 7122928,
+    "fp": 41707,
+    "fn": 20470,
+    "tp": 14280,
+    "recall_at_1pct_fpr": 0.5206330935251798,
+    "recall_at_5pct_fpr": 0.8066762589928057
+  }
+}

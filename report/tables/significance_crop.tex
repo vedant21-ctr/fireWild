@@ -1,0 +1,20 @@
+\begin{tabular}{llccc}
+\toprule
+Protocol & Comparison & $\Delta$PR-AUC & 95\% CI & $P(\Delta \le 0)$ \\
+\midrule
+official & unet - lightgbm\_crop & +0.0068 & [-0.0005, +0.0142] & 0.046 \\
+official & unet\_features - lightgbm\_crop & -0.0060 & [-0.0119, -0.0006] & 0.986 \\
+official & hybrid - lightgbm\_crop & +0.0116 & [+0.0058, +0.0171] & 0.000 \\
+official & hybrid - unet & +0.0048 & [+0.0026, +0.0070] & 0.000 \\
+\midrule
+spatial & unet - lightgbm\_crop & -0.0027 & [-0.0070, +0.0013] & 0.864 \\
+spatial & unet\_features - lightgbm\_crop & -0.0022 & [-0.0069, +0.0028] & 0.816 \\
+spatial & hybrid - lightgbm\_crop & +0.0020 & [-0.0008, +0.0052] & 0.108 \\
+spatial & hybrid - unet & +0.0047 & [+0.0013, +0.0080] & 0.002 \\
+\midrule
+strict & unet - lightgbm\_crop & -0.0145 & [-0.0234, -0.0080] & 1.000 \\
+strict & unet\_features - lightgbm\_crop & -0.0049 & [-0.0128, +0.0023] & 0.912 \\
+strict & hybrid - lightgbm\_crop & -0.0091 & [-0.0160, -0.0039] & 1.000 \\
+strict & hybrid - unet & +0.0054 & [+0.0038, +0.0075] & 0.000 \\
+\bottomrule
+\end{tabular}

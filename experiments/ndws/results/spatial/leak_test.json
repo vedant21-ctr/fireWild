@@ -1,0 +1,41 @@
+{
+  "protocol": "spatial",
+  "lightgbm_params": {
+    "num_leaves": 63,
+    "min_child_samples": 2000
+  },
+  "add_position": {
+    "val": {
+      "pr_auc_features": 0.22969895093369538,
+      "pr_auc_features_plus_position": 0.3454963873070046,
+      "delta": 0.11579743637330922
+    },
+    "test": {
+      "pr_auc_features": 0.1381341970230499,
+      "pr_auc_features_plus_position": 0.27777366061036257,
+      "delta": 0.13963946358731266
+    }
+  },
+  "recover_position": {
+    "target": "pixel within 8 km of patch centre",
+    "test_roc_auc": 0.7418557851116877,
+    "test_positive_rate": 0.051409632969387206,
+    "n_trees": 99
+  },
+  "crop_control": {
+    "val": {
+      "n_pixels": 1850391,
+      "positive_rate": 0.02209046628523377,
+      "pr_auc_crop_trained": 0.24750421647611165,
+      "pr_auc_full_patch_model": 0.25597355608782335,
+      "pr_auc_position_prior": 0.024685418455557682
+    },
+    "test": {
+      "n_pixels": 1800841,
+      "positive_rate": 0.01355366742538625,
+      "pr_auc_crop_trained": 0.16945474467635252,
+      "pr_auc_full_patch_model": 0.17432804069877328,
+      "pr_auc_position_prior": 0.014737469772000229
+    }
+  }
+}

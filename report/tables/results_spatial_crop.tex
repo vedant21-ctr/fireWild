@@ -1,0 +1,13 @@
+\begin{tabular}{lccc}
+\toprule
+Model & PR-AUC [95\% CI] & Lift & ROC-AUC \\
+\midrule
+Position prior in window (leak probe) & 0.015 [0.013, 0.016] & 1.1 & 0.537 \\
+LightGBM (full-patch model) & 0.174 [0.159, 0.189] & 12.9 & 0.877 \\
+LightGBM (window-trained) & 0.169 [0.154, 0.184] & 12.5 & 0.853 \\
+Compact CNN & 0.161 [0.145, 0.176] & 11.9 & 0.822 \\
+U-Net & 0.167 [0.150, 0.182] & 12.3 & 0.840 \\
+U-Net + engineered channels & 0.167 [0.151, 0.183] & 12.3 & 0.832 \\
+Hybrid (selected on validation) & 0.172 [0.155, 0.187] & 12.7 & 0.855 \\
+\bottomrule
+\end{tabular}

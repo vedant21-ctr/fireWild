@@ -1,0 +1,211 @@
+{
+  "by_distance": {
+    "xgboost": {
+      "0-0.5 km": {
+        "n_pixels": 0,
+        "positive_rate": 0.0,
+        "recall": 0.0,
+        "precision": 0.0
+      },
+      "0.5-1.5 km": {
+        "n_pixels": 9901,
+        "positive_rate": 0.11746288253711747,
+        "recall": 0.6586414445399829,
+        "precision": 0.19798397518738692
+      },
+      "1.5-3.5 km": {
+        "n_pixels": 22607,
+        "positive_rate": 0.06259123280399877,
+        "recall": 0.059363957597173146,
+        "precision": 0.24925816023738873
+      },
+      "3.5-7 km": {
+        "n_pixels": 68916,
+        "positive_rate": 0.029398107841430147,
+        "recall": 0.0,
+        "precision": 0.0
+      },
+      "7-15 km": {
+        "n_pixels": 262029,
+        "positive_rate": 0.009762278221112931,
+        "recall": 0.0,
+        "precision": 0.0
+      },
+      "15-100 km": {
+        "n_pixels": 1197633,
+        "positive_rate": 0.0015230041256378206,
+        "recall": 0.0,
+        "precision": 0.0
+      }
+    },
+    "unet": {
+      "0-0.5 km": {
+        "n_pixels": 0,
+        "positive_rate": 0.0,
+        "recall": 0.0,
+        "precision": 0.0
+      },
+      "0.5-1.5 km": {
+        "n_pixels": 9901,
+        "positive_rate": 0.11746288253711747,
+        "recall": 0.6070507308684436,
+        "precision": 0.18285418285418287
+      },
+      "1.5-3.5 km": {
+        "n_pixels": 22607,
+        "positive_rate": 0.06259123280399877,
+        "recall": 0.15830388692579506,
+        "precision": 0.16196673897324657
+      },
+      "3.5-7 km": {
+        "n_pixels": 68916,
+        "positive_rate": 0.029398107841430147,
+        "recall": 0.005429417571569595,
+        "precision": 0.1774193548387097
+      },
+      "7-15 km": {
+        "n_pixels": 262029,
+        "positive_rate": 0.009762278221112931,
+        "recall": 0.0,
+        "precision": 0.0
+      },
+      "15-100 km": {
+        "n_pixels": 1197633,
+        "positive_rate": 0.0015230041256378206,
+        "recall": 0.0,
+        "precision": 0.0
+      }
+    },
+    "hybrid": {
+      "0-0.5 km": {
+        "n_pixels": 0,
+        "positive_rate": 0.0,
+        "recall": 0.0,
+        "precision": 0.0
+      },
+      "0.5-1.5 km": {
+        "n_pixels": 9901,
+        "positive_rate": 0.11746288253711747,
+        "recall": 0.6620808254514188,
+        "precision": 0.20199370409233997
+      },
+      "1.5-3.5 km": {
+        "n_pixels": 22607,
+        "positive_rate": 0.06259123280399877,
+        "recall": 0.09187279151943463,
+        "precision": 0.26262626262626265
+      },
+      "3.5-7 km": {
+        "n_pixels": 68916,
+        "positive_rate": 0.029398107841430147,
+        "recall": 0.0,
+        "precision": 0.0
+      },
+      "7-15 km": {
+        "n_pixels": 262029,
+        "positive_rate": 0.009762278221112931,
+        "recall": 0.0,
+        "precision": 0.0
+      },
+      "15-100 km": {
+        "n_pixels": 1197633,
+        "positive_rate": 0.0015230041256378206,
+        "recall": 0.0,
+        "precision": 0.0
+      }
+    }
+  },
+  "by_fire_size": {
+    "xgboost": {
+      "small fire (<= 10 px)": {
+        "n_pixels": 1125863,
+        "positive_rate": 0.004944651347455241,
+        "recall": 0.0544278785701455,
+        "precision": 0.2479541734860884
+      },
+      "medium (11-50 px)": {
+        "n_pixels": 323570,
+        "positive_rate": 0.007346169298760701,
+        "recall": 0.2448464450988641,
+        "precision": 0.25548726953467954
+      },
+      "large (> 50 px)": {
+        "n_pixels": 117499,
+        "positive_rate": 0.01851079583656031,
+        "recall": 0.45471264367816094,
+        "precision": 0.20081218274111676
+      }
+    },
+    "unet": {
+      "small fire (<= 10 px)": {
+        "n_pixels": 1125863,
+        "positive_rate": 0.004944651347455241,
+        "recall": 0.06466678641997485,
+        "precision": 0.20327498588368154
+      },
+      "medium (11-50 px)": {
+        "n_pixels": 323570,
+        "positive_rate": 0.007346169298760701,
+        "recall": 0.22843920908708457,
+        "precision": 0.235370611183355
+      },
+      "large (> 50 px)": {
+        "n_pixels": 117499,
+        "positive_rate": 0.01851079583656031,
+        "recall": 0.5052873563218391,
+        "precision": 0.18501683501683502
+      }
+    },
+    "hybrid": {
+      "small fire (<= 10 px)": {
+        "n_pixels": 1125863,
+        "positive_rate": 0.004944651347455241,
+        "recall": 0.05622417819292258,
+        "precision": 0.24782264449722882
+      },
+      "medium (11-50 px)": {
+        "n_pixels": 323570,
+        "positive_rate": 0.007346169298760701,
+        "recall": 0.24148085822465293,
+        "precision": 0.2554517133956386
+      },
+      "large (> 50 px)": {
+        "n_pixels": 117499,
+        "positive_rate": 0.01851079583656031,
+        "recall": 0.4845977011494253,
+        "precision": 0.20080015240998286
+      }
+    }
+  },
+  "plausibility_near_fire": {
+    "downwind (alignment > 0.5)": {
+      "observed": 0.08305122997066125,
+      "xgboost": 0.08719244599342346,
+      "unet": 0.49726155400276184,
+      "hybrid": 0.12345394492149353
+    },
+    "upwind (alignment < -0.5)": {
+      "observed": 0.07253086419753087,
+      "xgboost": 0.07939960807561874,
+      "unet": 0.4781650900840759,
+      "hybrid": 0.11345337331295013
+    }
+  },
+  "by_location_group": {
+    "xgboost": {
+      "n_groups": 40,
+      "mean_group_pr_auc": 0.14533324856780788,
+      "median_group_pr_auc": 0.06033428987068744
+    },
+    "unet": {
+      "n_groups": 40,
+      "mean_group_pr_auc": 0.1520510081942632,
+      "median_group_pr_auc": 0.047481308716141604
+    },
+    "hybrid": {
+      "n_groups": 40,
+      "mean_group_pr_auc": 0.14941012167991827,
+      "median_group_pr_auc": 0.061495047059805547
+    }
+  }
+}

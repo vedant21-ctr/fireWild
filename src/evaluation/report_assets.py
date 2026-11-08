@@ -95,17 +95,17 @@ def seed_table(seeds):
                  for r in seeds.to_dict("records")], "llcccc")
 
 
-def significance_table(sigs):
-    """Paired patch-bootstrap differences for the main questions, full patches, active target."""
+def significance_table(sigs, regime="full", name="significance"):
+    """Paired patch-bootstrap differences for the main questions on the active target."""
     rows = []
     for protocol in REPORTED_PROTOCOLS:
-        items = sigs[protocol]["full"]["active"]
+        items = sigs[protocol][regime]["active"]
         for key, s in items.items():
             if not key.startswith(("unet", "cnn", "hybrid")):
                 continue
             rows.append([protocol, tex_escape(key), f"{s['delta']:+.4f}", f"[{s['ci_low']:+.4f}, {s['ci_high']:+.4f}]", num(s["p_le_zero"])])
         rows.append(None)
-    write_table("significance", ["Protocol", "Comparison", "$\\Delta$PR-AUC", "95\\% CI", "$P(\\Delta \\le 0)$"], rows[:-1], "llccc")
+    write_table(name, ["Protocol", "Comparison", "$\\Delta$PR-AUC", "95\\% CI", "$P(\\Delta \\le 0)$"], rows[:-1], "llccc")
 
 
 def fusion_table(fusions):
@@ -231,8 +231,31 @@ def data_macros():
     return macros
 
 
-def numbers_and_macros(table, fusions, leak, seeds, ablations):
-    numbers, macros = {}, data_macros()
+def comparison_macros(sigs):
+    macros = {}
+    for protocol, regimes in sigs.items():
+        for regime, targets in regimes.items():
+            for target, items in targets.items():
+                for key, s in items.items():
+                    a, b = key.split(" - ")
+                    base = macro_name(protocol, regime, target, a, "minus", b)
+                    macros[f"{base}Delta"], macros[f"{base}Low"], macros[f"{base}High"] = (f"{s[k]:+.3f}" for k in ("delta", "ci_low", "ci_high"))
+    return macros
+
+
+def distance_macros():
+    """Recall of the validation-selected threshold by distance to the nearest day-t fire, for XGBoost."""
+    macros = {}
+    bins = {"0.5-1.5 km": "Near", "1.5-3.5 km": "Mid", "3.5-7 km": "Far"}
+    for protocol in REPORTED_PROTOCOLS:
+        by_distance = read_json(OUT_DIR, protocol, "error_analysis.json")["by_distance"]["xgboost"]
+        for key, name in bins.items():
+            macros[macro_name(protocol, "recall", name)] = f"{by_distance[key]['recall']:.2f}"
+    return macros
+
+
+def numbers_and_macros(table, fusions, leak, seeds, ablations, sigs, tabular):
+    numbers, macros = {}, {**data_macros(), **comparison_macros(sigs), **distance_macros()}
     active = table[table.target == "active"]
     for r in table.to_dict("records"):
         slot = numbers.setdefault(r["protocol"], {}).setdefault(r["regime"], {}).setdefault(r["target"], {})
@@ -254,8 +277,12 @@ def numbers_and_macros(table, fusions, leak, seeds, ablations):
         macros[macro_name(protocol, "leak", "recover")] = f"{t['recover_position']['test_roc_auc']:.3f}"
     for r in seeds.to_dict("records"):
         macros[macro_name(r["protocol"], r["model"], "seed", "mean")] = f"{r['mean_test_pr_auc']:.3f}"
+    macros["rSeedSdMin"], macros["rSeedSdMax"] = f"{seeds.std_test_pr_auc.min():.3f}", f"{seeds.std_test_pr_auc.max():.3f}"
     for name, value in ablations.val_pr_auc.items():
         macros[macro_name("ablation", name)] = f"{value:.3f}"
+    for protocol, results in tabular.items():
+        for key in ("raw_only", "fire_only", "all_features", "all_minus_fire", "all_minus_wind"):
+            macros[macro_name(protocol, "tabular", key)] = f"{results[key]['test_pr_auc']:.3f}"
     numbers["leak"] = leak
     numbers["seed_stability"] = seeds.to_dict("records")
     with open(os.path.join(OUT_DIR, "numbers.json"), "w") as f:
@@ -272,14 +299,16 @@ def main():
     fusions = {p: read_json(EXP_DIR, "hybrid", p, "fusion.json") for p in REPORTED_PROTOCOLS}
     result_tables(table)
     seed_table(seeds)
-    significance_table(read_json(OUT_DIR, "significance.json"))
+    sigs = read_json(OUT_DIR, "significance.json")
+    significance_table(sigs)
+    significance_table(sigs, regime="crop", name="significance_crop")
     fusion_table(fusions)
     sweep_outputs()
     ablations = dl_ablation_outputs()
-    tabular_ablation_table()
+    tabular = tabular_ablation_table()
     leak = leak_table()
     phase1 = phase1_change_table()
-    numbers = numbers_and_macros(table, fusions, leak, seeds, ablations)
+    numbers = numbers_and_macros(table, fusions, leak, seeds, ablations, sigs, tabular)
     numbers["phase1_changes"] = phase1
     with open(os.path.join(OUT_DIR, "numbers.json"), "w") as f:
         json.dump(numbers, f, indent=2)

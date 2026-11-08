@@ -40,3 +40,4 @@ stage experiments/ndws/dl/dev/ablation/no_terrain_vegetation/results.json dl_abl
 stage experiments/ndws/dl/strict/unet_fullpatch/results.json dl_final src.dl.run_experiments final
 stage experiments/ndws/hybrid/strict/fusion.json hybrid src.hybrid.fusion
 stage experiments/ndws/FINAL_RESULTS.md compare src.evaluation.compare
+stage report/generated_results.tex report_assets src.evaluation.report_assets

@@ -1,0 +1,31 @@
+\begin{tabular}{llccc}
+\toprule
+Stage & Option & Val. PR-AUC & Best epoch & Best \\
+\midrule
+architecture & unet & 0.2356 & 13 & \checkmark \\
+architecture & cnn & 0.2329 & 17 &  \\
+\midrule
+loss & bce & 0.2356 & 13 &  \\
+loss & weighted\_bce (weight 3) & 0.2268 & 14 &  \\
+loss & weighted\_bce (weight 10) & 0.2386 & 6 & \checkmark \\
+loss & dice & 0.1728 & 5 &  \\
+loss & bce\_dice & 0.2320 & 9 &  \\
+\midrule
+dropout & 0.0 & 0.2334 & 13 &  \\
+dropout & 0.2 & 0.2386 & 6 & \checkmark \\
+dropout & 0.4 & 0.2354 & 17 &  \\
+\midrule
+weight\_decay & 0.0 & 0.2330 & 8 &  \\
+weight\_decay & 0.0001 & 0.2386 & 6 & \checkmark \\
+weight\_decay & 0.001 & 0.2281 & 6 &  \\
+\midrule
+width & 16 & 0.2339 & 8 &  \\
+width & 24 & 0.2386 & 6 & \checkmark \\
+width & 32 & 0.2279 & 13 &  \\
+\midrule
+feature\_channels & base & 0.2386 & 6 &  \\
+feature\_channels & fire & 0.2391 & 7 &  \\
+feature\_channels & fire\_wind & 0.2414 & 3 &  \\
+feature\_channels & all & 0.2422 & 7 & \checkmark \\
+\bottomrule
+\end{tabular}

@@ -1,0 +1,178 @@
+{
+  "protocol": "spatial",
+  "name": "cnn",
+  "target": "next-day active fire (FireMask at t+1, known pixels)",
+  "config": {
+    "architecture": "cnn",
+    "channels": "base",
+    "loss": "weighted_bce",
+    "pos_weight": 10.0,
+    "base": 24,
+    "dropout": 0.2,
+    "weight_decay": 0.0001,
+    "augment": true,
+    "crop": 32,
+    "lr": 0.001,
+    "batch": 64,
+    "epochs": 30,
+    "patience": 6,
+    "seed": 43
+  },
+  "channels": [
+    "elevation",
+    "wind_u",
+    "wind_v",
+    "tmmn",
+    "tmmx",
+    "sph",
+    "pr",
+    "pdsi",
+    "ndvi",
+    "log_population",
+    "erc",
+    "prev_fire",
+    "prev_unknown"
+  ],
+  "n_channels": 13,
+  "parameters": 81097,
+  "device": "mps",
+  "epochs_run": 14,
+  "best_epoch": 8,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.5060882351264872,
+      "val_pr_auc": 0.2126407091149501,
+      "lr": 0.001,
+      "seconds": 16.78789210319519
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.43629565436778395,
+      "val_pr_auc": 0.21300792254776144,
+      "lr": 0.001,
+      "seconds": 15.798609256744385
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.42597682684146126,
+      "val_pr_auc": 0.20696884969566137,
+      "lr": 0.001,
+      "seconds": 15.33122205734253
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.4262123418779209,
+      "val_pr_auc": 0.22331448729374542,
+      "lr": 0.001,
+      "seconds": 16.06016206741333
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.4181122576882099,
+      "val_pr_auc": 0.2136546625518263,
+      "lr": 0.001,
+      "seconds": 14.127689123153687
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.4165850879046424,
+      "val_pr_auc": 0.21690887300543396,
+      "lr": 0.001,
+      "seconds": 13.73838210105896
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.41644433346287957,
+      "val_pr_auc": 0.21734947103118862,
+      "lr": 0.0005,
+      "seconds": 15.378663778305054
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.4079744303277854,
+      "val_pr_auc": 0.22870366787324387,
+      "lr": 0.0005,
+      "seconds": 15.157506942749023
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.4067835475093332,
+      "val_pr_auc": 0.2271661986145,
+      "lr": 0.0005,
+      "seconds": 14.242063045501709
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.4026786383112957,
+      "val_pr_auc": 0.21589188238055393,
+      "lr": 0.0005,
+      "seconds": 14.887297868728638
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.40396076800494357,
+      "val_pr_auc": 0.2219848321827808,
+      "lr": 0.00025,
+      "seconds": 15.679428100585938
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.40003205437598555,
+      "val_pr_auc": 0.22128660394665375,
+      "lr": 0.00025,
+      "seconds": 15.154054880142212
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.39999439014956867,
+      "val_pr_auc": 0.22374518358899842,
+      "lr": 0.00025,
+      "seconds": 13.07581114768982
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.39847809333225775,
+      "val_pr_auc": 0.22170915455933132,
+      "lr": 0.000125,
+      "seconds": 16.127913236618042
+    }
+  ],
+  "threshold_from_val": 0.7016644477844238,
+  "val": {
+    "pr_auc": 0.22870366787324387,
+    "roc_auc": 0.9186207392731044,
+    "f1": 0.32083379073867196,
+    "precision": 0.27131639016611875,
+    "recall": 0.3924610572213972,
+    "brier": 0.024689409881830215,
+    "threshold": 0.7016644477844238,
+    "positive_rate": 0.008566867938031842,
+    "pr_auc_lift": 26.69629898903127,
+    "n_pixels": 7388698,
+    "tn": 7258681,
+    "fp": 66719,
+    "fn": 38456,
+    "tp": 24842,
+    "recall_at_1pct_fpr": 0.410486903219691,
+    "recall_at_5pct_fpr": 0.7215867799930488
+  },
+  "test": {
+    "pr_auc": 0.12829057252586346,
+    "roc_auc": 0.8373350817306066,
+    "f1": 0.2366830276414363,
+    "precision": 0.21471760018748534,
+    "recall": 0.2636546762589928,
+    "brier": 0.018108012154698372,
+    "threshold": 0.7016644477844238,
+    "positive_rate": 0.00482680117815619,
+    "pr_auc_lift": 26.578797798103984,
+    "n_pixels": 7199385,
+    "tn": 7131127,
+    "fp": 33508,
+    "fn": 25588,
+    "tp": 9162,
+    "recall_at_1pct_fpr": 0.36989928057553956,
+    "recall_at_5pct_fpr": 0.5299856115107914
+  }
+}

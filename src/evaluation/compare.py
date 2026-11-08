@@ -14,8 +14,8 @@ Two scoring regimes are reported:
 
 The patch-centre prior (position only) and the full-patch U-Net are leak diagnostics, not valid forecasters.
 
-Writes, under experiments/ndws/final/: metrics.csv, significance.json, seed_stability.csv, numbers.json,
-<protocol>/ figures and error analysis; also experiments/ndws/FINAL_RESULTS.md and report/generated_results.tex.
+Writes, under experiments/ndws/final/: metrics.csv, significance.json, seed_stability.csv, model_comparison.png,
+<protocol>/ figures and error analysis; also experiments/ndws/FINAL_RESULTS.md.
 
 Usage:
     python -m src.evaluation.compare

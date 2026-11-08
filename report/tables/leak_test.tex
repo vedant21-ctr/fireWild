@@ -1,0 +1,13 @@
+\begin{tabular}{lccc}
+\toprule
+Test & official & spatial & strict \\
+\midrule
+Features only, PR-AUC & 0.263 & 0.138 & 0.124 \\
+Features + position, PR-AUC & 0.345 & 0.278 & 0.251 \\
+Recover position from features, ROC-AUC & 0.843 & 0.742 & 0.753 \\
+Window: full-patch model, PR-AUC & 0.293 & 0.174 & 0.157 \\
+Window: window-trained model, PR-AUC & 0.290 & 0.169 & 0.148 \\
+Window: position prior, PR-AUC & 0.032 & 0.015 & 0.020 \\
+Window: positive rate & 0.029 & 0.014 & 0.018 \\
+\bottomrule
+\end{tabular}
