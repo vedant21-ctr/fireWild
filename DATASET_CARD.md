@@ -1,4 +1,4 @@
-# Dataset Card: Next Day Wildfire Spread (NDWS), as used in Phase 1
+# Dataset Card: Next Day Wildfire Spread (NDWS)
 
 **Source:** Kaggle `fantineh/next-day-wildfire-spread` (version 2), released with Huot, Hu, Goyal, Sankar,
 Ihme & Chen, "Next Day Wildfire Spread: A Machine Learning Dataset to Predict Wildfire Spreading From
@@ -33,15 +33,43 @@ the day-*t* mask contains fire.
 | `PrevFireMask` | fire at day *t* (input) | MODIS MOD14A1 | 1 / 0 / −1 unknown |
 | `FireMask` | fire at day *t*+1 (**target**) | MODIS MOD14A1 | 1 / 0 / −1 unknown |
 
-## Official split and why we add a second one
+## What is predicted, and when
 
-Huot et al. assign **random weeks** to train/eval/test (8:1:1) with a one-day buffer. That separates time
-periods but not places. Our terrain-fingerprint audit (`src/aml/splits.py`) finds that **about 95% of
-official test patches share an identical, non-flat 8 × 8 km elevation block with a training patch**. A
-mirrored-patch control produces 0 / 1,855 matches. We therefore also evaluate on a **spatial split** that
-assigns whole location groups (845 groups, from union-find over shared terrain) to train / val / test:
-14,822 / 1,855 / 1,868 patches, with zero shared terrain. Manifest: `data/splits/ndws_split_manifest.csv`.
-Audit: `data/splits/split_audit.json`.
+| Question | Answer |
+|---|---|
+| Prediction time | End of day *t*. Weather is the average over day *t* (Huot et al., Section II-C), so a forecast can only be issued once day *t* is complete |
+| Inputs | Day-*t* rasters only. Slowly changing layers (vegetation, drought, population) use the latest value available at *t* |
+| Target | MODIS MOD14A1 fire mask on day *t*+1, per 1 km pixel |
+| Observation window | One day. Each sample holds only *t* and *t*+1, so there are no multi-day sequences |
+| Spatial prediction | Yes, every pixel has a label, so segmentation models apply |
+| Two evaluated targets | **active** (`FireMask` = 1, includes fire that persists) and **transition** (new fire: scored only on pixels known not burning at *t*) |
+
+## Evaluation protocols
+
+Huot et al. assign **random weeks** to train / eval / test (8:1:1) with a one-day buffer. That separates periods but
+not places. Our terrain-fingerprint audit (`src/aml/splits.py`) finds that **about 95% of official test patches share an
+identical, non-flat 8 x 8 km elevation block with a training patch**; a mirrored-patch control gives 0 / 1,855 matches.
+
+| Protocol | Weeks kept apart? | Terrain kept apart? | Train / val / test patches |
+|---|---|---|---|
+| `official` | Yes | No | 14,979 / 1,877 / 1,689 |
+| `spatial` | No | Yes | 14,822 / 1,855 / 1,868 |
+| `strict` | Yes (held-out patches come only from official eval/test weeks) | Yes | 12,050 / 389 / 405 |
+| `dev` (tuning only) | Not reported | Yes | 12,050 / 1,466 / none |
+
+`dev` selects deep-learning hyperparameters. Its patches are all from official training weeks and never from a
+reported test split. Manifest: `data/splits/ndws_split_manifest.csv`. Audit: `data/splits/split_audit.json`. Both are
+checked by `verify_manifest()` every time the manifest is built, and again by the unit tests.
+
+## What the dataset cannot support
+
+| Requirement in the project brief | Status | What we do instead |
+|---|---|---|
+| Coordinates and CRS metadata | The Kaggle files contain none | Maps use patch-grid coordinates; orientation is inferred from wind physics |
+| Evaluation per named fire event | No event identifiers | Terrain-derived location groups act as a stand-in for events, and are described as such |
+| Strict chronological order | No dates; weeks were randomly assigned | Weeks are kept apart. We do not claim to predict the future from the past |
+| Lagged burn history longer than one day | Only the day-*t* mask exists | Day-*t* burn features at several spatial scales |
+| ConvLSTM | No multi-day sequences | Not attempted |
 
 ## Data-quality issues found (EDA) and handling
 
@@ -63,7 +91,10 @@ Audit: `data/splits/split_audit.json`.
 - Weather is daily-aggregated GRIDMET (about 4 km) interpolated to 1 km, so sub-daily wind shifts are
   lost.
 - There is no fuel type, fuel moisture or suppression information.
-- Patches are centred on fires, so the pixel distribution is not the distribution of the US landscape.
+- Patches are centred on fires, so the pixel distribution is not the distribution of the US landscape, and pixel
+  position inside a patch predicts the label. See the patch-centre leak in `docs/METHODOLOGY.md`.
+- The two largest location groups hold 71% of patches and always stay in training, so location-disjoint test sets
+  contain smaller, more isolated fires than the training data.
 
 ## License and citation
 

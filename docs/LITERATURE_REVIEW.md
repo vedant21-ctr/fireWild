@@ -1,9 +1,9 @@
-# Literature Review: Next-Day Wildfire Spread Prediction (Phase 1, ML)
+# Literature Review: Next-Day Wildfire Spread Prediction
 
-This review covers four strands of work that the Phase 1 pipeline builds on: physical and simulation
-models of fire spread, machine-learning spread prediction (especially on the NDWS benchmark), the
-tabular learners used here, and evaluation methodology for imbalanced, spatially autocorrelated data.
-Full references are in `report/references.bib`.
+This review covers the work the project builds on: physical and simulation models of fire spread,
+machine-learning spread prediction (especially on the NDWS benchmark), the tabular learners, spatial deep
+learning, hybrid models, and evaluation methodology for imbalanced, spatially autocorrelated data. Full
+references, each checked against CrossRef, arXiv or the publisher's page, are in `report/references.bib`.
 
 ## 1. Physical and simulation models
 
@@ -38,7 +38,7 @@ vegetation add information mainly when combined with it.
 2018–2021) with event identifiers and dates. That supports year-based splits and temporal models
 (ConvLSTM, temporal U-Nets), which matters for Phase 2.
 
-## 3. Learners used in Phase 1
+## 3. Tabular learners
 
 - **Logistic regression** is the linear, well-calibrated reference model, and Huot et al.'s baseline.
 - **Random forests (Breiman, 2001)** average decorrelated deep trees grown on bootstrap samples, which
@@ -66,19 +66,44 @@ vegetation add information mainly when combined with it.
   the same terrain in train and test. We quantify this with a terrain fingerprint and add a spatially
   disjoint protocol.
 
-## 5. Gap addressed in Phase 1
+## 5. Spatial deep learning
 
-1. Published NDWS tabular baselines use only raw pixels plus their 3×3 neighbourhood. They do not
-   **engineer physically motivated features**: multi-scale lagged burn density, distance to the front,
-   wind–fire alignment, upslope-from-fire, vapour-pressure deficit. They also do not test **gradient
-   boosting**, which the brief asks for.
-2. No published NDWS evaluation that we know of checks the **spatial independence** of the official
-   split. We show that about 95% of official test patches share terrain with training patches, and we report
-   results on a location-grouped split as well. Prevalence-normalised results and model rankings turn out to be
-   robust to the overlap.
-3. We report **uncertainty** (patch-level bootstrap CIs and paired tests) instead of single point
-   estimates, and we check **physical plausibility** (distance, wind and slope response) of the learned
-   model.
+- **Fully convolutional networks (Long et al., 2015)** replace the classifier head with convolutions, so a
+  network outputs a value per pixel for any input size. Both of our networks are fully convolutional. That is
+  why they can train on 32x32 crops and predict on 64x64 patches.
+- **U-Net (Ronneberger et al., 2015)** adds a contracting encoder, an expanding decoder and skip connections.
+  The encoder gathers context, and the skips return fine detail lost to pooling. Fire fronts need both: a
+  regional view of the fire and a sharp boundary.
+- **Dilated convolutions (Yu & Koltun, 2016)** widen the receptive field without pooling, which keeps resolution.
+  Our compact CNN baseline uses them, so comparing it with the U-Net isolates the value of the encoder-decoder.
+- **Losses.** Binary cross-entropy treats pixels independently. Class weighting raises the cost of missed fire.
+  The **Dice loss (Milletari et al., 2016)** optimises region overlap directly and was proposed for strongly
+  imbalanced segmentation. We compare these on validation data.
+- **Regularisation and optimisation.** Batch normalisation (Ioffe & Szegedy, 2015), dropout (Srivastava et al.,
+  2014) and AdamW's decoupled weight decay (Loshchilov & Hutter, 2019) are each tested by ablation.
+- **Convolutions and absolute position.** CNNs are often assumed to be translation-equivariant, but
+  **Kayhan & van Gemert (2020)** show that boundary effects let convolutional layers exploit absolute position, and
+  **Liu et al. (2018)** study how CNNs handle coordinates. This explains the NDWS patch-centre leak: a network given
+  full patches can locate the centre from the padded border. Huot et al. (2022) already train on random crops.
+- **Sequence models.** **ConvLSTM (Shi et al., 2015)** needs a multi-day input sequence. Each NDWS sample has only
+  two snapshots, so, as the project brief instructs, we do not use it.
 
-Phase 2 will test whether convolutional models (U-Net; ConvLSTM only if multi-day sequences are added),
-which see fire-front geometry directly, close the gap these tabular features leave.
+## 6. Hybrid models and the tabular-versus-deep question
+
+**Grinsztajn et al. (2022)** show that tree ensembles still beat deep networks on typical tabular data, partly
+because trees handle irregular targets and uninformative features well. That makes tuned trees a serious baseline
+here, not a formality. **Stacked generalisation (Wolpert, 1992)** learns how to combine base models using data they
+were not fitted on. Our late fusion is a small stacker of this kind, fitted on held-out validation patches.
+
+## 7. Gaps this project addresses
+
+1. Published NDWS tabular baselines use raw pixels plus their 3x3 neighbourhood. They do not engineer physically
+   motivated features (multi-scale burn density, distance to the front, wind-fire alignment, upslope from fire,
+   vapour-pressure deficit) or test gradient boosting, which the brief asks for.
+2. We know of no published NDWS evaluation that checks whether the official split is spatially independent. Our
+   terrain fingerprint shows that about 95% of official test patches share terrain with training patches, and the
+   project reports a location-disjoint split and a split that is disjoint in both location and week.
+3. Patch centring is a target leak. We measure how far it reaches both the networks and the tabular models.
+4. We report **uncertainty** (patch-level bootstrap intervals, paired tests, repeated seeds) instead of single point
+   estimates, and check **physical plausibility**.
+5. We test a **hybrid** against both of its parents on identical pixels, and report the outcome either way.
